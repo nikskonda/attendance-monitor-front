@@ -1,0 +1,11 @@
+<p>{{professor.getFulName}}</p>
+<mat-grid-list [cols]="cols" rowHeight="100px">
+  <mat-grid-tile
+      *ngFor="let cell of cells"
+      [colspan]="1"
+      [rowspan]="1"
+      [style.background]="cell.color">
+      <app-grid-header *ngIf="cell.header" [text]="cell.text"></app-grid-header>
+      <app-grid-cell *ngIf="!cell.empty && !cell.header" [lesson]="cell.lesson"></app-grid-cell>
+  </mat-grid-tile>
+</mat-grid-list>

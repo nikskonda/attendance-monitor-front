@@ -1,0 +1,12 @@
+<div *ngFor="let spec of specList">
+    <p (click)="onSelectExisting(spec)">{{spec.qualifier}}</p>
+        <button class="rm" (click)="remove(spec)">&#10006;</button>
+</div>
+<form class="example-form">
+    <mat-form-field class="example-full-width" hintLabel="Max 10 characters" appearance="fill">
+      <input matInput #input maxlength="10" placeholder="Name" [formControl]="nameFormControl" (keydown.enter)="isUpdate?update():create()">
+      <mat-hint align="end">{{input.value?.length || 0}}/10</mat-hint>
+    </mat-form-field>
+</form>
+<button (click)="create()">Create</button>
+<button *ngIf="isUpdate" (click)="update()">Update</button>

@@ -36,9 +36,9 @@ export class LoginComponent {
   matcher = new MyErrorStateMatcher();
 
   checkLogin() {
-    (this.loginservice.authenticate(this.emailFormControl.get('email'), this.passwordFormControl.get('password')).subscribe(
+    (this.loginservice.authenticate(this.emailFormControl.value, this.passwordFormControl.value).subscribe(
       data => {
-        this.router.navigate([''])
+        this.router.navigate(['schedule'])
         this.invalidLogin = false
       },
       error => {

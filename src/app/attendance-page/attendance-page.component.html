@@ -1,0 +1,13 @@
+<p>{{subject.qualifier}}</p>
+<p>{{group.qualifier}}</p>
+
+<mat-grid-list [cols]="cols" rowHeight="100px">
+    <mat-grid-tile
+        *ngFor="let cell of att"
+        [colspan]="1"
+        [rowspan]="1"
+        [style.background]="a9a9a9">
+        {{cell.text}}
+    </mat-grid-tile>
+  </mat-grid-list>
+  

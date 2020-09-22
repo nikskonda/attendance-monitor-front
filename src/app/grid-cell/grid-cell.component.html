@@ -1,0 +1,4 @@
+<a routerLink="../attendance" [queryParams]="{ groupId: lesson.group.id, subjectId: lesson.subject.id, subjectTypes: 'lesson.subject.type'}"> 
+    <p>{{lesson.subject.qualifier + " (" + lesson.subjectType + ")"}}</p>
+    <p>{{lesson.group.qualifier}}</p>
+</a>
