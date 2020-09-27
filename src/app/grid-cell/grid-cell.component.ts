@@ -12,6 +12,8 @@ export class GridCellComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {  }
+  ngOnInit() { 
+    console.log(this.lesson)
+   }
 
 }

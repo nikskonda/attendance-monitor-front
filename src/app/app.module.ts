@@ -15,11 +15,10 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatSelectModule} from '@angular/material/select';
 import { GridCellComponent } from './grid-cell/grid-cell.component';
 import { GridHeaderComponent } from './grid-header/grid-header.component';
-
-
-
-
-
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MatMenuModule} from '@angular/material/menu';
+import { PdfCreatorComponent } from './pdf-creator/pdf-creator.component';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 @NgModule({
@@ -28,6 +27,7 @@ import { GridHeaderComponent } from './grid-header/grid-header.component';
       routingComponents,
       GridCellComponent,
       GridHeaderComponent,
+      PdfCreatorComponent,
    ],
    imports: [
       BrowserModule,
@@ -35,10 +35,13 @@ import { GridHeaderComponent } from './grid-header/grid-header.component';
       MatInputModule,
       MatGridListModule,
       MatSelectModule,
+      MatDatepickerModule,
+      MatNativeDateModule,
+      MatMenuModule,
       FormsModule,
       ReactiveFormsModule,
       AppRoutingModule,
-      HttpClientModule
+      HttpClientModule,
    ],
    providers: [
     {

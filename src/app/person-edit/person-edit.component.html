@@ -1,1 +1,41 @@
-<p>person-edit works!</p>
+<mat-form-field appearance="fill">
+  <mat-select [(ngModel)]="selectedValue" (selectionChange)="onGroupSelect(selectedValue)">
+    <mat-option *ngFor="let group of groups" [value]="group.id">
+      {{group.qualifier}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<div *ngFor="let stud of studs">
+    <p (click)="onSelectExisting(stud)">{{stud.fullName}}</p>
+        <button class="rm" (click)="remove(stud)">&#10006;</button>
+</div>
+
+<form class="example-form">
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="Name" [formControl]="nameFormControl" (keydown.enter)="isUpdate?update():create()">
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="lastName" [formControl]="lastNameFormControl" (keydown.enter)="isUpdate?update():create()">
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="patronymic" [formControl]="patronymicFormControl" (keydown.enter)="isUpdate?update():create()">
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="email" [formControl]="emailFormControl" (keydown.enter)="isUpdate?update():create()">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Группа</mat-label>
+        <mat-select [formControl]="groupFormControl" required>
+          <mat-option *ngFor="let gr of groups" [value]="gr.id">
+            {{gr.qualifier}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+</form>
+<button (click)="create()">Create</button>
+<button *ngIf="isUpdate" (click)="update()">Update</button>

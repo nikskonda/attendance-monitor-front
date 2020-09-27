@@ -37,4 +37,8 @@ export class AttendanceService {
     return this.httpClient.get<Attendance>('http://localhost:8888/attendance', {params});
   }
 
+  save(list: AttCell[]): Observable<AttCell[]> {
+    return this.httpClient.post<AttCell[]>('http://localhost:8888/attendance', list);
+  }
+
 }

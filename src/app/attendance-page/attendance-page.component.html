@@ -1,13 +1,18 @@
-<p>{{subject.qualifier}}</p>
-<p>{{group.qualifier}}</p>
-
+<p *ngIf="subject">{{subject.qualifier}}</p>
+<p *ngIf="group">{{group.qualifier}}</p>
+<button (click) = "save(true)">Save</button>
 <mat-grid-list [cols]="cols" rowHeight="100px">
     <mat-grid-tile
         *ngFor="let cell of att"
         [colspan]="1"
         [rowspan]="1"
         [style.background]="a9a9a9">
-        {{cell.text}}
+        <p *ngIf="cell.header">{{cell.text}}</p>
+        <button *ngIf="!cell.header" style="width: 100%; height: 100%; background-color: white;" mat-button [matMenuTriggerFor]="menu">{{cell.text}}</button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="setValue(0, cell)"></button>
+            <button mat-menu-item (click)="setValue(1, cell)">1</button>
+            <button mat-menu-item (click)="setValue(2, cell)">2</button>
+        </mat-menu>
     </mat-grid-tile>
-  </mat-grid-list>
-  
+</mat-grid-list>

@@ -9,6 +9,7 @@ import { LessonEditComponent } from './lesson-edit/lesson-edit.component';
 import { SubjectEditComponent } from './subject-edit/subject-edit.component';
 import { PersonEditComponent } from './person-edit/person-edit.component';
 import { SpecialityEditComponent } from './speciality-edit/speciality-edit.component';
+import { PdfCreatorComponent } from './pdf-creator/pdf-creator.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -21,7 +22,7 @@ const routes: Routes = [
   { path: 'edit/person', component: PersonEditComponent},
   { path: 'edit/subject', component: SubjectEditComponent},
   { path: 'edit/lesson', component: LessonEditComponent},
-
+  { path: 'report/pdf', component: PdfCreatorComponent},
 
   
 
@@ -35,6 +36,6 @@ const routes: Routes = [
 export class AppRoutingModule { }
 
 export const routingComponents = [LoginComponent, ScheduleComponent, AttendancePageComponent, MenuPageComponent,
-  SpecialityEditComponent, GroupEditComponent, PersonEditComponent, SubjectEditComponent, LessonEditComponent];
+  SpecialityEditComponent, GroupEditComponent, PersonEditComponent, SubjectEditComponent, LessonEditComponent, PdfCreatorComponent];
 
 

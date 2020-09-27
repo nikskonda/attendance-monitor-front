@@ -1,4 +1,4 @@
-<p>{{professor.getFulName}}</p>
+<p *ngIf="professor">{{professor.fullName}}</p>
 <mat-grid-list [cols]="cols" rowHeight="100px">
   <mat-grid-tile
       *ngFor="let cell of cells"

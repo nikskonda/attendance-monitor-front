@@ -1,0 +1,29 @@
+<mat-form-field appearance="fill">
+    <mat-label>Enter a date range</mat-label>
+    <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+      <input matStartDate formControlName="start" placeholder="Start date">
+      <input matEndDate formControlName="end" placeholder="End date">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field>
+
+
+<mat-form-field appearance="fill">
+    <mat-select [(ngModel)]="selectedValue" (selectionChange)="onGroupSelect(selectedValue)">
+      <mat-option *ngFor="let group of groups" [value]="group.id">
+        {{group.qualifier}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  
+  <div *ngFor="let stud of studs">
+      <p (click)="onSelect(stud)">{{stud.fullName}}</p>
+  </div>
+
+
+
+
+
+<button (click)="generatePdf()">Open PDF</button>
+

@@ -21,6 +21,10 @@ export class AttendancePageComponent implements OnInit {
   subjectId: number;
   subjectTypes: string[] = [];
 
+  selectedValue: string = '';
+
+  listToSave: AttCell[] = [];
+
 
   constructor(
     private router: Router,
@@ -45,8 +49,24 @@ export class AttendancePageComponent implements OnInit {
       this.cols = data.cols;
       this.group = data.group;
       this.subject = data.subject;
-      console.log(data);
     });
+  }
+
+  setValue(value: number, cell: AttCell){
+    cell.text = value.toString();
+    let found = this.listToSave.find(c => c.lesson.id === cell.lesson.id && c.person.id === cell.person.id);
+    if (found){
+      found = cell;
+    } else {
+      this.listToSave.push(cell);
+    }
+    this.save(false);
+  }
+
+  save(isSaveButton:boolean){
+    if (isSaveButton || this.listToSave.length > 10) {
+        this.attService.save(this.listToSave).subscribe(data => this.listToSave = []);
+    }
   }
 
 }

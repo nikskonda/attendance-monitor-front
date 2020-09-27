@@ -10,19 +10,12 @@ export interface ObjectRef {
   qualifier: string;
 }
 
-export interface Subject {
-  id: number;
-  qualifier: string;
-  type: string
-}
-
 export interface Lesson {
   id: number;
-  date: Date;
-  subject: Subject;
+  date: string;
+  subject: ObjectRef;
   subjectType: string;
-  startTime: Date;
-  finishTime: Date;
+  time: LessonTime;
   professor: ObjectRef;
   group: ObjectRef;
 }
@@ -44,6 +37,14 @@ export interface Schedule {
   cells: Cell[];
 }
 
+export interface LessonTime {
+  id: number;
+  order: number;
+  startTime: string;
+  finishTime: string;
+  shift: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -58,4 +59,38 @@ export class LessonService {
     return this.httpClient.get<Schedule>('http://localhost:8888/lesson/findGridByDateRange', {params});
   }
 
+  getLessonsForDate(date): Observable<Lesson[]> {
+    const params = new HttpParams()
+      .set('startDate', date)
+      .set('finalDate', date);
+    return this.httpClient.get<Lesson[]>('http://localhost:8888/lesson/findByDateRange', {params});
+  }
+
+  getLessonTimes(): Observable<LessonTime[]> {
+       return this.httpClient.get<LessonTime[]>('http://localhost:8888/lesson/schedule');
+  }
+
+  create(lesson: Lesson): Observable<Lesson> {
+    // const params = new HttpParams()
+    //   .set('startDate', startDate)
+    //   .set('finalDate', finalDate)
+    //   .set('personId', personId);
+    return this.httpClient.post<Lesson>('http://localhost:8888/lesson', lesson);
+  }
+
+  update(id:number, lesson: Lesson): Observable<Lesson> {
+    // const params = new HttpParams()
+    //   .set('startDate', startDate)
+    //   .set('finalDate', finalDate)
+    //   .set('personId', personId);
+    return this.httpClient.put<Lesson>('http://localhost:8888/lesson/'+id, lesson);
+  }
+
+  remove(id:number): Observable<{}> {
+    // const params = new HttpParams()
+    //   .set('startDate', startDate)
+    //   .set('finalDate', finalDate)
+    //   .set('personId', personId);
+    return this.httpClient.delete('http://localhost:8888/lesson/'+id);
+  }
 }
