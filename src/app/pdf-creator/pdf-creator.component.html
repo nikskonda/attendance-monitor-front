@@ -22,8 +22,8 @@
   </div>
 
 
-
-
-
-<button (click)="generatePdf()">Open PDF</button>
-
+<div *ngIf="isPdfReady">
+  <button (click)="open()">Open PDF</button>
+  <button (click)="download()">download PDF</button>
+  <button (click)="print()">print PDF</button>
+</div>

@@ -8,11 +8,11 @@ import { Person, PersonService } from '../service/user.service';
 })
 export class MenuPageComponent implements OnInit {
 
-  private showProfList:boolean = false;
-  private showCreateMenu:boolean = false;
+  showProfList:boolean = false;
+  showCreateMenu:boolean = false;
 
 
-  private profList:Person[] = [];
+  profList:Person[] = [];
 
   constructor(private personService: PersonService ) { }
 

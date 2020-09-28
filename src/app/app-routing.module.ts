@@ -24,8 +24,6 @@ const routes: Routes = [
   { path: 'edit/lesson', component: LessonEditComponent},
   { path: 'report/pdf', component: PdfCreatorComponent},
 
-  
-
 
 ]
 
@@ -35,7 +33,18 @@ const routes: Routes = [
 })
 export class AppRoutingModule { }
 
-export const routingComponents = [LoginComponent, ScheduleComponent, AttendancePageComponent, MenuPageComponent,
-  SpecialityEditComponent, GroupEditComponent, PersonEditComponent, SubjectEditComponent, LessonEditComponent, PdfCreatorComponent];
+export const routingComponents = [
+        LoginComponent,
+        ScheduleComponent,
+        AttendancePageComponent,
+        MenuPageComponent,
+        SpecialityEditComponent,
+        GroupEditComponent, 
+        PersonEditComponent, 
+        SubjectEditComponent, 
+        LessonEditComponent, 
+        PdfCreatorComponent,
+
+      ];
 
 

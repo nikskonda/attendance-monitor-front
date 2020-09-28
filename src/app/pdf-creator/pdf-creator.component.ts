@@ -4,6 +4,7 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { GroupService } from '../service/group.service';
 import { ObjectRef } from '../service/lesson.service';
+import { ReportService } from '../service/report.service';
 import { Person, PersonService } from '../service/user.service';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -16,6 +17,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 export class PdfCreatorComponent implements OnInit {
 
   selected: Person;
+  selectedValue: number;
   groups: ObjectRef[] = [];
   studs: Person[] = [];
 
@@ -24,10 +26,15 @@ export class PdfCreatorComponent implements OnInit {
     end: new FormControl()
   });
 
+  table: string[][] = [];
+
+  isPdfReady: boolean = false;
+
 
   constructor(
     private personService: PersonService,
-    private groupService: GroupService ) { }
+    private groupService: GroupService,
+    private reportService: ReportService) { }
     
   ngOnInit() {
     this.groupService.getAll().subscribe(data => {
@@ -43,45 +50,69 @@ export class PdfCreatorComponent implements OnInit {
   onSelect(selected: Person){
     console.log(this.range.value);
     this.selected = selected;
+    const start:Date = this.range.value.start
+    start.setMinutes(-start.getTimezoneOffset());
+    const end:Date = this.range.value.end
+    end.setMinutes(-end.getTimezoneOffset());
+    this.reportService.findDataByStudentForDateRange(selected.id, start.toISOString().substring(0, 10), end.toISOString().substring(0, 10)).subscribe(data => {
+      console.log(data);
+      this.table = [];
+      this.table.push(['Предмет','Пропущено часов']);
+      data.forEach(e => this.table.push([e.subject.qualifier, e.attendanceHours.toString()]));
+    });
+    this.isPdfReady = true;
   }
 
-  generatePdf(){
-    const documentDefinition = {
+  getDate(date: Date) {
+    date.setMinutes(-date.getTimezoneOffset());
+    return date.toISOString().substring(0, 10);
+  }
+
+  open(){
+    pdfMake.createPdf(this.getDocDefinition()).open();
+  }
+
+  download(){
+    pdfMake.createPdf(this.getDocDefinition()).download();
+  }
+
+  print() {
+    pdfMake.createPdf(this.getDocDefinition()).print();
+  }
+
+
+
+   getDocDefinition() {
+     return {
       content: [
         {
           text: 'Белорусский национальный технический университет',
-          bold: true,
-          fontSize: 20,
           alignment: 'right',
         },
         {
           text: 'Факультет информационных технологий и робототехники',
-          bold: true,
-          fontSize: 20,
           alignment: 'right',
         },
         {
           text: 'Кафедра программирования и программирования',
-          bold: true,
-          fontSize: 20,
           alignment: 'right',
         },
         {
-          text: 'Отчёт о посещаемости студента' + this.selected.fullName + 'за период занятий с ' + ' по '+ '.',
-          fontSize: 20,
-          alignment: 'left',
+          text: 'Отчёт о посещаемости студента ' + this.selected.fullName + ' за период занятий с ' + this.getDate(this.range.value.start) +' по '+ this.getDate(this.range.value.end)  +  '.',
+          marginTop: 100,
+          marginBottom: 50,
         },
         {
           table: {
-            body: this.getBody()
+            body: this.table
           }
         }
       ],
       info: {
-        title: 'this.resume.name' + '_RESUME',
-        author: 'this.resume.name',
-        subject: 'RESUME',
-        keywords: 'RESUME, ONLINE RESUME',
+        title:  'Отчёт по студенту ' + this.selected.fullName,
+        author: '4eburek',
+        subject: '4eburek',
+        keywords: '4eburek, lol, kek',
       },
         styles: {
           header: {
@@ -109,11 +140,5 @@ export class PdfCreatorComponent implements OnInit {
           }
         }
     };
-    pdfMake.createPdf(documentDefinition).open();
    }
-
-   getBody(){
-
-   }
-
 }

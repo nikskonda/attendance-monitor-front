@@ -17,7 +17,6 @@ import { GridCellComponent } from './grid-cell/grid-cell.component';
 import { GridHeaderComponent } from './grid-header/grid-header.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatMenuModule} from '@angular/material/menu';
-import { PdfCreatorComponent } from './pdf-creator/pdf-creator.component';
 import { MatNativeDateModule } from '@angular/material/core';
 
 
@@ -27,7 +26,6 @@ import { MatNativeDateModule } from '@angular/material/core';
       routingComponents,
       GridCellComponent,
       GridHeaderComponent,
-      PdfCreatorComponent,
    ],
    imports: [
       BrowserModule,
