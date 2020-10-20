@@ -1,0 +1,9 @@
+.cell {
+  margin: 10px;
+  text-align: center;
+}
+
+p {
+  margin-block-start: 2px;
+  margin-block-end: 3px;
+}

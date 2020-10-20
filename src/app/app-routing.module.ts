@@ -1,50 +1,78 @@
-import { ScheduleComponent } from './schedule/schedule.component';
-import { NgModule, OnInit, Component } from '@angular/core';
-import { Routes, RouterModule, Router } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { AttendancePageComponent } from './attendance-page/attendance-page.component';
-import { MenuPageComponent } from './menu-page/menu-page.component';
-import { GroupEditComponent } from './group-edit/group-edit.component';
-import { LessonEditComponent } from './lesson-edit/lesson-edit.component';
-import { SubjectEditComponent } from './subject-edit/subject-edit.component';
-import { PersonEditComponent } from './person-edit/person-edit.component';
-import { SpecialityEditComponent } from './speciality-edit/speciality-edit.component';
-import { PdfCreatorComponent } from './pdf-creator/pdf-creator.component';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+import { ScheduleComponent } from "./schedule/schedule.component";
+import { LoginComponent } from "./loginUser/login/login.component";
+import { AttendancePageComponent } from "./attendance-page/attendance-page.component";
+import { MenuPageComponent } from "./menu-page/menu-page.component";
+import { GroupEditComponent } from "./editor/group-edit/group-edit.component";
+import { LessonEditComponent } from "./editor/lesson-edit/lesson-edit.component";
+import { SubjectEditComponent } from "./editor/subject-edit/subject-edit.component";
+import { SpecialityEditComponent } from "./editor/speciality-edit/speciality-edit.component";
+import { ProfEditComponent } from "./editor/prof-edit/prof-edit.component";
+import { ChangePasswordComponent } from "./loginUser/change-password/change-password.component";
+import { EditorPageComponent } from "./editor/editor-page/editor-page.component";
+import { StudentReportComponent } from "./report/student-report/student-report.component";
+import { StudentDetailComponent } from "./report/student-detail/student-detail.component";
+import { GroupReportComponent } from "./report/group-report/group-report.component";
+import { ReportPageComponent } from "./report/report-page/report-page.component";
+import { StudEditComponent } from "./editor/stud-edit/stud-edit.component";
+import { AccountEditComponent } from "./editor/account-edit/account-edit.component";
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent},
-  { path: 'schedule', component: ScheduleComponent},
-  { path: 'attendance', component: AttendancePageComponent},
-  { path: 'menu', component: MenuPageComponent},
-  { path: 'edit/speciality', component: SpecialityEditComponent},
-  { path: 'edit/group', component: GroupEditComponent},
-  { path: 'edit/person', component: PersonEditComponent},
-  { path: 'edit/subject', component: SubjectEditComponent},
-  { path: 'edit/lesson', component: LessonEditComponent},
-  { path: 'report/pdf', component: PdfCreatorComponent},
+  { path: "", redirectTo: "login", pathMatch: "full" },
+  { path: "login", component: LoginComponent },
+  { path: "changePassword", component: ChangePasswordComponent },
 
+  { path: "schedule", component: ScheduleComponent },
+  { path: "attendance", component: AttendancePageComponent },
+  { path: "menu", component: MenuPageComponent },
+  {
+    path: "edit",
+    component: EditorPageComponent,
+    children: [
+      { path: "speciality", component: SpecialityEditComponent },
+      { path: "group", component: GroupEditComponent },
+      { path: "student", component: StudEditComponent },
+      { path: "professor", component: ProfEditComponent },
+      { path: "subject", component: SubjectEditComponent },
+      { path: "lesson", component: LessonEditComponent },
+      { path: "account", component: AccountEditComponent },
+    ],
+  },
 
-]
+  {
+    path: "report",
+    component: ReportPageComponent,
+    children: [
+      { path: "student", component: StudentReportComponent },
+      { path: "group", component: GroupReportComponent },
+      { path: "studentDetails", component: StudentDetailComponent },
+    ],
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
 
 export const routingComponents = [
-        LoginComponent,
-        ScheduleComponent,
-        AttendancePageComponent,
-        MenuPageComponent,
-        SpecialityEditComponent,
-        GroupEditComponent, 
-        PersonEditComponent, 
-        SubjectEditComponent, 
-        LessonEditComponent, 
-        PdfCreatorComponent,
-
-      ];
-
-
+  ScheduleComponent,
+  LoginComponent,
+  AttendancePageComponent,
+  MenuPageComponent,
+  GroupEditComponent,
+  LessonEditComponent,
+  SubjectEditComponent,
+  StudEditComponent,
+  SpecialityEditComponent,
+  ProfEditComponent,
+  ChangePasswordComponent,
+  EditorPageComponent,
+  StudentReportComponent,
+  StudentDetailComponent,
+  GroupReportComponent,
+  ReportPageComponent,
+  AccountEditComponent,
+];

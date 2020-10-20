@@ -1,17 +1,86 @@
-<p *ngIf="subject">{{subject.qualifier}}</p>
-<p *ngIf="group">{{group.qualifier}}</p>
-<button (click) = "save(true)">Save</button>
-<mat-grid-list [cols]="cols" rowHeight="100px">
-    <mat-grid-tile
-        *ngFor="let cell of att"
-        [colspan]="1"
-        [rowspan]="1">
-        <p *ngIf="cell.header">{{cell.text}}</p>
-        <button *ngIf="!cell.header" style="width: 100%; height: 100%; background-color: white;" mat-button [matMenuTriggerFor]="menu">{{cell.text}}</button>
+<div class="attContainer">
+  <div class="subject">
+    <h2>{{ subject?.qualifier + " (" + group?.qualifier + ")" }}</h2>
+  </div>
+  <div class="props">
+    <div>
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="save(true)"
+        [disabled]="listToSave.length === 0"
+      >
+        Сохранить
+      </button>
+    </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Временной период</mat-label>
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+          <input matStartDate formControlName="start" placeholder="Начало" />
+          <input
+            matEndDate
+            formControlName="end"
+            placeholder="Конец"
+            (dateChange)="loadTable()"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+    <div>
+      <section class="example-section">
+        <span class="example-list-section">
+          <mat-checkbox
+            class="example-margin"
+            [checked]="allSubjectTypes"
+            [indeterminate]="someComplete()"
+            (change)="setAll($event.checked)"
+          >
+            {{ subjectTypes.name }}
+          </mat-checkbox>
+        </span>
+        <span class="example-list-section">
+          <ul>
+            <li *ngFor="let subtask of subjectTypes.subtasks">
+              <mat-checkbox
+                [(ngModel)]="subtask.completed"
+                (ngModelChange)="updateAllComplete()"
+              >
+                {{ subtask.name }}
+              </mat-checkbox>
+            </li>
+          </ul>
+        </span>
+      </section>
+    </div>
+  </div>
+  <div>
+    <mat-grid-list [cols]="cols + 2" rowHeight="50px">
+      <mat-grid-tile
+        style="border: 1px solid black"
+        *ngFor="let cell of att; index as i"
+        [colspan]="i % cols === 0 ? 3 : 1"
+        [rowspan]="1"
+        (contextmenu)="!isHeader(cell, i) ? onRightClick(cell) : true"
+      >
+        <p *ngIf="isHeader(cell, i)">{{ getHeaderText(cell.text, i) }}</p>
+        <button
+          *ngIf="!isHeader(cell, i)"
+          style="width: 100%; height: 100%; border: none"
+          [ngStyle]="{ 'background-color': getCellBackground(cell) }"
+          mat-button
+          [matMenuTriggerFor]="menu"
+        >
+          {{ cell.text }}
+        </button>
         <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="setValue(0, cell)"></button>
-            <button mat-menu-item (click)="setValue(1, cell)">1</button>
-            <button mat-menu-item (click)="setValue(2, cell)">2</button>
+          <button mat-menu-item (click)="setValue(0, cell)"></button>
+          <button mat-menu-item (click)="setValue(1, cell)">1</button>
+          <button mat-menu-item (click)="setValue(2, cell)">2</button>
         </mat-menu>
-    </mat-grid-tile>
-</mat-grid-list>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>

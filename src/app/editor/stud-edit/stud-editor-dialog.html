@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>{{isUpdate ? "Редактировать" : "Добавить"}} студента</h2>
+<mat-dialog-content>
+  <form class="example-form" [formGroup]="fgc">
+    <mat-form-field class="example-full-width">
+      <input
+        matInput
+        required
+        placeholder="Фамилия"
+        formControlName="lastName"
+      />
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="Имя" formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="Отчество" formControlName="patronymic" />
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="E-mail" formControlName="email" required />
+      <mat-error *ngIf="fgc.controls.email.hasError('email')">
+        Введите валидный e-mail.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Группа</mat-label>
+      <mat-select formControlName="group" required>
+        <mat-option *ngFor="let gr of data.groups" [value]="gr.id">
+          {{gr.qualifier}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close(false)">Отмена</button>
+  <button
+    mat-button
+    (click)="isUpdate ? update() : create()"
+    cdkFocusInitial
+    [disabled]="!fgc.valid"
+  >
+    Сохранить
+  </button>
+</mat-dialog-actions>

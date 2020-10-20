@@ -1,14 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-import { Time } from '@angular/common';
-import { Observable } from 'rxjs';
-import { Person } from './user.service';
-
-export interface ObjectRef {
-  id: number;
-  qualifier: string;
-}
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { Person } from "./user.service";
+import { ObjectRef, Page, ROOT_URL } from "./common.service";
 
 export interface Lesson {
   id: number;
@@ -46,28 +40,45 @@ export interface LessonTime {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class LessonService {
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   getLessons(startDate, finalDate, personId): Observable<Schedule> {
-    const params = new HttpParams()
-      .set('startDate', startDate)
-      .set('finalDate', finalDate)
-      .set('personId', personId);
-    return this.httpClient.get<Schedule>('http://localhost:8888/lesson/findGridByDateRange', {params});
+    let params = new HttpParams()
+      .set("startDate", startDate)
+      .set("finalDate", finalDate);
+    if (personId) {
+      params = new HttpParams()
+        .set("startDate", startDate)
+        .set("finalDate", finalDate)
+        .set("personId", personId);
+    }
+    return this.httpClient.get<Schedule>(
+      ROOT_URL + "/lesson/findGridByDateRange",
+      { params }
+    );
   }
 
-  getLessonsForDate(date): Observable<Lesson[]> {
+  getLessonsPageForDate(
+    date,
+    number: number,
+    size: number
+  ): Observable<Page<Lesson>> {
     const params = new HttpParams()
-      .set('startDate', date)
-      .set('finalDate', date);
-    return this.httpClient.get<Lesson[]>('http://localhost:8888/lesson/findByDateRange', {params});
+      .set("startDate", date)
+      .set("finalDate", date)
+      .set("page", number.toString())
+      .set("size", size.toString());
+    return this.httpClient.get<Page<Lesson>>(
+      ROOT_URL + "/lesson/findPageByDateRange",
+      { params }
+    );
   }
 
   getLessonTimes(): Observable<LessonTime[]> {
-       return this.httpClient.get<LessonTime[]>('http://localhost:8888/lesson/schedule');
+    return this.httpClient.get<LessonTime[]>(ROOT_URL + "/lesson/schedule");
   }
 
   create(lesson: Lesson): Observable<Lesson> {
@@ -75,22 +86,35 @@ export class LessonService {
     //   .set('startDate', startDate)
     //   .set('finalDate', finalDate)
     //   .set('personId', personId);
-    return this.httpClient.post<Lesson>('http://localhost:8888/lesson', lesson);
+    return this.httpClient.post<Lesson>(ROOT_URL + "/lesson", lesson);
   }
 
-  update(id:number, lesson: Lesson): Observable<Lesson> {
+  createSeries(
+    lesson: Lesson,
+    inWeek: number,
+    count: number
+  ): Observable<Lesson> {
+    const params = new HttpParams()
+      .set("inWeek", inWeek.toString())
+      .set("count", count.toString());
+    return this.httpClient.post<Lesson>(ROOT_URL + "/lesson/series", lesson, {
+      params,
+    });
+  }
+
+  update(id: number, lesson: Lesson): Observable<Lesson> {
     // const params = new HttpParams()
     //   .set('startDate', startDate)
     //   .set('finalDate', finalDate)
     //   .set('personId', personId);
-    return this.httpClient.put<Lesson>('http://localhost:8888/lesson/'+id, lesson);
+    return this.httpClient.put<Lesson>(ROOT_URL + "/lesson/" + id, lesson);
   }
 
-  remove(id:number): Observable<{}> {
+  remove(id: number): Observable<{}> {
     // const params = new HttpParams()
     //   .set('startDate', startDate)
     //   .set('finalDate', finalDate)
     //   .set('personId', personId);
-    return this.httpClient.delete('http://localhost:8888/lesson/'+id);
+    return this.httpClient.delete(ROOT_URL + "/lesson/" + id);
   }
 }

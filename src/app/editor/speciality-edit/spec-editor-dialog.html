@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>
+  {{isUpdate ? "Редактировать" : "Добавить"}} специальность
+</h2>
+<mat-dialog-content>
+  <form class="example-form">
+    <mat-form-field class="example-full-width" appearance="fill">
+      <input
+        matInput
+        #input
+        maxlength="8"
+        placeholder="Name"
+        [formControl]="nameFormControl"
+      />
+      <mat-hint align="end">{{ input.value?.length || 0 }}/8</mat-hint>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close(false)">Отмена</button>
+  <button
+    mat-button
+    (click)="isUpdate ? update() : create()"
+    cdkFocusInitial
+    [disabled]="!nameFormControl.valid"
+  >
+    Сохранить
+  </button>
+</mat-dialog-actions>

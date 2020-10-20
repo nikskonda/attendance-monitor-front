@@ -1,0 +1,11 @@
+<nav mat-tab-nav-bar mat-align-tabs="center">
+  <a
+    mat-tab-link
+    *ngFor="let link of links"
+    (click)="goTo(link)"
+    [active]="activeLink == link"
+  >
+    {{ link.text }}
+  </a>
+</nav>
+<router-outlet></router-outlet>

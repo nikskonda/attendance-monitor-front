@@ -1,0 +1,45 @@
+<div *ngIf="show" style="display: flex; justify-content: flex-end">
+  <mat-accordion>
+    <mat-expansion-panel #mep>
+      <mat-expansion-panel-header>
+        <mat-panel-title> Добрый день, {{ fullName }}! </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-list>
+        <mat-divider *ngIf="!isAdmin()"></mat-divider>
+        <mat-list-item
+          *ngIf="!isAdmin()"
+          class="nav-link"
+          routerLink="/schedule"
+          (click)="mep.expanded = false"
+        >
+          Расписание
+        </mat-list-item>
+        <mat-divider *ngIf="isAdmin()"></mat-divider>
+        <mat-list-item
+          class="nav-link"
+          *ngIf="isAdmin()"
+          routerLink="/menu"
+          (click)="mep.expanded = false"
+        >
+          Меню
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item
+          class="nav-link"
+          routerLink="/changePassword"
+          (click)="mep.expanded = false"
+        >
+          Поменять пароль
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item
+          class="nav-link"
+          (click)="logout()"
+          (click)="mep.expanded = false"
+        >
+          Выйти
+        </mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

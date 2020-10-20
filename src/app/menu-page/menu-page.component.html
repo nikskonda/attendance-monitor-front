@@ -1,15 +1,41 @@
-<ul class="nav navbar-nav" routerLinkActive="active">
-    <li class="nav-item" ><button (click)="displayProfs()">Profs</button></li>
-    <div *ngIf="showProfList" >
-        <p *ngFor="let prof of profList"><a class="nav-link" routerLink="../schedule" [queryParams]="{ personId: prof.id}" >{{prof.fullName}}</a></p>
-    </div>
-    <li class="nav-item"><a (click)="displayCreateMenu()">Create</a></li>
-    <ul *ngIf="showCreateMenu" class="nav navbar-nav" routerLinkActive="active">
-        <li class="nav-item"><a class="nav-link" routerLink="../edit/speciality">Специальность</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="../edit/group">Группу</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="../edit/person">Студентов</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="../edit/subject">Предмет</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="../edit/lesson">Пары</a></li>
-    </ul>
-    <li class="nav-item"><a class="nav-link" routerLink="../report/pdf">Reports</a></li>
-</ul>
+<mat-list>
+  <mat-list-item (click)="displayProfs()">
+    <div class="item">Профессора</div>
+  </mat-list-item>
+  <mat-list *ngIf="showProfList">
+    <mat-divider></mat-divider>
+    <mat-list-item
+      *ngFor="let prof of profList"
+      class="nav-link"
+      routerLink="../schedule"
+      [queryParams]="{ personId: prof.id }"
+      ><div class="item">{{ prof.fullName }}</div>
+    </mat-list-item>
+  </mat-list>
+  <mat-divider></mat-divider>
+  <mat-list-item (click)="showEditors = !showEditors"
+    ><div class="item">Создание</div></mat-list-item
+  >
+  <mat-list *ngIf="showEditors">
+    <mat-divider></mat-divider>
+    <mat-list-item
+      *ngFor="let link of editorLinks"
+      class="nav-link"
+      routerLink="{{ link.path }}"
+      ><div class="item">{{ link.text }}</div>
+    </mat-list-item>
+  </mat-list>
+  <mat-divider></mat-divider>
+  <mat-list-item (click)="showReports = !showReports"
+    ><div class="item">Репорты</div></mat-list-item
+  >
+  <mat-list *ngIf="showReports">
+    <mat-divider></mat-divider>
+    <mat-list-item
+      *ngFor="let link of reportLinks"
+      class="nav-link"
+      routerLink="{{ link.path }}"
+      ><div class="item">{{ link.text }}</div>
+    </mat-list-item>
+  </mat-list>
+</mat-list>

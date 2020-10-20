@@ -1,53 +1,89 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { PersonService, Role, User } from "./user.service";
+import { Observable } from "rxjs";
+import { tokenName } from "@angular/compiler";
 
-export class User{
-  constructor(
-    public status: string,
-     ) {}
+import jwt_decode from "jwt-decode";
+
+export interface UserWithToken extends User {
+  token: string;
 }
-export class JwtResponse{
-  constructor(
-    public jwttoken: string,
-     ) {}
-}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class AuthenticationService {
-  constructor(private httpClient: HttpClient) { }
+  constructor(private personService: PersonService) {}
 
   authenticate(username, password) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + btoa('attendance-monitor-client:attendance-monitor-secret')
-      })};
-    const body = new HttpParams()
-      .set('username', username)
-      .set('password', password)
-      .set('grant_type', 'password');
-
-    return this.httpClient
-      .post<any>('http://localhost:8888/oauth/token', body, httpOptions)
-      .pipe(map(userData => {
-              sessionStorage.setItem('username', username);
-              let tokenStr = 'Bearer ' + userData.access_token;
-              sessionStorage.setItem('token', tokenStr);
-              console.log(userData);
-              return userData;
-            }));
+    let token = "";
+    return new Observable((obs) => {
+      this.personService.login(username, password).subscribe(
+        (userData) => {
+          token = userData.access_token;
+          let tokenStr = "Bearer " + userData.access_token;
+          localStorage.setItem("token", tokenStr);
+        },
+        (error) => obs.error(error),
+        () => {
+          this.personService.findByEmail(username).subscribe(
+            (data) => {
+              const qwer: UserWithToken = {
+                fullName: data.fullName,
+                email: data.email,
+                qualifier: data.qualifier,
+                username: data.username,
+                mustUpdatePassword: data.mustUpdatePassword,
+                roles: data.roles,
+                token: token,
+              };
+              localStorage.setItem("userdata", JSON.stringify(qwer));
+            },
+            (error) => obs.error(error),
+            () => obs.complete()
+          );
+        }
+      );
+    });
   }
 
-  isUserLoggedIn() {
-    let user = sessionStorage.getItem('username');
-    //console.log(!(user === null))
-    return !(user === null);
+  getUserData(): UserWithToken {
+    if (this.isUserLoggedIn()) {
+      const user: UserWithToken = JSON.parse(localStorage.getItem("userdata"));
+      return user;
+    }
+  }
+
+  isHasRole(role: Role): boolean {
+    let result = false;
+    const user: UserWithToken = this.getUserData();
+    if (user.token) {
+      let roles = jwt_decode(user.token).authorities;
+      roles.forEach((r) => {
+        if (r == role) result = true;
+      });
+    }
+    return result;
+  }
+
+  isMustUpdatePassword(): boolean {
+    if (this.isUserLoggedIn()) {
+      const user: User = JSON.parse(localStorage.getItem("userdata"));
+      return user.mustUpdatePassword;
+    }
+    return false;
+  }
+
+  isUserLoggedIn(): boolean {
+    let user = localStorage.getItem("userdata");
+    let token = localStorage.getItem("token");
+
+    return !(!user || !token);
   }
 
   logOut() {
-    sessionStorage.removeItem('username');
+    localStorage.removeItem("userdata");
+    localStorage.removeItem("token");
   }
-
 }

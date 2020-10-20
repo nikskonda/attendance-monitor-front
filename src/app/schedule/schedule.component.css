@@ -1,0 +1,13 @@
+.schedContainer {
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.person {
+  align-self: center;
+}
+
+.dateRange {
+  align-self: center;
+}

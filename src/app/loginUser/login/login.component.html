@@ -1,0 +1,39 @@
+<div class="container">
+  <h1>Добро пожаловать!</h1>
+  <form class="example-form" [formGroup]="fgc">
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="Email" formControlName="email" required />
+      <mat-error *ngIf="fgc.controls.email.hasError('email')">
+        Введите валидный e-mail.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input
+        matInput
+        placeholder="Пароль"
+        type="password"
+        formControlName="password"
+        required
+      />
+      <mat-error *ngIf="fgc.controls.password.hasError('minlength')">
+        Минимальная длинна пароля 8 символов.
+      </mat-error>
+    </mat-form-field>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="checkLogin()"
+      [disabled]="!fgc.valid"
+    >
+      Войти
+    </button>
+
+    <button mat-raised-button color="warn" (click)="generateData()">
+      Base {{ status }}
+    </button>
+
+    <button mat-raised-button color="accent" (click)="generateData(true)">
+      Random data {{ status }}
+    </button>
+  </form>
+</div>

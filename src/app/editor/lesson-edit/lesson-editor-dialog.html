@@ -1,0 +1,91 @@
+<h2 mat-dialog-title>Создать</h2>
+<mat-dialog-content>
+  <form class="example-form" [formGroup]="fgc">
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Дата</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="date" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Время</mat-label>
+      <mat-select formControlName="time" required>
+        <mat-option *ngFor="let time of data.times" [value]="time.id">
+          {{ time.shift + " " + time.startTime + " - " + time.finishTime }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Предмет</mat-label>
+      <mat-select formControlName="subject">
+        <mat-option *ngFor="let subject of data.subjects" [value]="subject.id">
+          {{ subject.qualifier }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Формат занятия</mat-label>
+      <mat-select formControlName="subjectType">
+        <mat-option *ngFor="let type of data.subjectTypes" [value]="type">
+          {{ type }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Преподаватель</mat-label>
+      <mat-select formControlName="prof">
+        <mat-option *ngFor="let prof of data.profs" [value]="prof.id">
+          {{ prof.fullName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Группа</mat-label>
+      <mat-select formControlName="group">
+        <mat-option *ngFor="let gr of data.groups" [value]="gr.id">
+          {{ gr.qualifier }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Через Х недель</mat-label>
+      <input
+        matInput
+        min="1"
+        max="20"
+        type="number"
+        formControlName="inWeek"
+        placeholder="Занятие будет раз в Х недель"
+      />
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Count</mat-label>
+      <input
+        matInput
+        type="number"
+        min="1"
+        max="20"
+        formControlName="count"
+        placeholder="Количество занятий"
+      />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close(false)">Отмена</button>
+  <button
+    mat-button
+    (click)="isUpdate ? update() : create()"
+    [disabled]="!fgc.valid"
+    cdkFocusInitial
+  >
+    Сохранить
+  </button>
+</mat-dialog-actions>

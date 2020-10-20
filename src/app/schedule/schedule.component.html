@@ -1,11 +1,44 @@
-<p *ngIf="professor">{{professor.fullName}}</p>
-<mat-grid-list [cols]="cols" rowHeight="100px">
-  <mat-grid-tile
-      *ngFor="let cell of cells"
-      [colspan]="1"
-      [rowspan]="1"
-      [style.background]="cell.color">
-      <app-grid-header *ngIf="cell.header" [text]="cell.text"></app-grid-header>
-      <app-grid-cell *ngIf="!cell.empty && !cell.header" [lesson]="cell.lesson"></app-grid-cell>
-  </mat-grid-tile>
-</mat-grid-list>
+<div class="schedContainer">
+  <div class="person" *ngIf="isAdmin()">
+    <p>{{ professor?.fullName }}</p>
+  </div>
+  <div class="dateRange">
+    <mat-form-field appearance="fill">
+      <mat-label>Выберите период</mat-label>
+      <mat-date-range-input
+        [formGroup]="range"
+        [rangePicker]="picker"
+        (dateChange)="loadTable()"
+      >
+        <input matStartDate formControlName="start" placeholder="Начало" />
+        <input
+          matEndDate
+          formControlName="end"
+          placeholder="Конец"
+          (dateChange)="loadTable()"
+        />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-grid-list [cols]="cols * 2 - 1" rowHeight="100px">
+      <mat-grid-tile
+        *ngFor="let cell of cells; index as i"
+        [colspan]="i % cols === 0 ? 1 : 2"
+        [rowspan]="1"
+        [style.background]="cell.color"
+      >
+        <app-grid-header
+          *ngIf="cell.header"
+          [text]="i > 0 && i < cols ? (cell.text | date: 'd MMMM') : cell.text"
+        ></app-grid-header>
+        <app-grid-cell
+          *ngIf="!cell.empty && !cell.header"
+          [lesson]="cell.lesson"
+        ></app-grid-cell>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 1000px;
+  margin: auto;
+}
+
+.but {
+  align-self: flex-end;
+}
+
+.tab {
+  width: 100%;
+  align-self: center;
+}
+
+.pag {
+  align-self: flex-end;
+}
