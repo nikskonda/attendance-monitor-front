@@ -123,5 +123,8 @@
       }
     }
   },
-  "defaultProject": "attendance-monitoring"
+  "defaultProject": "attendance-monitoring",
+  "cli": {
+    "analytics": false
+  }
 }

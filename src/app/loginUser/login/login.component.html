@@ -19,6 +19,8 @@
         Минимальная длинна пароля 8 символов.
       </mat-error>
     </mat-form-field>
+    <div>
+      
     <button
       mat-raised-button
       color="primary"
@@ -28,12 +30,14 @@
       Войти
     </button>
 
-    <button mat-raised-button color="warn" (click)="generateData()">
+    <!-- <button mat-raised-button color="warn" (click)="generateData()">
       Base {{ status }}
-    </button>
+    </button> -->
 
-    <button mat-raised-button color="accent" (click)="generateData(true)">
-      Random data {{ status }}
+    <button mat-raised-button color="accent" (click)="generateData(true)" style="margin-left: 150px;">
+      Заполнить рандомными даными {{ status }}
     </button>
+        </div>
+
   </form>
 </div>

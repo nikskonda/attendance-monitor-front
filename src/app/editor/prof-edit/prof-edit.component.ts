@@ -155,7 +155,7 @@ export class ProfEditorDialog implements OnInit {
     if (data.isUpdate) {
       this.active = data.active;
       this.fgc.controls.name.setValue(data.active.firstName);
-      this.fgc.controls.last.setValue(data.active.lastName);
+      this.fgc.controls.lastName.setValue(data.active.lastName);
       this.fgc.controls.patronymic.setValue(data.active.patronymic);
       this.fgc.controls.email.setValue(data.active.email);
     }
@@ -168,7 +168,7 @@ export class ProfEditorDialog implements OnInit {
       id: null,
       email: this.fgc.value.email,
       firstName: this.fgc.value.name,
-      lastName: this.fgc.value.last,
+      lastName: this.fgc.value.lastName,
       patronymic: this.fgc.value.patronymic,
       fullName: null,
       roles: [Role.Professor],
@@ -181,7 +181,7 @@ export class ProfEditorDialog implements OnInit {
       id: null,
       email: this.fgc.value.email,
       firstName: this.fgc.value.name,
-      lastName: this.fgc.value.last,
+      lastName: this.fgc.value.lastName,
       patronymic: this.fgc.value.patronymic,
       fullName: null,
       roles: this.active.roles,

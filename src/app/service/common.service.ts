@@ -15,4 +15,5 @@ export interface Pageable {
   sort: any;
 }
 
-export const ROOT_URL = "http://localhost:8888";
+//export const ROOT_URL = "http://localhost:8888";
+export const ROOT_URL = 'https://628b7a1bb9ed.ngrok.io';

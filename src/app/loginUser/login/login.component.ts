@@ -31,6 +31,7 @@ export class LoginComponent implements OnInit {
   ) {}
 
   generateData(b?: boolean) {
+  this.status = "(Загрузка ...)"
     if (b) {
       this.genservice.generate().subscribe(
         () => {},
