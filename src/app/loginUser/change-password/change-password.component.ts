@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AuthenticationService } from "src/app/service/auth.service";
-import { PersonService, User } from "src/app/service/user.service";
+import { PersonService, User } from "src/app/service/account.service";
 
 @Component({
   selector: "app-change-password",
@@ -29,9 +29,13 @@ export class ChangePasswordComponent implements OnInit {
     private router: Router,
     private personService: PersonService,
     private authService: AuthenticationService
-  ) {}
+  ) {
+    console.log("constructor Working");
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log("kek");
+  }
 
   isMatchedNewPasswords() {
     const newPw = this.fgc.value.newPassword;

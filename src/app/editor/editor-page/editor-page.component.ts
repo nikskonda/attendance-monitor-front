@@ -11,8 +11,9 @@ export class EditorPageComponent implements OnInit {
     { path: "edit/speciality", text: "Специальность" },
     { path: "edit/group", text: "Группа" },
     { path: "edit/student", text: "Студент" },
-    { path: "edit/professor", text: "Профессор" },
-    { path: "edit/subject", text: "Предмет" },
+    { path: "edit/position", text: "Должность" },
+    { path: "edit/professor", text: "Преподаватель" },
+    { path: "edit/subject", text: "Дисциплина" },
     { path: "edit/lesson", text: "Занятия" },
     { path: "edit/account", text: "Пользователи" },
 

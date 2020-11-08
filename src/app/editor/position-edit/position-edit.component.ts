@@ -7,16 +7,16 @@ import {
 } from "@angular/material/dialog";
 import { PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
+import { PositionService } from "src/app/service/position.service";
 import { ObjectRef } from "src/app/service/common.service";
-import { SpecialityService } from "../../service/speciality.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
 
 @Component({
-  selector: "app-speciality-edit",
-  templateUrl: "./speciality-edit.component.html",
-  styleUrls: ["./speciality-edit.component.css"],
+  selector: "app-position-edit",
+  templateUrl: "./position-edit.component.html",
+  styleUrls: ["./position-edit.component.css"],
 })
-export class SpecialityEditComponent implements OnInit {
+export class PositionEditComponent implements OnInit {
   displayedColumns: string[] = ["position", "name", "edit", "remove"];
   dataSource;
   length = 0;
@@ -25,12 +25,9 @@ export class SpecialityEditComponent implements OnInit {
 
   public active: ObjectRef;
   public isUpdate: boolean = false;
-  public specList: ObjectRef[] = [];
+  public subjectList: ObjectRef[] = [];
 
-  constructor(
-    private specService: SpecialityService,
-    public dialog: MatDialog
-  ) {}
+  constructor(private posService: PositionService, public dialog: MatDialog) {}
 
   ngOnInit() {
     this.updateList();
@@ -45,27 +42,21 @@ export class SpecialityEditComponent implements OnInit {
         this.currentPage = event.pageIndex;
       }
     }
-    this.specService.getPage(this.currentPage, this.pageSize).subscribe(
+    this.posService.getPage(this.currentPage, this.pageSize).subscribe(
       (data) => {
-        this.specList = data.content;
+        this.subjectList = data.content;
         this.length = data.totalElements;
       },
       (error) => console.log(error),
       () => {
         let newList = [];
         let i = this.currentPage * this.pageSize + 1;
-        this.specList.forEach((s) => {
+        this.subjectList.forEach((s) => {
           newList.push({ position: i++, id: s.id, name: s.qualifier });
         });
         this.dataSource = new MatTableDataSource(newList);
       }
     );
-  }
-
-  onSelectExisting(id: number) {
-    this.active = this.specList.find((s) => s.id === id);
-    this.isUpdate = true;
-    this.update();
   }
 
   clear() {
@@ -74,7 +65,7 @@ export class SpecialityEditComponent implements OnInit {
   }
 
   create() {
-    const dialogRef = this.dialog.open(SpecEditorDialog, {
+    const dialogRef = this.dialog.open(PositionEditorDialog, {
       data: {
         isUpdate: false,
       },
@@ -87,8 +78,10 @@ export class SpecialityEditComponent implements OnInit {
     });
   }
 
-  update() {
-    const dialogRef = this.dialog.open(SpecEditorDialog, {
+  update(id: number) {
+    this.active = this.subjectList.find((s) => s.id === id);
+    this.isUpdate = true;
+    const dialogRef = this.dialog.open(PositionEditorDialog, {
       data: {
         isUpdate: true,
         active: this.active,
@@ -110,7 +103,7 @@ export class SpecialityEditComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.specService.delete(id).subscribe((data) => this.updateList());
+        this.posService.delete(id).subscribe((data) => this.updateList());
         this.clear();
       }
     });
@@ -118,20 +111,20 @@ export class SpecialityEditComponent implements OnInit {
 }
 
 @Component({
-  selector: "spec-editor-dialog",
-  templateUrl: "./spec-editor-dialog.html",
+  templateUrl: "./position-editor-dialog.html",
 })
-export class SpecEditorDialog {
+export class PositionEditorDialog {
   public isUpdate: boolean = false;
   active: ObjectRef;
+
   nameFormControl = new FormControl("", [
     Validators.required,
-    Validators.maxLength(10),
+    Validators.maxLength(100),
   ]);
 
   constructor(
-    private specialityService: SpecialityService,
-    public dialogRef: MatDialogRef<SpecEditorDialog>,
+    private adService: PositionService,
+    public dialogRef: MatDialogRef<PositionEditorDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     if (data.isUpdate) {
@@ -139,17 +132,16 @@ export class SpecEditorDialog {
       this.nameFormControl.setValue(data.active.qualifier);
     }
     this.isUpdate = data.isUpdate;
-    console.log(data);
   }
 
   create() {
-    this.specialityService
+    this.adService
       .create({ id: null, qualifier: this.nameFormControl.value })
       .subscribe((_) => this.close(true));
   }
 
   update() {
-    this.specialityService
+    this.adService
       .update(this.active.id, {
         id: null,
         qualifier: this.nameFormControl.value,

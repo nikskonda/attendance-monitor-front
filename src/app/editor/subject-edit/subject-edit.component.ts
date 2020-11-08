@@ -63,12 +63,6 @@ export class SubjectEditComponent implements OnInit {
     );
   }
 
-  onSelectExisting(id: number) {
-    this.active = this.subjectList.find((s) => s.id === id);
-    this.isUpdate = true;
-    this.update();
-  }
-
   clear() {
     this.active = null;
     this.isUpdate = false;
@@ -88,7 +82,9 @@ export class SubjectEditComponent implements OnInit {
     });
   }
 
-  update() {
+  update(id: number) {
+    this.active = this.subjectList.find((s) => s.id === id);
+    this.isUpdate = true;
     const dialogRef = this.dialog.open(SubjectEditorDialog, {
       data: {
         isUpdate: true,

@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
-import { PersonService, User } from "src/app/service/user.service";
+import { PersonService, User } from "src/app/service/account.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
 
 @Component({

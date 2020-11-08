@@ -7,16 +7,23 @@ import {
 } from "@angular/material/dialog";
 import { PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
-import { ObjectRef } from "src/app/service/common.service";
-import { GroupService } from "../../service/group.service";
 import {
+  getDate,
+  getDateFromStr,
+  ObjectRef,
+} from "src/app/service/common.service";
+import { GroupService, Volume } from "../../service/group.service";
+import {
+  DAYS_OF_WEEK,
   Lesson,
+  LessonSeries,
   LessonService,
   LessonTime,
 } from "../../service/lesson.service";
 import { SubjectService } from "../../service/subject.service";
-import { Person, PersonService } from "../../service/user.service";
+import { Person, PersonService } from "../../service/account.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
+import { ProfessorService } from "src/app/service/professor.service";
 
 @Component({
   selector: "app-lesson-edit",
@@ -47,13 +54,14 @@ export class LessonEditComponent implements OnInit {
   subjectTypes: string[] = [];
   profs: Person[] = [];
   groups: ObjectRef[] = [];
+  volumes: Volume[] = [];
 
   lessons: Lesson[] = [];
   selected: Lesson;
   isUpdate: boolean = false;
 
   constructor(
-    private personService: PersonService,
+    private profService: ProfessorService,
     private lessonService: LessonService,
     private subjectService: SubjectService,
     private groupService: GroupService,
@@ -64,12 +72,15 @@ export class LessonEditComponent implements OnInit {
     this.lessonService
       .getLessonTimes()
       .subscribe((data) => (this.times = data));
-    this.personService.getProfs().subscribe((data) => (this.profs = data));
+    this.profService.getProfs().subscribe((data) => (this.profs = data));
     this.groupService.getAll().subscribe((data) => (this.groups = data));
     this.subjectService.getAll().subscribe((data) => (this.subjects = data));
     this.subjectService
       .getTypes()
       .subscribe((data) => (this.subjectTypes = data));
+    this.groupService
+      .getGroupVolumes()
+      .subscribe((data) => (this.volumes = data));
     this.updateList();
   }
 
@@ -87,6 +98,8 @@ export class LessonEditComponent implements OnInit {
         subjectTypes: this.subjectTypes,
         profs: this.profs,
         groups: this.groups,
+        volumes: this.volumes,
+        days: DAYS_OF_WEEK,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -139,6 +152,7 @@ export class LessonEditComponent implements OnInit {
               time: `${s.time.startTime} - ${s.time.finishTime} (${s.time.shift})`,
               professor: s.professor.qualifier,
               group: s.group.qualifier,
+              volume: s.groupVolume,
             });
           });
           this.dataSource = new MatTableDataSource(newList);
@@ -146,22 +160,43 @@ export class LessonEditComponent implements OnInit {
       );
   }
 
-  onSelectExisting(id: number) {
-    this.selected = this.lessons.find((s) => s.id === id);
-    this.isUpdate = true;
-    this.update();
-  }
+  // update(id: number) {
+  //   this.selected = this.lessons.find((s) => s.id === id);
+  //   this.isUpdate = true;
+  //   const dialogRef = this.dialog.open(LessonEditorDialog, {
+  //     data: {
+  //       isUpdate: true,
+  //       active: this.selected,
+  //       times: this.times,
+  //       subjects: this.subjects,
+  //       subjectTypes: this.subjectTypes,
+  //       profs: this.profs,
+  //       groups: this.groups,
+  //       volumes: this.volumes,
+  //       days: DAYS_OF_WEEK,
+  //     },
+  //   });
+  //   dialogRef.afterClosed().subscribe((result) => {
+  //     if (result) {
+  //       this.updateList();
+  //       this.clear();
+  //     }
+  //   });
+  // }
 
-  update() {
+  delete(id: number) {
+    this.selected = this.lessons.find((s) => s.id === id);
     const dialogRef = this.dialog.open(LessonEditorDialog, {
       data: {
-        isUpdate: true,
+        isDelete: true,
         active: this.selected,
         times: this.times,
         subjects: this.subjects,
         subjectTypes: this.subjectTypes,
         profs: this.profs,
         groups: this.groups,
+        volumes: this.volumes,
+        days: DAYS_OF_WEEK,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -180,9 +215,7 @@ export class LessonEditComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.personService
-          .deletePerson(id)
-          .subscribe((data) => this.updateList());
+        this.profService.delete(id).subscribe((data) => this.updateList());
         this.clear();
       }
     });
@@ -191,21 +224,21 @@ export class LessonEditComponent implements OnInit {
 
 @Component({
   templateUrl: "./lesson-editor-dialog.html",
+  styleUrls: ["./lesson-edit.component.css"],
 })
 export class LessonEditorDialog implements OnInit {
-  public isUpdate: boolean = false;
-
-  active: Person;
+  active: Lesson;
+  days: number[] = [];
 
   fgc = new FormGroup({
-    date: new FormControl(new Date().toISOString(), Validators.required),
+    start: new FormControl(new Date().toISOString(), Validators.required),
+    finish: new FormControl(new Date().toISOString(), Validators.required),
     time: new FormControl({}, [Validators.required]),
     subject: new FormControl("", [Validators.required]),
     subjectType: new FormControl("", [Validators.required]),
     prof: new FormControl("", [Validators.required]),
     group: new FormControl("", [Validators.required]),
-    inWeek: new FormControl(1),
-    count: new FormControl(1),
+    volume: new FormControl(Volume.FULL, [Validators.required]),
   });
 
   constructor(
@@ -213,59 +246,89 @@ export class LessonEditorDialog implements OnInit {
     public dialogRef: MatDialogRef<LessonEditorDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    if (data.isUpdate) {
+    if (data.isDelete) {
       this.active = data.active;
-      this.fgc.value.date.setValue(data.avtive.date);
-      this.fgc.value.time.setValue(data.active.time.id);
-      this.fgc.value.subject.setValue(data.active.subject.id);
-      this.fgc.value.subjectType.setValue(data.active.subjectType);
-      this.fgc.value.prof.setValue(data.active.professor.id);
-      this.fgc.value.group.setValue(data.active.group.id);
-      this.fgc.value.inWeek.setValue(1);
-      this.fgc.value.count.setValue(1);
+      this.fgc.controls.time.setValue(data.active.time.id);
+      this.fgc.controls.subject.setValue(data.active.subject.id);
+      this.fgc.controls.subjectType.setValue(data.active.subjectType);
+      this.fgc.controls.prof.setValue(data.active.professor.id);
+      this.fgc.controls.group.setValue(data.active.group.id);
+      this.fgc.controls.volume.setValue(data.active.groupVolume);
+      this.fgc.controls.start.setValue(
+        new Date(data.active.date).toISOString()
+      );
+      this.fgc.controls.finish.setValue(
+        new Date(data.active.date).toISOString()
+      );
+      this.changeDays(new Date(data.active.date).getDay());
     }
-    this.isUpdate = data.isUpdate;
   }
   ngOnInit(): void {}
 
-  create() {
-    const date: Date = new Date(this.fgc.value.date);
-    console.log(date);
-    date.setMinutes(-date.getTimezoneOffset());
+  changeDays(day: number) {
+    const size = this.days.length;
+    this.days = this.days.filter((d) => d !== day);
+    if (size === this.days.length) this.days.push(day);
+  }
 
-    let toCreate: Lesson = {
+  isChecked(day: number): boolean {
+    return this.days.find((d) => d === day) !== undefined;
+  }
+
+  create() {
+    let toCreate: LessonSeries = {
       id: null,
-      date: date.toISOString().substring(0, 10),
+      date: null,
       time: this.data.times.find((t) => t.id === this.fgc.value.time),
       subject: { id: this.fgc.value.subject, qualifier: null },
       subjectType: this.fgc.value.subjectType,
       professor: { id: this.fgc.value.prof, qualifier: null },
       group: { id: this.fgc.value.group, qualifier: null },
+      groupVolume: this.fgc.value.volume,
+      start: getDateFromStr(this.fgc.value.start),
+      finish: getDateFromStr(this.fgc.value.finish),
+      days: this.days,
     };
-    if (this.fgc.value.inWeek !== 1 || this.fgc.value.count !== 1) {
-      this.lessonService
-        .createSeries(toCreate, this.fgc.value.inWeek, this.fgc.value.count)
-        .subscribe((_) => this.close(true));
-    } else {
-      this.lessonService.create(toCreate).subscribe((_) => this.close(true));
-    }
+    this.lessonService
+      .createSeries(toCreate)
+      .subscribe((_) => this.close(true));
   }
 
   update() {
-    const date: Date = new Date(this.fgc.value.date);
-    date.setMinutes(-date.getTimezoneOffset());
-
-    let toUpdate: Lesson = {
+    let toUpdate: LessonSeries = {
       id: null,
-      date: date.toISOString().substring(0, 10),
+      date: null,
       time: this.data.times.find((t) => t.id === this.fgc.value.time),
       subject: { id: this.fgc.value.subject, qualifier: null },
       subjectType: this.fgc.value.subjectType,
       professor: { id: this.fgc.value.prof, qualifier: null },
       group: { id: this.fgc.value.group, qualifier: null },
+      groupVolume: this.fgc.value.volume,
+      start: getDateFromStr(this.fgc.value.start),
+      finish: getDateFromStr(this.fgc.value.finish),
+      days: this.days,
     };
     this.lessonService
       .update(this.active.id, toUpdate)
+      .subscribe((_) => this.close(true));
+  }
+
+  delete() {
+    let toDelete: LessonSeries = {
+      id: null,
+      date: null,
+      time: this.data.times.find((t) => t.id === this.fgc.value.time),
+      subject: { id: this.fgc.value.subject, qualifier: null },
+      subjectType: this.fgc.value.subjectType,
+      professor: { id: this.fgc.value.prof, qualifier: null },
+      group: { id: this.fgc.value.group, qualifier: null },
+      groupVolume: this.fgc.value.volume,
+      start: getDateFromStr(this.fgc.value.start),
+      finish: getDateFromStr(this.fgc.value.finish),
+      days: this.days,
+    };
+    this.lessonService
+      .deleteSeries(toDelete)
       .subscribe((_) => this.close(true));
   }
 

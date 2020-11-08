@@ -3,6 +3,13 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { ObjectRef, Page, ROOT_URL } from "./common.service";
 
+export enum Volume {
+  FULL = "FULL",
+  FIRST = "FIRST",
+  SECOND = "SECOND",
+  THIRD = "THIRD",
+}
+
 export interface Group {
   id: number;
   qualifier: string;
@@ -17,6 +24,10 @@ export class GroupService {
 
   getAll(): Observable<Group[]> {
     return this.httpClient.get<Group[]>(ROOT_URL + "/group");
+  }
+
+  getGroupVolumes(): Observable<Volume[]> {
+    return this.httpClient.get<Volume[]>(ROOT_URL + "/group/volume");
   }
 
   getPage(number: number, size: number): Observable<Page<Group>> {

@@ -17,6 +17,7 @@ import { GroupReportComponent } from "./report/group-report/group-report.compone
 import { ReportPageComponent } from "./report/report-page/report-page.component";
 import { StudEditComponent } from "./editor/stud-edit/stud-edit.component";
 import { AccountEditComponent } from "./editor/account-edit/account-edit.component";
+import { PositionEditComponent } from "./editor/position-edit/position-edit.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -33,6 +34,7 @@ const routes: Routes = [
       { path: "speciality", component: SpecialityEditComponent },
       { path: "group", component: GroupEditComponent },
       { path: "student", component: StudEditComponent },
+      { path: "position", component: PositionEditComponent },
       { path: "professor", component: ProfEditComponent },
       { path: "subject", component: SubjectEditComponent },
       { path: "lesson", component: LessonEditComponent },
@@ -67,6 +69,7 @@ export const routingComponents = [
   SubjectEditComponent,
   StudEditComponent,
   SpecialityEditComponent,
+  PositionEditComponent,
   ProfEditComponent,
   ChangePasswordComponent,
   EditorPageComponent,

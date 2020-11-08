@@ -32,6 +32,22 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Подгруппа</mat-label>
+      <mat-select formControlName="volume" required>
+        <mat-option *ngFor="let v of data.volumes" [value]="v">
+          {{v}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="E-mail родителя" formControlName="parent" />
+      <mat-error *ngIf="fgc.controls.parent.hasError('email')">
+        Введите валидный e-mail.
+      </mat-error>
+    </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

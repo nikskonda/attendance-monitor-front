@@ -5,7 +5,8 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import { ObjectRef } from "src/app/service/common.service";
 import { GroupService } from "../../service/group.service";
 import { ReportService } from "../../service/report.service";
-import { Person, PersonService } from "../../service/user.service";
+import { Person, PersonService } from "../../service/account.service";
+import { StudentService } from "src/app/service/student.service";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -31,7 +32,7 @@ export class StudentReportComponent implements OnInit {
   isPdfReady: boolean = false;
 
   constructor(
-    private personService: PersonService,
+    private studentService: StudentService,
     private groupService: GroupService,
     private reportService: ReportService
   ) {}
@@ -43,8 +44,8 @@ export class StudentReportComponent implements OnInit {
   }
 
   onGroupSelect() {
-    this.personService
-      .getStudents(this.fgc.value.group)
+    this.studentService
+      .getByGroup(this.fgc.value.group)
       .subscribe((data) => (this.studs = data));
   }
 
@@ -72,6 +73,11 @@ export class StudentReportComponent implements OnInit {
   getDate(date: Date) {
     date.setMinutes(-date.getTimezoneOffset());
     return date.toISOString().substring(0, 10);
+  }
+
+  refresh() {
+    this.isPdfReady = false;
+    this.onStudentSelect();
   }
 
   open() {
@@ -119,6 +125,11 @@ export class StudentReportComponent implements OnInit {
           table: {
             body: this.table,
           },
+        },
+        {
+          text:
+            "* X/Y/Z, где X - пропущено всего, Y - пропущено по уважительной причине (из X), Z - всего занятий",
+          alignment: "left",
         },
       ],
       info: {

@@ -1,5 +1,22 @@
 .container {
-  width: 50%;
-  margin: 20% auto 0 auto;
+  margin: auto;
   align-items: center;
+}
+
+.greeting {
+  text-align: center;
+  color: #2d723f;
+}
+
+.greeting h3 {
+  /* color: #b97d34; */
+}
+
+.greeting h2 {
+  /* color: #297938; */
+}
+
+.button {
+  color: #fbfafa;
+  background-color: #e8b01c;
 }

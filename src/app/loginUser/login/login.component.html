@@ -1,5 +1,10 @@
 <div class="container">
-  <h1>Добро пожаловать!</h1>
+  <div class="greeting">
+    <h3>Добро пожаловать в</h3>
+    <h2>Web-приложение для мониторинга и анализа</h2>
+    <h2>посещаемости занятий!</h2>
+  </div>
+
   <form class="example-form" [formGroup]="fgc">
     <mat-form-field class="example-full-width">
       <input matInput placeholder="Email" formControlName="email" required />
@@ -15,29 +20,29 @@
         formControlName="password"
         required
       />
-      <mat-error *ngIf="fgc.controls.password.hasError('minlength')">
-        Минимальная длинна пароля 8 символов.
-      </mat-error>
     </mat-form-field>
     <div>
-      
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="checkLogin()"
-      [disabled]="!fgc.valid"
-    >
-      Войти
-    </button>
+      <button
+        class="button"
+        mat-raised-button
+        (click)="checkLogin()"
+        [disabled]="!fgc.valid"
+      >
+        Войти
+      </button>
 
-    <!-- <button mat-raised-button color="warn" (click)="generateData()">
-      Base {{ status }}
-    </button> -->
+      <!-- <button mat-raised-button color="warn" (click)="generateData()">
+        Base {{ status }}
+      </button>
 
-    <button mat-raised-button color="accent" (click)="generateData(true)" style="margin-left: 150px;">
-      Заполнить рандомными даными {{ status }}
-    </button>
-        </div>
-
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="generateData(true)"
+        style="margin-left: 150px"
+      >
+        Заполнить рандомными даными {{ status }}
+      </button> -->
+    </div>
   </form>
 </div>

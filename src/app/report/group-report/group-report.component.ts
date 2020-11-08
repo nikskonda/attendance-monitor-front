@@ -81,6 +81,11 @@ export class GroupReportComponent implements OnInit {
     return date.toISOString().substring(0, 10);
   }
 
+  refresh() {
+    this.isPdfReady = false;
+    this.onSubjectSelect();
+  }
+
   open() {
     pdfMake.createPdf(this.getDocDefinition()).open();
   }
@@ -130,6 +135,11 @@ export class GroupReportComponent implements OnInit {
           table: {
             body: this.table,
           },
+        },
+        {
+          text:
+            "* X/Y, где X - пропущено всего, Y - пропущено по уважительной причине (пропущено X из них Y по уважительной)",
+          alignment: "left",
         },
       ],
       info: {

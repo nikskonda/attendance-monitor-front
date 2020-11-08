@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { PersonService, Role, User } from "./user.service";
+import { PersonService, Role, User } from "./account.service";
 import { Observable } from "rxjs";
 import { tokenName } from "@angular/compiler";
 
@@ -70,6 +70,7 @@ export class AuthenticationService {
   isMustUpdatePassword(): boolean {
     if (this.isUserLoggedIn()) {
       const user: User = JSON.parse(localStorage.getItem("userdata"));
+      console.log("user.mustUpdatePassword", user.mustUpdatePassword);
       return user.mustUpdatePassword;
     }
     return false;
@@ -78,7 +79,6 @@ export class AuthenticationService {
   isUserLoggedIn(): boolean {
     let user = localStorage.getItem("userdata");
     let token = localStorage.getItem("token");
-
     return !(!user || !token);
   }
 

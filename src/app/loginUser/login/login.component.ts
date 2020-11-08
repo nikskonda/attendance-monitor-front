@@ -4,7 +4,7 @@ import { Component, EventEmitter, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { OnInit } from "@angular/core";
-import { Role } from "src/app/service/user.service";
+import { Role } from "src/app/service/account.service";
 import { GenService } from "src/app/service/generator.service";
 
 @Component({
@@ -15,10 +15,7 @@ import { GenService } from "src/app/service/generator.service";
 export class LoginComponent implements OnInit {
   fgc = new FormGroup({
     email: new FormControl("", [Validators.required, Validators.email]),
-    password: new FormControl("", [
-      Validators.required,
-      Validators.minLength(3),
-    ]),
+    password: new FormControl("", Validators.required),
   });
 
   invalidLogin = false;
@@ -31,7 +28,7 @@ export class LoginComponent implements OnInit {
   ) {}
 
   generateData(b?: boolean) {
-  this.status = "(Загрузка ...)"
+    this.status = "(Загрузка ...)";
     if (b) {
       this.genservice.generate().subscribe(
         () => {},
@@ -48,9 +45,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.loginservice.isUserLoggedIn()) {
-      this.navigateByRole();
-    }
+    this.navigateByRole();
   }
 
   checkLogin() {
@@ -63,20 +58,23 @@ export class LoginComponent implements OnInit {
         },
         () => {
           this.invalidLogin = false;
-          if (this.loginservice.isMustUpdatePassword()) {
-            this.router.navigate(["changePassword"]);
-          } else {
-            this.navigateByRole();
-          }
+          this.navigateByRole();
         }
       );
   }
 
   navigateByRole() {
-    if (this.loginservice.isHasRole(Role.Admin)) {
-      this.router.navigate(["menu"]);
-    } else {
-      this.router.navigate(["schedule"]);
+    if (this.loginservice.isUserLoggedIn()) {
+      if (this.loginservice.isMustUpdatePassword()) {
+        console.log("changePassword");
+        this.router.navigate(["changePassword"]);
+      } else if (this.loginservice.isHasRole(Role.Admin)) {
+        console.log("menu");
+        this.router.navigate(["menu"]);
+      } else {
+        console.log("schedule");
+        this.router.navigate(["schedule"]);
+      }
     }
   }
 }

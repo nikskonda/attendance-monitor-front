@@ -63,6 +63,11 @@ import { StudEditorDialog } from "./editor/stud-edit/stud-edit.component";
 import { LessonEditorDialog } from "./editor/lesson-edit/lesson-edit.component";
 import { DigitOnlyDirective } from "./directive/digit-only.directive";
 import localeRu from "@angular/common/locales/ru";
+import { AttLessonEditorDialog } from "./attendance-page/attendance-page.component";
+import {
+  PositionEditComponent,
+  PositionEditorDialog,
+} from "./editor/position-edit/position-edit.component";
 
 registerLocaleData(localeRu);
 
@@ -82,10 +87,13 @@ registerLocaleData(localeRu);
     SubjectEditorDialog,
     SpecEditorDialog,
     GroupEditorDialog,
+    PositionEditorDialog,
     ProfEditorDialog,
     StudEditorDialog,
     LessonEditorDialog,
+    AttLessonEditorDialog,
     DigitOnlyDirective,
+    PositionEditComponent,
   ],
   imports: [
     CommonModule,

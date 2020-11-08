@@ -32,14 +32,16 @@ export class AttendanceService {
     endDate,
     groupId,
     subjectId,
-    subjectType
+    subjectType,
+    groupVolume
   ): Observable<Attendance> {
     const params = new HttpParams()
       .set("startDate", startDate)
       .set("endDate", endDate)
       .set("groupId", groupId)
       .set("subjectId", subjectId)
-      .set("subjectType", subjectType);
+      .set("subjectType", subjectType)
+      .set("groupVolume", groupVolume);
     return this.httpClient.get<Attendance>(ROOT_URL + "/attendance", {
       params,
     });

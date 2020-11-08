@@ -8,14 +8,13 @@ import {
 import { PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ObjectRef } from "src/app/service/common.service";
-import { GroupService } from "../../service/group.service";
-import {
-  Person,
-  PersonService,
-  Role,
-  Student,
-} from "../../service/user.service";
+import { GroupService, Volume } from "../../service/group.service";
+import { Person, Role } from "../../service/account.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
+import {
+  StudentService,
+  StudentWithParent,
+} from "src/app/service/student.service";
 
 @Component({
   selector: "app-stud-edit",
@@ -24,34 +23,41 @@ import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component"
 })
 export class StudEditComponent implements OnInit {
   displayedColumns: string[] = [
+    "edit",
+    "remove",
     "position",
     "lastName",
     "firstName",
     "patronymic",
+    "groupVolume",
     "email",
-    "group",
-    "edit",
-    "remove",
+    "parentEmail",
   ];
   dataSource;
   length = 0;
   pageSize = 10;
   currentPage = 0;
 
-  selected: Student;
+  selected: StudentWithParent;
   isUpdate: boolean = false;
-  studs: Student[] = [];
+  studs: StudentWithParent[] = [];
   selectedGroupId: number;
   groups: ObjectRef[] = [];
+  volumes: Volume[] = [];
 
   constructor(
-    private personService: PersonService,
+    private studentService: StudentService,
     private groupService: GroupService,
     public dialog: MatDialog
   ) {}
 
   ngOnInit() {
     this.groupService.getAll().subscribe((data) => (this.groups = data));
+    this.groupService
+      .getGroupVolumes()
+      .subscribe(
+        (data) => (this.volumes = data.filter((v) => v !== Volume.FULL))
+      );
   }
 
   onGroupSelect(groupId: number) {
@@ -68,8 +74,8 @@ export class StudEditComponent implements OnInit {
         this.currentPage = event.pageIndex;
       }
     }
-    this.personService
-      .getStudentsPage(this.selectedGroupId, this.currentPage, this.pageSize)
+    this.studentService
+      .getPage(this.selectedGroupId, this.currentPage, this.pageSize)
       .subscribe(
         (data) => {
           this.studs = data.content || [];
@@ -89,7 +95,8 @@ export class StudEditComponent implements OnInit {
               patronymic: s.patronymic,
               fullName: s.fullName,
               email: s.email,
-              group: s.group.qualifier,
+              parentEmail: s.parentEmail,
+              groupVolume: s.groupVolume,
             });
           });
           this.dataSource = new MatTableDataSource(newList);
@@ -113,6 +120,7 @@ export class StudEditComponent implements OnInit {
       data: {
         isUpdate: false,
         groups: this.groups,
+        volumes: this.volumes,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -129,6 +137,7 @@ export class StudEditComponent implements OnInit {
         isUpdate: true,
         active: this.selected,
         groups: this.groups,
+        volumes: this.volumes,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -147,9 +156,7 @@ export class StudEditComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.personService
-          .deletePerson(id)
-          .subscribe((data) => this.updateList());
+        this.studentService.delete(id).subscribe((data) => this.updateList());
         this.clear();
       }
     });
@@ -171,10 +178,12 @@ export class StudEditorDialog implements OnInit {
     patronymic: new FormControl(""),
     email: new FormControl("", [Validators.required, Validators.email]),
     group: new FormControl("", [Validators.required]),
+    volume: new FormControl("FULL", [Validators.required]),
+    parent: new FormControl("", [Validators.email]),
   });
 
   constructor(
-    private personService: PersonService,
+    private studentService: StudentService,
     public dialogRef: MatDialogRef<StudEditorDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -185,13 +194,15 @@ export class StudEditorDialog implements OnInit {
       this.fgc.controls.patronymic.setValue(data.active.patronymic);
       this.fgc.controls.email.setValue(data.active.email);
       this.fgc.controls.group.setValue(data.active.group.id);
+      this.fgc.controls.volume.setValue(data.active.groupVolume);
+      this.fgc.controls.parent.setValue(data.active.parentEmail);
     }
     this.isUpdate = data.isUpdate;
   }
   ngOnInit(): void {}
 
   create() {
-    let stud: Student = {
+    let stud: StudentWithParent = {
       id: null,
       email: this.fgc.value.email,
       firstName: this.fgc.value.name,
@@ -202,14 +213,15 @@ export class StudEditorDialog implements OnInit {
       group: {
         id: this.fgc.value.group,
         qualifier: null,
-        speciality: null,
       },
+      groupVolume: this.fgc.value.volume,
+      parentEmail: this.fgc.value.parent,
     };
-    this.personService.createStudent(stud).subscribe((_) => this.close(true));
+    this.studentService.create(stud).subscribe((_) => this.close(true));
   }
 
   update() {
-    let stud: Student = {
+    let stud: StudentWithParent = {
       id: null,
       email: this.fgc.value.email,
       firstName: this.fgc.value.name,
@@ -220,11 +232,12 @@ export class StudEditorDialog implements OnInit {
       group: {
         id: this.fgc.value.group,
         qualifier: null,
-        speciality: null,
       },
+      groupVolume: this.fgc.value.volume,
+      parentEmail: this.fgc.value.parent,
     };
-    this.personService
-      .updateStudent(this.active.id, stud)
+    this.studentService
+      .update(this.active.id, stud)
       .subscribe((_) => this.close(true));
   }
 

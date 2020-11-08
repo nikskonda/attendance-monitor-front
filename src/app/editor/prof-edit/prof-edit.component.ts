@@ -7,8 +7,11 @@ import {
 } from "@angular/material/dialog";
 import { PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
-import { Person, PersonService, Role } from "../../service/user.service";
+import { PositionService } from "src/app/service/position.service";
+import { ObjectRef } from "src/app/service/common.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
+import { Professor, ProfessorService } from "src/app/service/professor.service";
+import { Role } from "src/app/service/account.service";
 
 @Component({
   selector: "app-prof-edit",
@@ -17,10 +20,11 @@ import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component"
 })
 export class ProfEditComponent implements OnInit {
   displayedColumns: string[] = [
-    "position",
+    "pos",
     "lastName",
     "firstName",
     "patronymic",
+    "position",
     "email",
     "edit",
     "remove",
@@ -30,13 +34,20 @@ export class ProfEditComponent implements OnInit {
   pageSize = 10;
   currentPage = 0;
 
-  selected: Person;
+  selected: Professor;
   isUpdate: boolean = false;
-  profs: Person[] = [];
+  profs: Professor[] = [];
 
-  constructor(private personService: PersonService, public dialog: MatDialog) {}
+  positions: ObjectRef[] = [];
+
+  constructor(
+    private profService: ProfessorService,
+    private positionService: PositionService,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit() {
+    this.positionService.getAll().subscribe((data) => (this.positions = data));
     this.updateList();
   }
 
@@ -49,7 +60,7 @@ export class ProfEditComponent implements OnInit {
         this.currentPage = event.pageIndex;
       }
     }
-    this.personService.getProfsPage(this.currentPage, this.pageSize).subscribe(
+    this.profService.getPage(this.currentPage, this.pageSize).subscribe(
       (data) => {
         this.profs = data.content;
         this.length = data.totalElements;
@@ -60,12 +71,13 @@ export class ProfEditComponent implements OnInit {
         let i = this.currentPage * this.pageSize + 1;
         this.profs.forEach((s) => {
           newList.push({
-            position: i++,
+            pos: i++,
             id: s.id,
             lastName: s.lastName,
             firstName: s.firstName,
             patronymic: s.patronymic,
             fullName: s.fullName,
+            position: s.position.qualifier,
             email: s.email,
           });
         });
@@ -89,6 +101,7 @@ export class ProfEditComponent implements OnInit {
     const dialogRef = this.dialog.open(ProfEditorDialog, {
       data: {
         isUpdate: false,
+        positions: this.positions,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -104,6 +117,7 @@ export class ProfEditComponent implements OnInit {
       data: {
         isUpdate: true,
         active: this.selected,
+        positions: this.positions,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -122,9 +136,7 @@ export class ProfEditComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.personService
-          .deletePerson(id)
-          .subscribe((data) => this.updateList());
+        this.profService.delete(id).subscribe((data) => this.updateList());
         this.clear();
       }
     });
@@ -138,33 +150,36 @@ export class ProfEditComponent implements OnInit {
 export class ProfEditorDialog implements OnInit {
   public isUpdate: boolean = false;
 
-  active: Person;
+  active: Professor;
 
   fgc = new FormGroup({
     name: new FormControl(""),
     lastName: new FormControl("", [Validators.required]),
     patronymic: new FormControl(""),
     email: new FormControl("", [Validators.required, Validators.email]),
+    position: new FormControl("", [Validators.required]),
   });
 
   constructor(
-    private personService: PersonService,
+    private profService: ProfessorService,
     public dialogRef: MatDialogRef<ProfEditorDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     if (data.isUpdate) {
       this.active = data.active;
+      console.log(data.active);
       this.fgc.controls.name.setValue(data.active.firstName);
       this.fgc.controls.lastName.setValue(data.active.lastName);
       this.fgc.controls.patronymic.setValue(data.active.patronymic);
       this.fgc.controls.email.setValue(data.active.email);
+      this.fgc.controls.position.setValue(data.active.position.id);
     }
     this.isUpdate = data.isUpdate;
   }
   ngOnInit(): void {}
 
   create() {
-    let prof: Person = {
+    let prof: Professor = {
       id: null,
       email: this.fgc.value.email,
       firstName: this.fgc.value.name,
@@ -172,12 +187,13 @@ export class ProfEditorDialog implements OnInit {
       patronymic: this.fgc.value.patronymic,
       fullName: null,
       roles: [Role.Professor],
+      position: this.fgc.value.position,
     };
-    this.personService.createProfessor(prof).subscribe((_) => this.close(true));
+    this.profService.create(prof).subscribe((_) => this.close(true));
   }
 
   update() {
-    let prof: Person = {
+    let prof: Professor = {
       id: null,
       email: this.fgc.value.email,
       firstName: this.fgc.value.name,
@@ -185,9 +201,10 @@ export class ProfEditorDialog implements OnInit {
       patronymic: this.fgc.value.patronymic,
       fullName: null,
       roles: this.active.roles,
+      position: this.fgc.value.position,
     };
-    this.personService
-      .updateProfessor(this.active.id, prof)
+    this.profService
+      .update(this.active.id, prof)
       .subscribe((_) => this.close(true));
   }
 

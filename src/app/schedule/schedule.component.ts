@@ -1,7 +1,7 @@
 import { Cell, Lesson, LessonService } from "./../service/lesson.service";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Person, Role } from "../service/user.service";
+import { Person, Role } from "../service/account.service";
 import { FormControl, FormGroup } from "@angular/forms";
 import { AuthenticationService } from "../service/auth.service";
 
@@ -16,6 +16,8 @@ export class ScheduleComponent implements OnInit {
   professor: Person;
   personId: number;
   cols: number = 0;
+
+  topDateHeader: boolean = true;
 
   range = new FormGroup({
     start: new FormControl(this.getFirstDateOfWeek()),
@@ -39,13 +41,19 @@ export class ScheduleComponent implements OnInit {
     return this.loginservice.isHasRole(Role.Admin);
   }
 
+  lt() {
+    this.topDateHeader = !this.topDateHeader;
+    this.loadTable();
+  }
+
   loadTable() {
-    if (!this.range.value.start || !this.range.value.end) return;
+    // if (!this.range.value.start || !this.range.value.end) return;
     this.lessonService
       .getLessons(
         this.getDate(this.range.value.start),
         this.getDate(this.range.value.end),
-        this.personId
+        this.personId,
+        this.topDateHeader
       )
       .subscribe((data) => {
         this.cells = data.cells;

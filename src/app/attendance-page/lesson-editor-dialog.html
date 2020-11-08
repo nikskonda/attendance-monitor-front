@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{data.isDelete ? "Удалить" : "Добавить"}} серию</h2>
+<h2 mat-dialog-title>Создать</h2>
 <mat-dialog-content>
   <form class="example-form" [formGroup]="fgc">
     <mat-form-field appearance="fill" class="example-full-width">
@@ -22,7 +22,11 @@
     <mat-form-field appearance="fill" class="example-full-width">
       <mat-label>Преподаватель</mat-label>
       <mat-select formControlName="prof">
-        <mat-option *ngFor="let prof of data.profs" [value]="prof.id">
+        <mat-option
+          *ngFor="let prof of data.profs"
+          [value]="prof.id"
+          [disabled]="isProfDisable()"
+        >
           {{ prof.fullName }}
         </mat-option>
       </mat-select>
@@ -47,13 +51,10 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="example-full-width">
-      <mat-label>Временной период</mat-label>
-      <mat-date-range-input [rangePicker]="picker">
-        <input matStartDate formControlName="start" placeholder="Начало" />
-        <input matEndDate formControlName="finish" placeholder="Конец" />
-      </mat-date-range-input>
+      <mat-label>Дата</mat-label>
+      <input matInput formControlName="date" [matDatepicker]="picker" />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-date-range-picker #picker></mat-date-range-picker>
+      <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="example-full-width">
@@ -65,26 +66,16 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-
-    <section class="example-section">
-      <mat-checkbox
-        class="example-margin"
-        *ngFor="let day of data.days"
-        (change)="changeDays(day.day)"
-        [checked]="isChecked(day.day)"
-        >{{day.text}}</mat-checkbox
-      >
-    </section>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="close(false)">Отмена</button>
   <button
     mat-button
-    (click)="data.isDelete ? delete() : create()"
+    (click)="isUpdate ? update() : create()"
     [disabled]="!fgc.valid"
     cdkFocusInitial
   >
-    {{(data.isDelete ? "Удалить" : "Сохранить")}}
+    Сохранить
   </button>
 </mat-dialog-actions>

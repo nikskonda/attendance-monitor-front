@@ -14,6 +14,11 @@
       </button>
     </div>
     <div>
+      <button mat-raised-button color="accent" (click)="create()">
+        Create
+      </button>
+    </div>
+    <div>
       <mat-form-field appearance="fill">
         <mat-label>Временной период</mat-label>
         <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
@@ -38,12 +43,12 @@
             [indeterminate]="someComplete()"
             (change)="setAll($event.checked)"
           >
-            {{ subjectTypes.name }}
+            {{ subjectTypesSelect.name }}
           </mat-checkbox>
         </span>
         <span class="example-list-section">
           <ul>
-            <li *ngFor="let subtask of subjectTypes.subtasks">
+            <li *ngFor="let subtask of subjectTypesSelect.subtasks">
               <mat-checkbox
                 [(ngModel)]="subtask.completed"
                 (ngModelChange)="updateAllComplete()"
@@ -55,6 +60,22 @@
         </span>
       </section>
     </div>
+    <div>
+      <mat-radio-group
+        aria-labelledby="example-radio-group-label"
+        class="example-radio-group"
+        [(ngModel)]="groupVolume"
+        (change)="loadTable()"
+      >
+        <mat-radio-button
+          class="example-radio-button"
+          *ngFor="let volume of volumes"
+          [value]="volume"
+        >
+          {{ volume }}
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
   </div>
   <div>
     <mat-grid-list [cols]="cols + 2" rowHeight="50px">
@@ -63,11 +84,16 @@
         *ngFor="let cell of att; index as i"
         [colspan]="i % cols === 0 ? 3 : 1"
         [rowspan]="1"
-        (contextmenu)="!isHeader(cell, i) ? onRightClick(cell) : true"
+        (contextmenu)="isAtt(cell) ? onRightClick(cell) : true"
       >
-        <p *ngIf="isHeader(cell, i)">{{ getHeaderText(cell.text, i) }}</p>
+        <div *ngIf="isDateTimes(cell, i)" (click)="update(cell.lesson)">
+          <p *ngFor="let p of getHeaderPList(cell.lesson)" style="margin: 0px">
+            {{ p }}
+          </p>
+        </div>
+        <p *ngIf="isStudents(cell, i)">{{ cell.text }}</p>
         <button
-          *ngIf="!isHeader(cell, i)"
+          *ngIf="isAtt(cell)"
           style="width: 100%; height: 100%; border: none"
           [ngStyle]="{ 'background-color': getCellBackground(cell) }"
           mat-button

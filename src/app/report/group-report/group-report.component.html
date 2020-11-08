@@ -34,6 +34,8 @@
   </form>
 
   <div *ngIf="isPdfReady && fgc.valid">
+    <button mat-button (click)="refresh()">Обновить</button>
+
     <button mat-button (click)="open()">Открыть</button>
     <button mat-button (click)="download()">Скачать</button>
     <button mat-button (click)="print()">Печатать</button>

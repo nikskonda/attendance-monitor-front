@@ -1,8 +1,25 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { Person } from "./user.service";
+import { Person } from "./account.service";
 import { ObjectRef, Page, ROOT_URL } from "./common.service";
+import { Volume } from "./group.service";
+
+export interface DayOfWeek {
+  day: number;
+  text: string;
+  fullName: string;
+}
+
+export const DAYS_OF_WEEK: DayOfWeek[] = [
+  { day: 1, text: "Пн", fullName: "Понедельник" },
+  { day: 2, text: "Вт", fullName: "Вторник" },
+  { day: 3, text: "Ср", fullName: "Среда" },
+  { day: 4, text: "Чт", fullName: "Четверг" },
+  { day: 5, text: "Пт", fullName: "Пятница" },
+  { day: 6, text: "Сб", fullName: "Суббота" },
+  // { day: 7, text: "Вс", fullName: "Воскресенье" },
+];
 
 export interface Lesson {
   id: number;
@@ -12,6 +29,13 @@ export interface Lesson {
   time: LessonTime;
   professor: ObjectRef;
   group: ObjectRef;
+  groupVolume: Volume;
+}
+
+export interface LessonSeries extends Lesson {
+  days: number[];
+  start: string;
+  finish: string;
 }
 
 export interface Cell {
@@ -45,15 +69,22 @@ export interface LessonTime {
 export class LessonService {
   constructor(private httpClient: HttpClient) {}
 
-  getLessons(startDate, finalDate, personId): Observable<Schedule> {
+  getLessons(
+    startDate,
+    finalDate,
+    personId,
+    topDateHeader
+  ): Observable<Schedule> {
     let params = new HttpParams()
       .set("startDate", startDate)
-      .set("finalDate", finalDate);
+      .set("finalDate", finalDate)
+      .set("topDateHeader", topDateHeader);
     if (personId) {
       params = new HttpParams()
         .set("startDate", startDate)
         .set("finalDate", finalDate)
-        .set("personId", personId);
+        .set("personId", personId)
+        .set("topDateHeader", topDateHeader);
     }
     return this.httpClient.get<Schedule>(
       ROOT_URL + "/lesson/findGridByDateRange",
@@ -89,17 +120,15 @@ export class LessonService {
     return this.httpClient.post<Lesson>(ROOT_URL + "/lesson", lesson);
   }
 
-  createSeries(
-    lesson: Lesson,
-    inWeek: number,
-    count: number
-  ): Observable<Lesson> {
-    const params = new HttpParams()
-      .set("inWeek", inWeek.toString())
-      .set("count", count.toString());
-    return this.httpClient.post<Lesson>(ROOT_URL + "/lesson/series", lesson, {
-      params,
-    });
+  createSeries(lesson: LessonSeries): Observable<LessonSeries> {
+    return this.httpClient.post<LessonSeries>(
+      ROOT_URL + "/lesson/series/create",
+      lesson
+    );
+  }
+
+  deleteSeries(lesson: LessonSeries) {
+    return this.httpClient.post(ROOT_URL + "/lesson/series/delete", lesson);
   }
 
   update(id: number, lesson: Lesson): Observable<Lesson> {

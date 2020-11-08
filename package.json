@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --disable-host-check",
-    "share": "ng serve -",
+    "start": "ng serve",
+    "share": "ng serve --disable-host-check",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",

@@ -5,11 +5,7 @@
   <div class="dateRange">
     <mat-form-field appearance="fill">
       <mat-label>Выберите период</mat-label>
-      <mat-date-range-input
-        [formGroup]="range"
-        [rangePicker]="picker"
-        (dateChange)="loadTable()"
-      >
+      <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
         <input matStartDate formControlName="start" placeholder="Начало" />
         <input
           matEndDate
@@ -23,6 +19,16 @@
     </mat-form-field>
   </div>
   <div>
+    <mat-slide-toggle
+      class="example-margin"
+      [color]=""
+      [checked]="topDateHeader"
+      (change)="lt()"
+    >
+      Slide me!
+    </mat-slide-toggle>
+  </div>
+  <div>
     <mat-grid-list [cols]="cols * 2 - 1" rowHeight="100px">
       <mat-grid-tile
         *ngFor="let cell of cells; index as i"
@@ -32,7 +38,12 @@
       >
         <app-grid-header
           *ngIf="cell.header"
-          [text]="i > 0 && i < cols ? (cell.text | date: 'd MMMM') : cell.text"
+          [text]="
+            (i > 0 && i < cols && topDateHeader) ||
+            (i > 0 && i % cols === 0 && !topDateHeader)
+              ? [cell.text | date: 'd MMMM', cell.text | date: 'EEEE']
+              : [cell.text]
+          "
         ></app-grid-header>
         <app-grid-cell
           *ngIf="!cell.empty && !cell.header"

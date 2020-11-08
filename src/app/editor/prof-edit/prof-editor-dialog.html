@@ -25,6 +25,15 @@
         Введите валидный e-mail.
       </mat-error>
     </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Должность</mat-label>
+      <mat-select formControlName="position" required>
+        <mat-option *ngFor="let pos of data.positions" [value]="pos.id">
+          {{pos.qualifier}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

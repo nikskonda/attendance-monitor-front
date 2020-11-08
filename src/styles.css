@@ -7,6 +7,11 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #fbfafa;
+}
+
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: lawngreen;
 }
 
 .example-form {
