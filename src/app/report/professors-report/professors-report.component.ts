@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { ReportService } from "src/app/service/report.service";
 
 @Component({

@@ -27,8 +27,8 @@ export class GridCellComponent implements OnInit {
   @ViewChild("myDiv") div: ElementRef;
 
   constructor(
-    private translation: L10nTranslationService,
     @Inject(L10N_LOCALE) public locale: L10nLocale,
+    private translation: L10nTranslationService,
     private router: Router
   ) {}
 

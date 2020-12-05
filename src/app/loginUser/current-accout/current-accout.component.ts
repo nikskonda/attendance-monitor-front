@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Inject, Input } from "@angular/core";
 import { NavigationStart, Router } from "@angular/router";
 import { AuthenticationService } from "src/app/service/auth.service";
 import { Role } from "src/app/service/account.service";
 import { LinkWithIconByRole, MENU } from "src/app/menu-page/menu";
 import { CommonService } from "src/app/service/common.service";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 
 @Component({
   selector: "app-current-accout",
@@ -21,6 +22,7 @@ export class CurrentAccoutComponent {
   links: LinkWithIconByRole[] = MENU;
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private router: Router,
     private commonService: CommonService,
     private loginservice: AuthenticationService

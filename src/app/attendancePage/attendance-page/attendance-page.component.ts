@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10nTranslationService, L10N_LOCALE } from "angular-l10n";
 import { CommonModule, DatePipe } from "@angular/common";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -67,6 +68,9 @@ export class AttendancePageComponent implements OnInit {
   isUpdate: boolean = false;
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
+    private translation: L10nTranslationService,
+
     private profService: ProfessorService,
 
     private lessonService: LessonService,
@@ -221,7 +225,7 @@ export class AttendancePageComponent implements OnInit {
         5
       )} - ${lesson.time.finishTime.substring(0, 5)}`;
 
-      return [date, time, lesson.subjectType];
+      return [date, time, this.translation.translate(lesson.subjectType)];
     }
     return [];
   }
@@ -332,6 +336,7 @@ export class AttLessonEditorDialog implements OnInit {
   });
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private lessonService: LessonService,
     private commonService: CommonService,
     public dialogRef: MatDialogRef<AttLessonEditorDialog>,

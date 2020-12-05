@@ -1,11 +1,12 @@
 import { AuthenticationService } from "./../../service/auth.service";
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Inject, Output } from "@angular/core";
 
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { OnInit } from "@angular/core";
 import { Role } from "src/app/service/account.service";
 import { GenService } from "src/app/service/generator.service";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 
 @Component({
   selector: "app-login",
@@ -22,6 +23,7 @@ export class LoginComponent implements OnInit {
   status: string;
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private router: Router,
     private loginservice: AuthenticationService,
     private genservice: GenService

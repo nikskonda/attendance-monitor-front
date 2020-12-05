@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { ReportService } from "src/app/service/report.service";
 import { ObjectRef } from "src/app/service/common.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
@@ -11,6 +12,7 @@ import { GroupService } from "src/app/service/group.service";
 })
 export class StudentsByGroupReportComponent implements OnInit {
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private reportService: ReportService,
     private groupService: GroupService
   ) {}

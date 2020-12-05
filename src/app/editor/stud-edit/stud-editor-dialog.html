@@ -48,7 +48,7 @@
       <mat-label>Подгруппа</mat-label>
       <mat-select formControlName="volume" required>
         <mat-option *ngFor="let v of data.volumes" [value]="v">
-          {{v}}
+          {{v | translate: locale.language}}
         </mat-option>
       </mat-select>
     </mat-form-field>

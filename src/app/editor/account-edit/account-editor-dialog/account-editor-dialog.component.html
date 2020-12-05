@@ -44,7 +44,7 @@
         *ngFor="let role of roles"
         (change)="changeRoles(role)"
         [checked]="isChecked(role)"
-        >{{ role }}</mat-checkbox
+        >{{ role | translate: locale.language }}</mat-checkbox
       >
     </section>
   </form>

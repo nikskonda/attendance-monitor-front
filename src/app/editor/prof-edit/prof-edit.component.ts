@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import {
   MatDialog,
@@ -42,6 +43,7 @@ export class ProfEditComponent implements OnInit {
   positions: ObjectRef[] = [];
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private profService: ProfessorService,
     private positionService: PositionService,
     public dialog: MatDialog
@@ -166,6 +168,7 @@ export class ProfEditorDialog implements OnInit {
   });
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private profService: ProfessorService,
     private accountService: AccountService,
     public dialogRef: MatDialogRef<ProfEditorDialog>,

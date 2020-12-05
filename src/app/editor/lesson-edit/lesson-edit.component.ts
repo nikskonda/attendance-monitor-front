@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import {
   MatDialog,
@@ -61,6 +62,7 @@ export class LessonEditComponent implements OnInit {
   isUpdate: boolean = false;
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private profService: ProfessorService,
     private lessonService: LessonService,
     private subjectService: SubjectService,
@@ -243,6 +245,7 @@ export class LessonEditorDialog implements OnInit {
   });
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private lessonService: LessonService,
     public dialogRef: MatDialogRef<LessonEditorDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any

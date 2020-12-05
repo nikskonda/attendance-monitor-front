@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { FormControl, Validators } from "@angular/forms";
 import {
   MatDialog,
@@ -28,6 +29,7 @@ export class SpecialityEditComponent implements OnInit {
   public specList: ObjectRef[] = [];
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private specService: SpecialityService,
     public dialog: MatDialog
   ) {}
@@ -131,6 +133,7 @@ export class SpecEditorDialog {
   ]);
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private specialityService: SpecialityService,
     public dialogRef: MatDialogRef<SpecEditorDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any

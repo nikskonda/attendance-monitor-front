@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10nTranslationService, L10N_LOCALE } from "angular-l10n";
 import { MatDialog } from "@angular/material/dialog";
 import { PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
@@ -41,6 +42,8 @@ export class AccountEditComponent implements OnInit {
   roles: string[] = getRoles();
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
+    private translation: L10nTranslationService,
     private AccountService: AccountService,
     public dialog: MatDialog
   ) {}
@@ -143,5 +146,16 @@ export class AccountEditComponent implements OnInit {
         this.dataSource = new MatTableDataSource(newList);
       }
     );
+  }
+
+  getRoles(roles): string {
+    if (Array.isArray(roles)) {
+      let result = "";
+      roles.forEach((r) => {
+        result += this.translation.translate(r) + ", ";
+      });
+      return result.substring(0, result.length - 2);
+    }
+    return "" + roles;
   }
 }

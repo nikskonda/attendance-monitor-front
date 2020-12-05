@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { fromEvent } from "rxjs";
 import { EDIT_MENU } from "../editor/edit-menu";
 import { REPORT_MENU } from "../report/report-menu";
@@ -28,6 +29,7 @@ export class MenuPageComponent implements OnInit {
   links: LinkWithIconByRole[] = MENU;
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private profService: ProfessorService,
     private commonService: CommonService
   ) {}

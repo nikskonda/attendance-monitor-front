@@ -57,7 +57,9 @@
 
     <ng-container matColumnDef="groupVolume">
       <th mat-header-cell *matHeaderCellDef>Подгруппа</th>
-      <td mat-cell *matCellDef="let element">{{ element.groupVolume }}</td>
+      <td mat-cell *matCellDef="let element">
+        {{ element.groupVolume | translate: locale.language }}
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="email">

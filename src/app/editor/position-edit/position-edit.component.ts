@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { FormControl, Validators } from "@angular/forms";
 import {
   MatDialog,
@@ -123,6 +124,7 @@ export class PositionEditorDialog {
   ]);
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private adService: PositionService,
     public dialogRef: MatDialogRef<PositionEditorDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any

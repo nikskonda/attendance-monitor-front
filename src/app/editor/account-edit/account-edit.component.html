@@ -9,7 +9,7 @@
       <mat-select [(value)]="selectedRole">
         <mat-option value="">Все</mat-option>
         <mat-option *ngFor="let role of roles" [value]="role">
-          {{ role }}
+          {{ role | translate: locale.language }}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -68,7 +68,7 @@
     <ng-container matColumnDef="roles">
       <th mat-header-cell *matHeaderCellDef>Роли</th>
       <td mat-cell *matCellDef="let element">
-        {{ element.roles + " " }}
+        {{ getRoles(element.roles) }}
       </td>
     </ng-container>
 

@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { Volume } from "src/app/service/group.service";
 
 @Component({
@@ -28,7 +28,6 @@ export class FilterComponent implements OnInit {
 
   constructor(
     @Inject(L10N_LOCALE) public locale: L10nLocale,
-
     public dialogRef: MatDialogRef<FilterComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {

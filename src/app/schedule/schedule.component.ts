@@ -1,5 +1,6 @@
 import { Cell, Lesson, LessonService } from "./../service/lesson.service";
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Person, Role } from "../service/account.service";
 import { FormControl, FormGroup } from "@angular/forms";
@@ -28,6 +29,7 @@ export class ScheduleComponent implements OnInit {
   });
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private lessonService: LessonService,
     private loginservice: AuthenticationService,
     private route: ActivatedRoute

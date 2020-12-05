@@ -38,7 +38,9 @@
 
     <ng-container matColumnDef="subjectType">
       <th mat-header-cell *matHeaderCellDef>Тип</th>
-      <td mat-cell *matCellDef="let element">{{ element.subjectType }}</td>
+      <td mat-cell *matCellDef="let element">
+        {{ element.subjectType | translate: locale.language }}
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="professor">

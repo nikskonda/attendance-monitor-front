@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import {
   CommonService,
@@ -35,6 +36,7 @@ export class StudentReportComponent implements OnInit {
   isParentMode: boolean = false;
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private studentService: StudentService,
     private groupService: GroupService,
     private reportService: ReportService,

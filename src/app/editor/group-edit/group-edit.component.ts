@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Group, GroupService } from "../../service/group.service";
 import { SpecialityService } from "../../service/speciality.service";
@@ -147,6 +148,7 @@ export class GroupEditorDialog implements OnInit {
   specList: ObjectRef[] = [];
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private specService: SpecialityService,
     private groupService: GroupService,
     public dialogRef: MatDialogRef<GroupEditorDialog>,

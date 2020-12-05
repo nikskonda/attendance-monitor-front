@@ -8,6 +8,7 @@ import {
 } from "@angular/material/dialog";
 import { PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
+import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { ObjectRef } from "../../service/common.service";
 import { SubjectService } from "../../service/subject.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
@@ -29,6 +30,7 @@ export class SubjectEditComponent implements OnInit {
   public subjectList: ObjectRef[] = [];
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private subjectService: SubjectService,
     public dialog: MatDialog
   ) {}
@@ -127,6 +129,7 @@ export class SubjectEditorDialog {
   ]);
 
   constructor(
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
     private subjectService: SubjectService,
     public dialogRef: MatDialogRef<SubjectEditorDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
