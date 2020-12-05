@@ -1,0 +1,79 @@
+<h2 mat-dialog-title>Фильтр</h2>
+<mat-dialog-content>
+  <form class="example-form" [formGroup]="fgc">
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Дисциплина</mat-label>
+      <mat-select formControlName="subject">
+        <mat-option *ngFor="let subject of data.subjects" [value]="subject.id">
+          {{ subject.qualifier }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Формат занятия</mat-label>
+      <mat-select formControlName="subjectType">
+        <mat-option *ngFor="let type of data.subjectTypes" [value]="type">
+          {{ type }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field> -->
+
+    <div class="example-full-width">
+      <section class="example-section">
+        <span class="example-list-section">
+          <mat-checkbox
+            class="example-margin"
+            [checked]="allSubjectTypes"
+            [indeterminate]="someComplete()"
+            (change)="setAll($event.checked)"
+          >
+            {{ subjectTypesSelect.name }}
+          </mat-checkbox>
+        </span>
+        <span class="example-list-section">
+          <ul>
+            <li *ngFor="let subtask of subjectTypesSelect.subtasks">
+              <mat-checkbox
+                [(ngModel)]="subtask.completed"
+                (ngModelChange)="updateAllComplete()"
+                [ngModelOptions]="{ standalone: true }"
+              >
+                {{ subtask.name | translate: locale.language }}
+              </mat-checkbox>
+            </li>
+          </ul>
+        </span>
+      </section>
+    </div>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Группа</mat-label>
+      <mat-select formControlName="group">
+        <mat-option *ngFor="let gr of data.groups" [value]="gr.id">
+          {{ gr.qualifier }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Подгруппа</mat-label>
+      <mat-select formControlName="volume">
+        <mat-option *ngFor="let v of data.volumes" [value]="v">
+          {{ v | translate: locale.language }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close(false)">Отмена</button>
+  <button
+    mat-button
+    (click)="close(true)"
+    [disabled]="!fgc.valid || isSubjectTypeEmpty()"
+    cdkFocusInitial
+  >
+    Применить
+  </button>
+</mat-dialog-actions>

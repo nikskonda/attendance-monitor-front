@@ -1,0 +1,14 @@
+@import "../edit.scss";
+
+.container {
+  .but {
+    mat-form-field {
+      padding: 5px 10px;
+    }
+  }
+
+  .mat-column-parentEmail {
+    width: 100% !important;
+    text-align: start !important;
+  }
+}

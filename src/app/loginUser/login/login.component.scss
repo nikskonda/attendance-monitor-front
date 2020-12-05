@@ -1,0 +1,19 @@
+@import "../../../const.scss";
+
+.container {
+  margin: auto;
+  align-items: center;
+
+  .greeting {
+    text-align: center;
+    font-weight: bolder;
+
+    h3 {
+      color: $primary;
+    }
+
+    h2 {
+      color: $info;
+    }
+  }
+}

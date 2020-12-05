@@ -8,16 +8,19 @@ import { AuthenticationService } from "../service/auth.service";
 @Component({
   selector: "app-schedule",
   templateUrl: "./schedule.component.html",
-  styleUrls: ["./schedule.component.css"],
+  styleUrls: ["./schedule.component.scss"],
 })
 export class ScheduleComponent implements OnInit {
   lessons: Lesson[] = [];
   cells: Cell[] = [];
+  headers: Cell[] = [];
+
   professor: Person;
   personId: number;
   cols: number = 0;
 
-  topDateHeader: boolean = true;
+  topDateHeader: boolean = false;
+  showGrid: boolean = false;
 
   range = new FormGroup({
     start: new FormControl(this.getFirstDateOfWeek()),
@@ -38,7 +41,7 @@ export class ScheduleComponent implements OnInit {
   }
 
   isAdmin() {
-    return this.loginservice.isHasRole(Role.Admin);
+    return this.loginservice.isHasRole(Role.ADMIN);
   }
 
   lt() {
@@ -57,6 +60,8 @@ export class ScheduleComponent implements OnInit {
       )
       .subscribe((data) => {
         this.cells = data.cells;
+        this.showGrid = this.cells !== undefined && this.cells.length !== 0;
+        this.headers = data.headers;
         this.professor = data.professor;
         this.cols = data.cols;
       });
@@ -65,11 +70,13 @@ export class ScheduleComponent implements OnInit {
   getFirstDateOfWeek() {
     var curr = new Date();
     return new Date(curr.setDate(curr.getDate() - curr.getDay()));
+    // return new Date("2020-09-01");
   }
 
   getLastDateOfWeek() {
     var curr = new Date();
     return new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+    // return new Date("2020-09-30");
   }
 
   getDate(date: Date) {

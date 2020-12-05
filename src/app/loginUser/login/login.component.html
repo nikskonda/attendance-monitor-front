@@ -21,18 +21,15 @@
         required
       />
     </mat-form-field>
+    <p *ngIf="invalidLogin">Неверный логин или пароль.</p>
     <div>
       <button
-        class="button"
+        color="primary"
         mat-raised-button
         (click)="checkLogin()"
         [disabled]="!fgc.valid"
       >
         Войти
-      </button>
-
-      <!-- <button mat-raised-button color="warn" (click)="generateData()">
-        Base {{ status }}
       </button>
 
       <button
@@ -41,8 +38,8 @@
         (click)="generateData(true)"
         style="margin-left: 150px"
       >
-        Заполнить рандомными даными {{ status }}
-      </button> -->
+        TEST: Заполнить рандомными даными {{ status }}
+      </button>
     </div>
   </form>
 </div>

@@ -18,10 +18,9 @@ export class ReportService {
       .set("studentId", studentId.toString())
       .set("startDate", startDate)
       .set("endDate", endDate);
-    return this.httpClient.get<string[][]>(
-      ROOT_URL + "/report/byStudentForDateRange",
-      { params }
-    );
+    return this.httpClient.get<string[][]>(ROOT_URL + "/report/byStudent", {
+      params,
+    });
   }
 
   findDataByStudentDetailsForDateRange(
@@ -34,7 +33,24 @@ export class ReportService {
       .set("startDate", startDate)
       .set("endDate", endDate);
     return this.httpClient.get<string[][]>(
-      ROOT_URL + "/report/byStudentDetailsForDateRange",
+      ROOT_URL + "/report/byStudentDetails",
+      { params }
+    );
+  }
+
+  findDataByStudentAndSubjectDetailsForDateRange(
+    studentId: number,
+    subjectId: number,
+    startDate: string,
+    endDate: string
+  ): Observable<string[][]> {
+    const params = new HttpParams()
+      .set("studentId", studentId.toString())
+      .set("subjectId", subjectId ? subjectId.toString() : "")
+      .set("startDate", startDate)
+      .set("endDate", endDate);
+    return this.httpClient.get<string[][]>(
+      ROOT_URL + "/report/byStudentAndSubjectDetails",
       { params }
     );
   }
@@ -51,8 +67,19 @@ export class ReportService {
       .set("startDate", startDate)
       .set("endDate", endDate);
     return this.httpClient.get<string[][]>(
-      ROOT_URL + "/report/byGroupForDateRange",
+      ROOT_URL + "/report/byGroupAndSubject",
       { params }
     );
+  }
+
+  findProfesors(): Observable<string[][]> {
+    return this.httpClient.get<string[][]>(ROOT_URL + "/report/professors");
+  }
+
+  findStudents(groupId: number): Observable<string[][]> {
+    const params = new HttpParams().set("groupId", groupId.toString());
+    return this.httpClient.get<string[][]>(ROOT_URL + "/report/students", {
+      params,
+    });
   }
 }

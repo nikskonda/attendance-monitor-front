@@ -1,32 +1,51 @@
 <div class="menuContainer">
   <div class="leftMenu">
     <div class="header">
-      <mat-list-item class="menu">
-        <h1>Главное Меню</h1>
-      </mat-list-item>
+      <h1 class="menu">Главное Меню</h1>
     </div>
 
     <mat-list>
-      <mat-list-item (click)="displayProfs()">
-        <div class="litem">Преподаватели</div>
+      <div *ngFor="let link of getLinksByRole(links)">
+        <mat-list-item class="pointer" routerLink="{{ link.path }}">
+          <mat-icon mat-list-icon>{{ link.icon }}</mat-icon>
+          <div>{{ link.text }}</div>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+      </div>
+
+      <mat-list-item
+        class="pointer"
+        *ngIf="isShowProfs()"
+        (click)="displayProfs()"
+      >
+        <mat-icon mat-list-icon>people</mat-icon>
+        <div>Преподаватели</div>
       </mat-list-item>
-      <mat-divider class="divider"></mat-divider>
-      <mat-list-item (click)="displayEditors()"
-        ><div class="litem">Создать</div></mat-list-item
+      <mat-divider *ngIf="isShowProfs()"></mat-divider>
+      <mat-list-item
+        class="pointer"
+        *ngIf="isShowEditor()"
+        (click)="displayEditors()"
       >
-      <mat-divider class="divider"></mat-divider>
-      <mat-list-item (click)="displayRepots()"
-        ><div class="litem">Отчёты</div></mat-list-item
+        <mat-icon mat-list-icon>edit</mat-icon>
+        <div>Создать</div>
+      </mat-list-item>
+      <mat-divider *ngIf="isShowEditor()"></mat-divider>
+      <mat-list-item
+        class="pointer"
+        *ngIf="isShowReports()"
+        (click)="displayRepots()"
       >
+        <mat-icon mat-list-icon>receipt_long</mat-icon>
+        <div>Отчёты</div>
+      </mat-list-item>
     </mat-list>
   </div>
   <div class="rightSubMenu">
     <div class="header">
-      <mat-list-item class="submenu">
-        <h3 *ngIf="showProfList">Преподаватели</h3>
-        <h3 *ngIf="showEditors">Создать</h3>
-        <h3 *ngIf="showReports">Отчёты</h3>
-      </mat-list-item>
+      <h3 class="submenu" *ngIf="showProfList">Преподаватели</h3>
+      <h3 class="submenu" *ngIf="showEditors">Создать</h3>
+      <h3 class="submenu" *ngIf="showReports">Отчёты</h3>
     </div>
     <img
       *ngIf="showImage()"
@@ -43,23 +62,23 @@
         class="nav-link"
         routerLink="../schedule"
         [queryParams]="{ personId: prof.id }"
-        ><div class="ritem">{{ prof.fullName }}</div>
+        ><div class="ritem pointer">{{ prof.fullName }}</div>
       </mat-list-item>
     </mat-list>
     <mat-list *ngIf="showEditors">
       <mat-list-item
-        *ngFor="let link of editorLinks"
+        *ngFor="let link of getLinksByRole(editorLinks)"
         class="nav-link"
         routerLink="{{ link.path }}"
-        ><div class="ritem">{{ link.text }}</div>
+        ><div class="ritem pointer">{{ link.text }}</div>
       </mat-list-item>
     </mat-list>
     <mat-list *ngIf="showReports">
       <mat-list-item
-        *ngFor="let link of reportLinks"
+        *ngFor="let link of getLinksByRole(reportLinks)"
         class="nav-link"
         routerLink="{{ link.path }}"
-        ><div class="ritem">{{ link.text }}</div>
+        ><div class="ritem pointer">{{ link.text }}</div>
       </mat-list-item>
     </mat-list>
   </div>

@@ -2,7 +2,7 @@ import { BasicAuthHtppInterceptorService } from "./service/basic-auth-http-inter
 import { AppRoutingModule, routingComponents } from "./app-routing.module";
 import { CommonModule, registerLocaleData } from "@angular/common";
 import { BrowserModule } from "@angular/platform-browser";
-import { LOCALE_ID, NgModule } from "@angular/core";
+import { APP_INITIALIZER, LOCALE_ID, NgModule } from "@angular/core";
 
 import { AppComponent } from "./app.component";
 
@@ -35,8 +35,15 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatListModule } from "@angular/material/list";
 import { MatMenuModule } from "@angular/material/menu";
-import { MatNativeDateModule, MatRippleModule } from "@angular/material/core";
-import { MatPaginatorModule } from "@angular/material/paginator";
+import {
+  DateAdapter,
+  MatNativeDateModule,
+  MatRippleModule,
+} from "@angular/material/core";
+import {
+  MatPaginatorIntl,
+  MatPaginatorModule,
+} from "@angular/material/paginator";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatRadioModule } from "@angular/material/radio";
@@ -63,11 +70,27 @@ import { StudEditorDialog } from "./editor/stud-edit/stud-edit.component";
 import { LessonEditorDialog } from "./editor/lesson-edit/lesson-edit.component";
 import { DigitOnlyDirective } from "./directive/digit-only.directive";
 import localeRu from "@angular/common/locales/ru";
-import { AttLessonEditorDialog } from "./attendance-page/attendance-page.component";
+import { AttLessonEditorDialog } from "./attendancePage/attendance-page/attendance-page.component";
 import {
   PositionEditComponent,
   PositionEditorDialog,
 } from "./editor/position-edit/position-edit.component";
+import {
+  getRuPaginatorIntl,
+  initL10n,
+  l10nConfig,
+  RuDateAdapter,
+} from "./l10n";
+import { StudentsByGroupReportComponent } from "./report/students-by-group-report/students-by-group-report.component";
+import { ProfessorsReportComponent } from "./report/professors-report/professors-report.component";
+import { BaseReportComponent } from "./report/base-report/base-report.component";
+import { FilterComponent } from "./attendancePage/filter/filter.component";
+import { AccountEditorDialogComponent } from "./editor/account-edit/account-editor-dialog/account-editor-dialog.component";
+import {
+  L10nIntlModule,
+  L10nLoader,
+  L10nTranslationModule,
+} from "angular-l10n";
 
 registerLocaleData(localeRu);
 
@@ -94,6 +117,11 @@ registerLocaleData(localeRu);
     AttLessonEditorDialog,
     DigitOnlyDirective,
     PositionEditComponent,
+    StudentsByGroupReportComponent,
+    ProfessorsReportComponent,
+    BaseReportComponent,
+    FilterComponent,
+    AccountEditorDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -138,6 +166,8 @@ registerLocaleData(localeRu);
     ReactiveFormsModule,
     AppRoutingModule,
     HttpClientModule,
+    L10nTranslationModule.forRoot(l10nConfig),
+    L10nIntlModule,
   ],
   providers: [
     {
@@ -146,6 +176,14 @@ registerLocaleData(localeRu);
       multi: true,
     },
     { provide: LOCALE_ID, useValue: "ru" },
+    { provide: DateAdapter, useClass: RuDateAdapter },
+    { provide: MatPaginatorIntl, useValue: getRuPaginatorIntl() },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initL10n,
+      deps: [L10nLoader],
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })

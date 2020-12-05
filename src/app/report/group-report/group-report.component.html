@@ -31,13 +31,11 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+
+    <app-base-report
+      [show]="isPdfReady && fgc.valid"
+      [docDefinition]="getDocDefinition()"
+      [refreshFunction]="refreshCallback"
+    ></app-base-report>
   </form>
-
-  <div *ngIf="isPdfReady && fgc.valid">
-    <button mat-button (click)="refresh()">Обновить</button>
-
-    <button mat-button (click)="open()">Открыть</button>
-    <button mat-button (click)="download()">Скачать</button>
-    <button mat-button (click)="print()">Печатать</button>
-  </div>
 </div>

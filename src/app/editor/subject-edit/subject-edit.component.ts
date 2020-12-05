@@ -15,10 +15,10 @@ import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component"
 @Component({
   selector: "app-subject-edit",
   templateUrl: "./subject-edit.component.html",
-  styleUrls: ["./subject-edit.component.css"],
+  styleUrls: ["./subject-edit.component.scss"],
 })
 export class SubjectEditComponent implements OnInit {
-  displayedColumns: string[] = ["position", "name", "edit", "remove"];
+  displayedColumns: string[] = ["edit", "remove", "position", "name"];
   dataSource;
   length = 0;
   pageSize = 10;

@@ -1,0 +1,185 @@
+@import "../node_modules/@angular/material/theming";
+@import "const.scss";
+
+@include mat-core();
+
+$pr: #e8b01c;
+$ac: #7bb042;
+$wa: #f44336;
+
+$white: #fff;
+
+$primary: (
+  Main: $btn-primary,
+  Light: $btn-primary,
+  Dark: $btn-primary,
+  contrast: (
+    Main: $white,
+    Light: $white,
+    Dark: $white,
+  ),
+);
+$accent: (
+  Main: $btn-success,
+  Light: $btn-success,
+  Dark: $btn-success,
+  contrast: (
+    Main: $white,
+    Light: $white,
+    Dark: $white,
+  ),
+);
+$warn: (
+  Main: $btn-danger,
+  Light: $btn-danger,
+  Dark: $btn-danger,
+  contrast: (
+    Main: $white,
+    Light: $white,
+    Dark: $white,
+  ),
+);
+
+$custom-theme-primary: mat-palette($primary, Main, Light, Dark);
+$custom-theme-accent: mat-palette($accent, Main, Light, Dark);
+$custom-theme-warn: mat-palette($warn, Main, Light, Dark);
+//creating your theme
+$custom-theme: mat-light-theme(
+  $custom-theme-primary,
+  $custom-theme-accent,
+  $custom-theme-warn
+);
+//updating main theme
+@include angular-material-theme($custom-theme);
+
+/* Указываем box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Убираем внутренние отступы */
+ul[class],
+ol[class] {
+  padding: 0;
+}
+
+/* Убираем внешние отступы */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul[class],
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Выставляем основные настройки по-умолчанию для body */
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+/* Удаляем стандартную стилизацию для всех ul и il, у которых есть атрибут class*/
+ul[class],
+ol[class] {
+  list-style: none;
+}
+
+/* Элементы a, у которых нет класса, сбрасываем до дефолтных стилей */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* Упрощаем работу с изображениями */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Указываем понятную периодичность в потоке данных у article*/
+article > * + * {
+  margin-top: 1em;
+}
+
+/* Наследуем шрифты для инпутов и кнопок */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Удаляем все анимации и переходы для людей, которые предпочитай их не использовать */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 1000px;
+  margin: auto;
+
+  .mat-column-edit,
+  .mat-column-remove,
+  .mat-column-position {
+    text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .mat-column-name {
+    padding-left: 10px;
+  }
+
+  mat-icon {
+    cursor: pointer;
+  }
+
+  .but {
+    align-self: flex-end;
+    > button {
+      margin: 15px 0px;
+    }
+  }
+
+  .tab {
+    width: 100%;
+    align-self: center;
+  }
+
+  .pag {
+    align-self: flex-end;
+  }
+}
+
+.editor-form {
+  margin: 15px 0px;
+}

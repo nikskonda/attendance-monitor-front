@@ -1,35 +1,30 @@
 import { Component, OnInit } from "@angular/core";
+import { MatTabChangeEvent } from "@angular/material/tabs";
 import { Router } from "@angular/router";
+import { CommonService } from "src/app/service/common.service";
+import { EDIT_MENU } from "../edit-menu";
 
 @Component({
   selector: "app-editor-page",
   templateUrl: "./editor-page.component.html",
-  styleUrls: ["./editor-page.component.css"],
+  styleUrls: ["./editor-page.component.scss"],
 })
 export class EditorPageComponent implements OnInit {
-  links = [
-    { path: "edit/speciality", text: "Специальность" },
-    { path: "edit/group", text: "Группа" },
-    { path: "edit/student", text: "Студент" },
-    { path: "edit/position", text: "Должность" },
-    { path: "edit/professor", text: "Преподаватель" },
-    { path: "edit/subject", text: "Дисциплина" },
-    { path: "edit/lesson", text: "Занятия" },
-    { path: "edit/account", text: "Пользователи" },
+  links = [];
 
-    { path: "menu", text: "Вернуться в меню" },
-  ];
+  selectedIndex: number = 0;
 
-  activeLink;
-
-  constructor(private router: Router) {}
+  constructor(private router: Router, private commonService: CommonService) {}
 
   ngOnInit(): void {
-    this.activeLink = this.links.find((l) => l.path === this.router.url);
+    this.links = this.commonService.getLinksByRole(EDIT_MENU);
+    this.links.push({ path: "/menu", text: "Вернуться в меню" });
+    this.selectedIndex = this.links.findIndex(
+      (l) => l.path === this.router.url
+    );
   }
 
-  goTo(link) {
-    this.activeLink == link;
-    this.router.navigate([link.path]);
+  goTo(tabChangeEvent: MatTabChangeEvent) {
+    this.router.navigate([this.links[tabChangeEvent.index].path]);
   }
 }

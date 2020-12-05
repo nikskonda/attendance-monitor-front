@@ -2,31 +2,38 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { CommonModule, DatePipe } from "@angular/common";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AttCell, AttendanceService } from "../service/attendance.service";
-import { getDateFromStr, ObjectRef } from "../service/common.service";
+import { AttCell, AttendanceService } from "../../service/attendance.service";
+import {
+  CommonService,
+  getDateFromStr,
+  ObjectRef,
+} from "../../service/common.service";
 import {
   DAYS_OF_WEEK,
   Lesson,
   LessonService,
   LessonTime,
-} from "../service/lesson.service";
+} from "../../service/lesson.service";
 import {
   MatDialog,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
-import { GroupService, Volume } from "../service/group.service";
-import { Person, PersonService, Role } from "../service/account.service";
-import { SubjectService } from "../service/subject.service";
-import { AuthenticationService } from "../service/auth.service";
-import { ProfessorService } from "../service/professor.service";
+import { GroupService, Volume } from "../../service/group.service";
+import { Person, AccountService, Role } from "../../service/account.service";
+import { SubjectService } from "../../service/subject.service";
+import { AuthenticationService } from "../../service/auth.service";
+import { ProfessorService } from "../../service/professor.service";
+import { FilterComponent } from "../filter/filter.component";
+import { RemoveDialogComponent } from "src/app/editor/remove-dialog/remove-dialog.component";
 
 @Component({
   selector: "app-attendance-page",
   templateUrl: "./attendance-page.component.html",
-  styleUrls: ["./attendance-page.component.css"],
+  styleUrls: ["./attendance-page.component.scss"],
 })
 export class AttendancePageComponent implements OnInit {
+  headers: AttCell[] = [];
   att: AttCell[] = [];
 
   cols: number = 0;
@@ -37,6 +44,7 @@ export class AttendancePageComponent implements OnInit {
   groupId: number;
   groupVolume: string = "FULL";
   subjectId: number;
+  subjectTypesSelected: string[] = [];
 
   selectedValue: string = "";
 
@@ -46,17 +54,6 @@ export class AttendancePageComponent implements OnInit {
     start: new FormControl(this.get3DaysBefore()),
     end: new FormControl(this.get3DaysAfter()),
   });
-
-  subjectTypesSelect = {
-    name: "All",
-    completed: false,
-    subtasks: [
-      { name: "LECTURE", completed: false },
-      { name: "PRACTICE", completed: false },
-      { name: "LAB", completed: false },
-    ],
-  };
-  allSubjectTypes: boolean = false;
 
   times: LessonTime[] = [];
   subjects: ObjectRef[] = [];
@@ -102,64 +99,38 @@ export class AttendancePageComponent implements OnInit {
       this.groupId = params["groupId"];
       this.groupVolume = params["groupVolume"] || "FULL";
       this.subjectId = params["subjectId"];
-      this.subjectTypesSelect.subtasks.find(
-        (st) => st.name === params["subjectTypes"]
-      ).completed = true;
+      this.subjectTypesSelected = params["subjectTypes"] || [];
+      const date = params["date"] || undefined;
+      if (date) {
+        this.setDate(date);
+      }
+      this.subjectTypesSelected =
+        this.subjectTypesSelected instanceof Array
+          ? this.subjectTypesSelected
+          : new Array(this.subjectTypesSelected);
+      console.log(this.subjectTypesSelected);
     });
     this.loadTable();
   }
 
-  updateAllComplete() {
-    this.allSubjectTypes =
-      this.subjectTypesSelect.subtasks != null &&
-      this.subjectTypesSelect.subtasks.every((t) => t.completed);
-    this.loadTable();
+  setDate(date) {
+    this.range.controls.start.setValue(this.get3DaysBefore(date));
+    this.range.controls.end.setValue(this.get3DaysAfter(date));
   }
 
-  someComplete(): boolean {
-    if (this.subjectTypesSelect.subtasks == null) {
-      return false;
-    }
-    return (
-      this.subjectTypesSelect.subtasks.filter((t) => t.completed).length > 0 &&
-      !this.allSubjectTypes
-    );
+  get3DaysBefore(date?) {
+    var curr = new Date(date);
+    return new Date(curr.setDate(curr.getDate() - 5));
   }
 
-  setAll(completed: boolean) {
-    this.allSubjectTypes = completed;
-    if (this.subjectTypesSelect.subtasks == null) {
-      return;
-    }
-    this.subjectTypesSelect.subtasks.forEach((t) => (t.completed = completed));
-    this.loadTable();
-  }
-
-  getSelectedSubjectTypes() {
-    let types: string[] = [];
-    this.subjectTypesSelect.subtasks.forEach((t) => {
-      if (t.completed) types.push(t.name);
-    });
-    return types;
-  }
-
-  get3DaysBefore() {
-    var curr = new Date();
-    return new Date(curr.setDate(curr.getDate() - 3));
-  }
-
-  get3DaysAfter() {
-    var curr = new Date();
-    return new Date(curr.setDate(curr.getDate() + 3));
+  get3DaysAfter(date?) {
+    var curr = new Date(date);
+    return new Date(curr.setDate(curr.getDate() + 5));
   }
 
   loadTable() {
     if (!this.range.value.start || !this.range.value.end) return;
-    if (
-      this.subjectTypesSelect.subtasks.find((t) => t.completed === true) ===
-      undefined
-    )
-      return;
+    if (this.subjectTypesSelected.length === 0) return;
 
     this.attService
       .getAttendance(
@@ -167,11 +138,11 @@ export class AttendancePageComponent implements OnInit {
         getDateFromStr(this.range.value.end),
         this.groupId,
         this.subjectId,
-        this.getSelectedSubjectTypes(),
+        this.subjectTypesSelected,
         this.groupVolume
       )
       .subscribe((data) => {
-        console.log(data);
+        this.headers = data.headers;
         this.att = data.cells;
         this.cols = data.cols;
         this.group = data.group;
@@ -213,7 +184,6 @@ export class AttendancePageComponent implements OnInit {
       this.listToSave.push(cell);
     }
     this.save(false);
-    console.log(this.listToSave);
   }
 
   save(isSaveButton: boolean) {
@@ -267,18 +237,15 @@ export class AttendancePageComponent implements OnInit {
         groups: this.groups,
         volumes: this.volumes,
         days: DAYS_OF_WEEK,
-        profEmail: this.loginService.getUserData().email,
+        profEmail: this.loginService.getUserData().username,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result.status) {
-        console.log(result);
         this.groupId = result.lesson.group.id;
         this.groupVolume = result.lesson.groupVolume;
         this.subjectId = result.lesson.subject.id;
-        this.subjectTypesSelect.subtasks.forEach(
-          (st) => (st.completed = st.name === result.lesson.subjectType)
-        );
+        this.subjectTypesSelected = [result.lesson.subjectType];
         this.loadTable();
       }
     });
@@ -302,11 +269,45 @@ export class AttendancePageComponent implements OnInit {
         this.groupId = result.status.lesson.group.id;
         this.groupVolume = result.status.lesson.groupVolume;
         this.subjectId = result.status.lesson.subject.id;
-        this.subjectTypesSelect.subtasks.find(
-          (st) => st.name === result.status.lesson.subjectType
-        ).completed = true;
+        this.subjectTypesSelected = [result.lesson.subjectType];
         this.loadTable();
       }
+    });
+  }
+
+  delete(lesson: Lesson) {
+    const dialogRef = this.dialog.open(RemoveDialogComponent, {
+      data: {
+        name: `Удалить занятие по '${lesson.subject.qualifier}' за ${lesson.date} ${lesson.time.startTime}-${lesson.time.finishTime}?`,
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.lessonService.remove(lesson.id).subscribe((_) => this.loadTable());
+      }
+    });
+    return false;
+  }
+
+  filter() {
+    const dialogRef = this.dialog.open(FilterComponent, {
+      data: {
+        subjects: this.subjects,
+        groups: this.groups,
+        volumes: this.volumes,
+
+        groupId: this.groupId,
+        groupVolume: this.groupVolume,
+        subjectId: this.subjectId,
+        subjectTypes: this.subjectTypesSelected,
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.groupId = result.groupId;
+      this.groupVolume = result.groupVolume;
+      this.subjectId = result.subjectId;
+      this.subjectTypesSelected = result.subjectTypes;
+      this.loadTable();
     });
   }
 }
@@ -332,13 +333,12 @@ export class AttLessonEditorDialog implements OnInit {
 
   constructor(
     private lessonService: LessonService,
-    private loginService: AuthenticationService,
+    private commonService: CommonService,
     public dialogRef: MatDialogRef<AttLessonEditorDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     if (data.isUpdate) {
       this.active = data.active;
-      console.log(data.active);
       this.fgc.controls.date.setValue(new Date(data.active.date).toISOString());
       this.fgc.controls.time.setValue(data.active.time.id);
       this.fgc.controls.subject.setValue(data.active.subject.id);
@@ -359,7 +359,11 @@ export class AttLessonEditorDialog implements OnInit {
       this.fgc.controls.prof.setValue(
         data.profs.find((p) => p.email === data.profEmail).id
       );
+      if (!commonService.isInclude([Role.ADMIN])) {
+        data.profs = data.profs.filter((pr) => pr.email === data.profEmail);
+      }
     }
+
     this.isUpdate = data.isUpdate;
   }
   ngOnInit(): void {}
@@ -401,7 +405,8 @@ export class AttLessonEditorDialog implements OnInit {
   }
 
   isProfDisable() {
-    if (this.loginService.isHasRole(Role.Admin)) return false;
-    return true;
+    // if (this.loginService.isHasRole(Role.PROFESSOR))
+    return false;
+    // return true;
   }
 }

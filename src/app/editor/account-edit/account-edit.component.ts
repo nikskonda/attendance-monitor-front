@@ -2,22 +2,31 @@ import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
-import { PersonService, User } from "src/app/service/account.service";
+import {
+  getRoles,
+  AccountService,
+  Role,
+  User,
+} from "src/app/service/account.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
+import { AccountEditorDialogComponent } from "./account-editor-dialog/account-editor-dialog.component";
 
 @Component({
   selector: "app-account-edit",
   templateUrl: "./account-edit.component.html",
-  styleUrls: ["./account-edit.component.css"],
+  styleUrls: ["./account-edit.component.scss"],
 })
 export class AccountEditComponent implements OnInit {
   displayedColumns: string[] = [
-    "position",
-    "fullName",
-    "mustUpdatePassword",
-    "email",
-    "roles",
     "reset",
+    "lock",
+    "edit",
+    "position",
+    "email",
+    "mustUpdatePassword",
+    "accountNonLocked",
+    "roles",
+    "fullName",
   ];
   dataSource;
   length = 0;
@@ -26,13 +35,79 @@ export class AccountEditComponent implements OnInit {
 
   list: User[] = [];
 
-  constructor(private personService: PersonService, public dialog: MatDialog) {}
+  search: string = "";
+
+  selectedRole: string = "";
+  roles: string[] = getRoles();
+
+  constructor(
+    private AccountService: AccountService,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit() {
-    this.updateList();
+    this.searchList();
   }
 
-  updateList(event?: PageEvent) {
+  create() {
+    const dialogRef = this.dialog.open(AccountEditorDialogComponent);
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.searchList();
+      }
+    });
+  }
+
+  update(email) {
+    const dialogRef = this.dialog.open(AccountEditorDialogComponent, {
+      data: {
+        email: email,
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.searchList();
+      }
+    });
+  }
+
+  resetPassword(email: string, name: string) {
+    const dialogRef = this.dialog.open(RemoveDialogComponent, {
+      data: {
+        name: `Сбросить пароль аккаунта ${email} ${
+          name ? "(" + name + ")" : ""
+        }?`,
+        button: "Сбросить",
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.AccountService.resetPassword(email).subscribe();
+      }
+    });
+  }
+
+  changeLock(email: string, name: string, isLock: boolean) {
+    const dialogRef = this.dialog.open(RemoveDialogComponent, {
+      data: {
+        name: `${
+          isLock ? "Разблокировать" : "Заблокировать"
+        } аккаунт ${email} ${name ? "(" + name + ")" : ""}?`,
+        button: isLock ? "Разблокировать" : "Заблокировать",
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.AccountService.changeLock(email).subscribe(
+          () => (isLock = !isLock),
+          (error) => console.log(error),
+          () => this.searchList()
+        );
+      }
+    });
+  }
+
+  searchList(event?: PageEvent) {
     if (event) {
       if (this.pageSize !== event.pageSize) {
         this.pageSize = event.pageSize;
@@ -41,7 +116,12 @@ export class AccountEditComponent implements OnInit {
         this.currentPage = event.pageIndex;
       }
     }
-    this.personService.getUsersPage(this.currentPage, this.pageSize).subscribe(
+    this.AccountService.findUserPage(
+      this.search,
+      this.selectedRole,
+      this.currentPage,
+      this.pageSize
+    ).subscribe(
       (data) => {
         this.list = data.content;
         this.length = data.totalElements;
@@ -57,23 +137,11 @@ export class AccountEditComponent implements OnInit {
             mustUpdatePassword: s.mustUpdatePassword,
             email: s.qualifier,
             roles: s.roles.map((a) => a.qualifier),
+            accountNonLocked: s.accountNonLocked,
           });
         });
         this.dataSource = new MatTableDataSource(newList);
       }
     );
-  }
-
-  resetPassword(email: string, name: string) {
-    const dialogRef = this.dialog.open(RemoveDialogComponent, {
-      data: {
-        name: `Сбросить пароль для ${name} (${email})?`,
-      },
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.personService.resetPassword(email).subscribe();
-      }
-    });
   }
 }

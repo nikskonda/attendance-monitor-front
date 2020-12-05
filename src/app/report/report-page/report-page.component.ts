@@ -1,29 +1,30 @@
 import { Component, OnInit } from "@angular/core";
+import { MatTabChangeEvent } from "@angular/material/tabs";
 import { Router } from "@angular/router";
+import { CommonService } from "src/app/service/common.service";
+import { REPORT_MENU } from "../report-menu";
 
 @Component({
   selector: "app-report-page",
   templateUrl: "./report-page.component.html",
-  styleUrls: ["./report-page.component.css"],
+  styleUrls: ["./report-page.component.scss"],
 })
 export class ReportPageComponent implements OnInit {
-  links = [
-    { path: "report/student", text: "По Студенту" },
-    { path: "report/group", text: "По группе" },
-    { path: "report/studentDetails", text: "По студенту детальный" },
-    { path: "menu", text: "Вернуться в меню" },
-  ];
+  links = [];
 
-  activeLink;
+  selectedIndex: number = 0;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private commonService: CommonService) {}
 
   ngOnInit(): void {
-    this.activeLink = this.links.find((l) => l.path === this.router.url);
+    this.links = this.commonService.getLinksByRole(REPORT_MENU);
+    this.links.push({ path: "/menu", text: "Вернуться в меню" });
+    this.selectedIndex = this.links.findIndex(
+      (l) => l.path === this.router.url
+    );
   }
 
-  goTo(link) {
-    this.activeLink == link;
-    this.router.navigate([link.path]);
+  goTo(tabChangeEvent: MatTabChangeEvent) {
+    this.router.navigate([this.links[tabChangeEvent.index].path]);
   }
 }

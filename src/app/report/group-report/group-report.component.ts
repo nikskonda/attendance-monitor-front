@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { ObjectRef } from "src/app/service/common.service";
+import { getDate, ObjectRef } from "src/app/service/common.service";
 import { GroupService } from "../../service/group.service";
 import { ReportService } from "../../service/report.service";
 import { SubjectService } from "../../service/subject.service";
@@ -12,15 +12,10 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 @Component({
   selector: "app-group-report",
   templateUrl: "./group-report.component.html",
-  styleUrls: ["./group-report.component.css"],
+  styleUrls: ["./group-report.component.scss"],
 })
 export class GroupReportComponent implements OnInit {
-  selectedGroup: ObjectRef;
-  selectedGroupId: number;
   groups: ObjectRef[] = [];
-
-  selectedSubject: ObjectRef;
-  subjectId: number;
   subjects: ObjectRef[] = [];
 
   fgc = new FormGroup({
@@ -32,6 +27,7 @@ export class GroupReportComponent implements OnInit {
   });
 
   table: string[][] = [];
+  refreshCallback: Function;
 
   isPdfReady: boolean = false;
 
@@ -42,10 +38,8 @@ export class GroupReportComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.groupService.getAll().subscribe((data) => {
-      data.forEach((ref) => this.groups.push(ref));
-      console.log(this.groups);
-    });
+    this.refreshCallback = this.refresh.bind(this);
+    this.groupService.getAll().subscribe((data) => (this.groups = data));
   }
 
   onGroupSelect() {
@@ -55,20 +49,17 @@ export class GroupReportComponent implements OnInit {
   }
 
   onSubjectSelect() {
-    const start: Date = this.fgc.controls.start.value;
-    start.setMinutes(-start.getTimezoneOffset());
-    const end: Date = this.fgc.controls.end.value;
-    end.setMinutes(-end.getTimezoneOffset());
+    if (!this.fgc.controls.start.value || !this.fgc.controls.end.value) return;
+
     this.reportService
       .findDataByGroupForDateRange(
         this.fgc.value.subject,
         this.fgc.value.group,
-        start.toISOString().substring(0, 10),
-        end.toISOString().substring(0, 10)
+        getDate(this.fgc.controls.start.value),
+        getDate(this.fgc.controls.end.value)
       )
       .subscribe(
         (data) => {
-          console.log(data);
           this.table = data;
         },
         (error) => console.log(error),
@@ -76,29 +67,13 @@ export class GroupReportComponent implements OnInit {
       );
   }
 
-  getDate(date: Date) {
-    date.setMinutes(-date.getTimezoneOffset());
-    return date.toISOString().substring(0, 10);
-  }
-
   refresh() {
     this.isPdfReady = false;
     this.onSubjectSelect();
   }
 
-  open() {
-    pdfMake.createPdf(this.getDocDefinition()).open();
-  }
-
-  download() {
-    pdfMake.createPdf(this.getDocDefinition()).download();
-  }
-
-  print() {
-    pdfMake.createPdf(this.getDocDefinition()).print();
-  }
-
   getDocDefinition() {
+    if (!this.isPdfReady) return;
     const group = this.groups.find((g) => g.id == this.fgc.value.group)
       .qualifier;
     const subject = this.subjects.find((g) => g.id == this.fgc.value.subject)
@@ -124,9 +99,9 @@ export class GroupReportComponent implements OnInit {
             " по предмету '" +
             subject +
             "' за период занятий с " +
-            this.getDate(this.fgc.controls.start.value) +
+            getDate(this.fgc.controls.start.value) +
             " по " +
-            this.getDate(this.fgc.controls.end.value) +
+            getDate(this.fgc.controls.end.value) +
             ".",
           marginTop: 100,
           marginBottom: 50,

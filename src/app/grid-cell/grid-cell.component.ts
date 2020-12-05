@@ -1,34 +1,48 @@
-import { Route } from "@angular/compiler/src/core";
 import {
   Component,
   ElementRef,
-  HostListener,
+  Inject,
   Input,
   OnInit,
   ViewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
+import { L10nLocale, L10nTranslationService, L10N_LOCALE } from "angular-l10n";
+import { Volume } from "../service/group.service";
 import { Lesson } from "../service/lesson.service";
 
 @Component({
   selector: "app-grid-cell",
   templateUrl: "./grid-cell.component.html",
-  styleUrls: ["./grid-cell.component.css"],
+  styleUrls: ["./grid-cell.component.scss"],
 })
 export class GridCellComponent implements OnInit {
   @Input() lesson: Lesson;
 
-  text: string = "";
+  text1: string = "";
+  text2: string = "";
   fullText: string = "";
   height: number = 100;
 
   @ViewChild("myDiv") div: ElementRef;
 
-  constructor(private router: Router) {}
+  constructor(
+    private translation: L10nTranslationService,
+    @Inject(L10N_LOCALE) public locale: L10nLocale,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    this.text = `${this.lesson.subject.qualifier} (${this.lesson.subjectType})`;
-    this.fullText = `${this.lesson.subject.qualifier} (${this.lesson.subjectType}) ${this.lesson.group.qualifier}`;
+    const subjectType = this.translation.translate(this.lesson.subjectType);
+    const groupVolume = this.translation.translate(
+      this.lesson.groupVolume.toString()
+    );
+    this.text1 = `${this.lesson.subject.qualifier} (${subjectType})`;
+    this.text2 =
+      this.lesson.groupVolume !== Volume.FULL
+        ? `${this.lesson.group.qualifier} (${groupVolume})`
+        : `${this.lesson.group.qualifier}`;
+    this.fullText = `${this.text1} ${this.text2}`;
   }
 
   goToLesson() {
@@ -37,16 +51,18 @@ export class GridCellComponent implements OnInit {
         groupId: this.lesson.group.id,
         subjectId: this.lesson.subject.id,
         subjectTypes: this.lesson.subjectType,
+        groupVolume: this.lesson.groupVolume,
+        date: this.lesson.date,
       },
     });
   }
 
-  getText(height) {
+  getText(height, text) {
     if (height > 100) {
-      var lastIndex = this.text.lastIndexOf(" ");
-      this.text = this.text.substring(0, lastIndex) + "...";
+      var lastIndex = text.lastIndexOf(" ");
+      text = text.substring(0, lastIndex) + "...";
       this.height = height;
     }
-    return this.text;
+    return text;
   }
 }

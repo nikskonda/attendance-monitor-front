@@ -16,7 +16,8 @@ export class SpecialityService {
   getPage(number: number, size: number): Observable<Page<ObjectRef>> {
     const params = new HttpParams()
       .set("page", number.toString())
-      .set("size", size.toString());
+      .set("size", size.toString())
+      .set("sort", "name");
     return this.httpClient.get<Page<ObjectRef>>(ROOT_URL + "/speciality/page", {
       params,
     });

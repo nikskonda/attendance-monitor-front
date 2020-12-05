@@ -11,23 +11,24 @@ import { PositionService } from "src/app/service/position.service";
 import { ObjectRef } from "src/app/service/common.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
 import { Professor, ProfessorService } from "src/app/service/professor.service";
-import { Role } from "src/app/service/account.service";
+import { AccountService, Role } from "src/app/service/account.service";
 
 @Component({
   selector: "app-prof-edit",
   templateUrl: "./prof-edit.component.html",
-  styleUrls: ["./prof-edit.component.css"],
+  styleUrls: ["./prof-edit.component.scss"],
 })
 export class ProfEditComponent implements OnInit {
   displayedColumns: string[] = [
+    "edit",
+    "remove",
     "pos",
     "lastName",
     "firstName",
     "patronymic",
     "position",
     "email",
-    "edit",
-    "remove",
+    "phone",
   ];
   dataSource;
   length = 0;
@@ -79,6 +80,7 @@ export class ProfEditComponent implements OnInit {
             fullName: s.fullName,
             position: s.position.qualifier,
             email: s.email,
+            phone: s.phone,
           });
         });
         this.dataSource = new MatTableDataSource(newList);
@@ -145,10 +147,12 @@ export class ProfEditComponent implements OnInit {
 
 @Component({
   templateUrl: "./prof-editor-dialog.html",
-  styleUrls: ["./prof-edit.component.css"],
+  styleUrls: ["./prof-edit.component.scss"],
 })
 export class ProfEditorDialog implements OnInit {
   public isUpdate: boolean = false;
+
+  emailExists: boolean = false;
 
   active: Professor;
 
@@ -158,25 +162,35 @@ export class ProfEditorDialog implements OnInit {
     patronymic: new FormControl(""),
     email: new FormControl("", [Validators.required, Validators.email]),
     position: new FormControl("", [Validators.required]),
+    phone: new FormControl("", [Validators.required]),
   });
 
   constructor(
     private profService: ProfessorService,
+    private accountService: AccountService,
     public dialogRef: MatDialogRef<ProfEditorDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     if (data.isUpdate) {
       this.active = data.active;
-      console.log(data.active);
       this.fgc.controls.name.setValue(data.active.firstName);
       this.fgc.controls.lastName.setValue(data.active.lastName);
       this.fgc.controls.patronymic.setValue(data.active.patronymic);
       this.fgc.controls.email.setValue(data.active.email);
       this.fgc.controls.position.setValue(data.active.position.id);
+      this.fgc.controls.phone.setValue(data.active.phone);
     }
     this.isUpdate = data.isUpdate;
   }
   ngOnInit(): void {}
+
+  isUniqueEmail() {
+    if (!this.isUpdate && this.fgc.controls.email.valid) {
+      this.accountService
+        .isUniqueEmail(this.fgc.value.email)
+        .subscribe((data) => (this.emailExists = !data));
+    }
+  }
 
   create() {
     let prof: Professor = {
@@ -186,8 +200,9 @@ export class ProfEditorDialog implements OnInit {
       lastName: this.fgc.value.lastName,
       patronymic: this.fgc.value.patronymic,
       fullName: null,
-      roles: [Role.Professor],
+      roles: [{ id: null, qualifier: "" + Role.PROFESSOR }],
       position: this.fgc.value.position,
+      phone: this.fgc.value.phone,
     };
     this.profService.create(prof).subscribe((_) => this.close(true));
   }
@@ -202,6 +217,7 @@ export class ProfEditorDialog implements OnInit {
       fullName: null,
       roles: this.active.roles,
       position: this.fgc.value.position,
+      phone: this.fgc.value.phone,
     };
     this.profService
       .update(this.active.id, prof)

@@ -1,0 +1,35 @@
+.schedContainer {
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  .person {
+    align-self: center;
+  }
+  .dateRange {
+    align-self: center;
+  }
+  .toggle {
+    align-self: flex-end;
+    margin: 20px;
+  }
+
+  .empty-grid {
+    text-align: center;
+  }
+
+  .grid-wr {
+    overflow-x: auto;
+  }
+  .grid {
+    position: relative;
+    border-collapse: collapse;
+    .header {
+      position: sticky;
+      top: 0; /* Don't forget this, required for the stickiness */
+      z-index: 99;
+    }
+  }
+}
+.mat-grid-tile {
+  border: solid 1px white;
+}

@@ -1,11 +1,11 @@
-<nav mat-tab-nav-bar mat-align-tabs="center">
-  <a
-    mat-tab-link
-    *ngFor="let link of links"
-    (click)="goTo(link)"
-    [active]="activeLink == link"
+<div class="editor-container">
+  <mat-tab-group
+    mat-align-tabs="center"
+    [selectedIndex]="selectedIndex"
+    (selectedTabChange)="goTo($event)"
   >
-    {{ link.text }}
-  </a>
-</nav>
-<router-outlet></router-outlet>
+    <mat-tab class="menu" *ngFor="let link of links" label="{{ link.text }}">
+    </mat-tab>
+  </mat-tab-group>
+  <router-outlet></router-outlet>
+</div>

@@ -18,11 +18,22 @@
     </mat-form-field>
 
     <mat-form-field class="example-full-width">
-      <input matInput placeholder="E-mail" formControlName="email" required />
+      <input
+        matInput
+        placeholder="E-mail"
+        formControlName="email"
+        required
+        [readonly]="isUpdate"
+      />
       <mat-error *ngIf="fgc.controls.email.hasError('email')">
         Введите валидный e-mail.
       </mat-error>
     </mat-form-field>
+    <p *ngIf="emailExists" style="color: #b97d34">
+      Данный e-mail уже используется в системе. В случае сохранения данные
+      зарегистрированного пользователя будут обновлены и добавлена роль
+      Студента.
+    </p>
 
     <mat-form-field class="example-full-width" appearance="fill">
       <mat-label>Группа</mat-label>
@@ -53,7 +64,8 @@
 <mat-dialog-actions align="end">
   <button mat-button (click)="close(false)">Отмена</button>
   <button
-    mat-button
+    mat-raised-button
+    color="accent"
     (click)="isUpdate ? update() : create()"
     cdkFocusInitial
     [disabled]="!fgc.valid"

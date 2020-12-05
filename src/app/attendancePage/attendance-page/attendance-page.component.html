@@ -1,5 +1,5 @@
 <div class="attContainer">
-  <div class="subject">
+  <div class="subject" *ngIf="subject && group">
     <h2>{{ subject?.qualifier + " (" + group?.qualifier + ")" }}</h2>
   </div>
   <div class="props">
@@ -18,6 +18,7 @@
         Create
       </button>
     </div>
+
     <div>
       <mat-form-field appearance="fill">
         <mat-label>Временной период</mat-label>
@@ -35,6 +36,11 @@
       </mat-form-field>
     </div>
     <div>
+      <button mat-raised-button color="accent" (click)="filter()">
+        Фильтр
+      </button>
+    </div>
+    <!-- <div>
       <section class="example-section">
         <span class="example-list-section">
           <mat-checkbox
@@ -75,38 +81,60 @@
           {{ volume }}
         </mat-radio-button>
       </mat-radio-group>
-    </div>
+    </div> -->
   </div>
-  <div>
-    <mat-grid-list [cols]="cols + 2" rowHeight="50px">
-      <mat-grid-tile
-        style="border: 1px solid black"
-        *ngFor="let cell of att; index as i"
-        [colspan]="i % cols === 0 ? 3 : 1"
-        [rowspan]="1"
-        (contextmenu)="isAtt(cell) ? onRightClick(cell) : true"
-      >
-        <div *ngIf="isDateTimes(cell, i)" (click)="update(cell.lesson)">
-          <p *ngFor="let p of getHeaderPList(cell.lesson)" style="margin: 0px">
-            {{ p }}
-          </p>
-        </div>
-        <p *ngIf="isStudents(cell, i)">{{ cell.text }}</p>
-        <button
-          *ngIf="isAtt(cell)"
-          style="width: 100%; height: 100%; border: none"
-          [ngStyle]="{ 'background-color': getCellBackground(cell) }"
-          mat-button
-          [matMenuTriggerFor]="menu"
+  <div style="overflow-x: auto">
+    <div
+      [ngStyle]="{
+        'min-width.px': (cols + 1) * 100,
+        'max-width.px': (cols + 1) * 150
+      }"
+    >
+      <mat-grid-list class="header" [cols]="cols + 1" rowHeight="75px">
+        <mat-grid-tile
+          style="border: 1px solid black"
+          *ngFor="let cell of headers; index as i"
+          [colspan]="i % cols === 0 ? 2 : 1"
+          [rowspan]="1"
+          (contextmenu)="i !== 0 ? delete(cell.lesson) : true"
+          [style.background]="'#98b5c3'"
         >
-          {{ cell.text }}
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="setValue(0, cell)"></button>
-          <button mat-menu-item (click)="setValue(1, cell)">1</button>
-          <button mat-menu-item (click)="setValue(2, cell)">2</button>
-        </mat-menu>
-      </mat-grid-tile>
-    </mat-grid-list>
+          <div (click)="update(cell.lesson)">
+            <p
+              *ngFor="let p of getHeaderPList(cell.lesson)"
+              style="margin: 0px"
+            >
+              {{ p }}
+            </p>
+          </div>
+        </mat-grid-tile>
+      </mat-grid-list>
+
+      <mat-grid-list [cols]="cols + 1" rowHeight="50px">
+        <mat-grid-tile
+          style="border: 1px solid black"
+          *ngFor="let cell of att; index as i"
+          [colspan]="i % cols === 0 ? 2 : 1"
+          [rowspan]="1"
+          (contextmenu)="isAtt(cell) ? onRightClick(cell) : true"
+        >
+          <p *ngIf="isStudents(cell, i)">{{ cell.text }}</p>
+          <button
+            *ngIf="isAtt(cell)"
+            style="width: 100%; height: 100%; border: none"
+            [ngStyle]="{ 'background-color': getCellBackground(cell) }"
+            mat-button
+            [matMenuTriggerFor]="menu"
+          >
+            {{ cell.text }}
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="setValue(0, cell)"></button>
+            <button mat-menu-item (click)="setValue(1, cell)">1</button>
+            <button mat-menu-item (click)="setValue(2, cell)">2</button>
+          </mat-menu>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
   </div>
 </div>

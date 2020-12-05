@@ -5,9 +5,16 @@ import { Group, Volume } from "./group.service";
 import { ObjectRef, Page, ROOT_URL } from "./common.service";
 
 export enum Role {
-  Student = "STUDENT",
-  Professor = "PROFESSOR",
-  Admin = "ADMIN",
+  STUDENT,
+  PARENT,
+  PROFESSOR,
+  ADMIN,
+  REPORT_VIEW,
+}
+
+export function getRoles(): string[] {
+  const keys = Object.keys(Role);
+  return keys.slice(keys.length / 2);
 }
 
 export interface User {
@@ -17,6 +24,7 @@ export interface User {
   username: string;
   mustUpdatePassword: boolean;
   roles: ObjectRef[];
+  accountNonLocked: boolean;
 }
 
 export interface Person {
@@ -28,13 +36,15 @@ export interface Person {
   lastName: string;
   patronymic: string;
 
-  roles: Role[];
+  roles: ObjectRef[];
+
+  phone: string;
 }
 
 @Injectable({
   providedIn: "root",
 })
-export class PersonService {
+export class AccountService {
   constructor(private httpClient: HttpClient) {}
 
   findByEmail(email: string): Observable<User> {
@@ -54,8 +64,6 @@ export class PersonService {
       oldPassword: oldPassword,
       newPassword: newPassword,
     };
-    console.log("body");
-    console.log(body);
     return this.httpClient.post<User>(
       ROOT_URL + "/account/updatePassword",
       body
@@ -92,7 +100,47 @@ export class PersonService {
     });
   }
 
+  findUserPage(
+    search: string,
+    role: string,
+    number: number,
+    size: number
+  ): Observable<Page<User>> {
+    const params = new HttpParams()
+      .set("search", search)
+      .set("role", role)
+      .set("page", number.toString())
+      .set("size", size.toString())
+      .set("sort", "email");
+    return this.httpClient.get<Page<User>>(ROOT_URL + "/account/search", {
+      params,
+    });
+  }
+
+  isUniqueEmail(email: string): Observable<boolean> {
+    const params = new HttpParams().set("email", email);
+    return this.httpClient.get<boolean>(ROOT_URL + "/account/isUniqueEmail", {
+      params,
+    });
+  }
+
   resetPassword(email: string) {
     return this.httpClient.post(ROOT_URL + "/account/resetPassword", email);
+  }
+
+  changeLock(email: string) {
+    return this.httpClient.post(ROOT_URL + "/account/changeLock", email);
+  }
+
+  get(email: String): Observable<Person> {
+    return this.httpClient.get<Person>(ROOT_URL + "/account/" + email);
+  }
+
+  create(person: Person): Observable<Person> {
+    return this.httpClient.post<Person>(ROOT_URL + "/account/create", person);
+  }
+
+  update(person: Person): Observable<Person> {
+    return this.httpClient.put<Person>(ROOT_URL + "/account/update", person);
   }
 }

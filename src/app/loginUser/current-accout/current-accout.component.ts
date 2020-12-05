@@ -2,11 +2,13 @@ import { Component, Input, OnInit } from "@angular/core";
 import { NavigationStart, Router } from "@angular/router";
 import { AuthenticationService } from "src/app/service/auth.service";
 import { Role } from "src/app/service/account.service";
+import { LinkWithIconByRole, MENU } from "src/app/menu-page/menu";
+import { CommonService } from "src/app/service/common.service";
 
 @Component({
   selector: "app-current-accout",
   templateUrl: "./current-accout.component.html",
-  styleUrls: ["./current-accout.component.css"],
+  styleUrls: ["./current-accout.component.scss"],
 })
 export class CurrentAccoutComponent {
   fullName: string = "";
@@ -16,8 +18,11 @@ export class CurrentAccoutComponent {
 
   hideToggle: boolean = false;
 
+  links: LinkWithIconByRole[] = MENU;
+
   constructor(
     private router: Router,
+    private commonService: CommonService,
     private loginservice: AuthenticationService
   ) {
     this.router.events.subscribe((event) => {
@@ -44,8 +49,8 @@ export class CurrentAccoutComponent {
     }
   }
 
-  isAdmin() {
-    return this.loginservice.isHasRole(Role.Admin);
+  getLinksByRole(links: LinkWithIconByRole[]) {
+    return this.commonService.getLinksByRole(links);
   }
 
   logout() {

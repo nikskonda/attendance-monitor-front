@@ -1,11 +1,17 @@
 import { Component, OnInit } from "@angular/core";
-import { Person, PersonService } from "../service/account.service";
+import { fromEvent } from "rxjs";
+import { EDIT_MENU } from "../editor/edit-menu";
+import { REPORT_MENU } from "../report/report-menu";
+import { Person, AccountService, Role, User } from "../service/account.service";
+import { AuthenticationService } from "../service/auth.service";
+import { CommonService, LinkByRole } from "../service/common.service";
 import { ProfessorService } from "../service/professor.service";
+import { LinkWithIconByRole, MENU } from "./menu";
 
 @Component({
   selector: "app-menu-page",
   templateUrl: "./menu-page.component.html",
-  styleUrls: ["./menu-page.component.css"],
+  styleUrls: ["./menu-page.component.scss"],
 })
 export class MenuPageComponent implements OnInit {
   showProfList: boolean = false;
@@ -14,23 +20,17 @@ export class MenuPageComponent implements OnInit {
   profList: Person[] = [];
 
   showEditors: boolean = false;
-  editorLinks = [
-    { path: "/edit/speciality", text: "Специальности" },
-    { path: "/edit/group", text: "Группы" },
-    { path: "/edit/student", text: "Студенты" },
-    { path: "/edit/professor", text: "Преподаватели" },
-    { path: "/edit/subject", text: "Дисциплины" },
-    { path: "/edit/lesson", text: "Занятия" },
-  ];
+  editorLinks: LinkByRole[] = EDIT_MENU;
 
   showReports: boolean = false;
-  reportLinks = [
-    { path: "/report/student", text: "По студенту" },
-    { path: "/report/group", text: "По группе" },
-    { path: "/report/studentDetails", text: "По студенту детальный" },
-  ];
+  reportLinks: LinkByRole[] = REPORT_MENU;
 
-  constructor(private profService: ProfessorService) {}
+  links: LinkWithIconByRole[] = MENU;
+
+  constructor(
+    private profService: ProfessorService,
+    private commonService: CommonService
+  ) {}
 
   ngOnInit() {}
 
@@ -61,5 +61,26 @@ export class MenuPageComponent implements OnInit {
 
   showImage() {
     return !(this.showReports || this.showEditors || this.showProfList);
+  }
+
+  isShowProfs() {
+    return this.commonService.isInclude([Role.ADMIN]);
+  }
+
+  isShowEditor() {
+    return this.commonService.isInclude([Role.ADMIN, Role.PROFESSOR]);
+  }
+
+  isShowReports() {
+    return this.commonService.isInclude([
+      Role.ADMIN,
+      Role.PROFESSOR,
+      Role.PARENT,
+      Role.REPORT_VIEW,
+    ]);
+  }
+
+  getLinksByRole(links: LinkByRole[]) {
+    return this.commonService.getLinksByRole(links);
   }
 }

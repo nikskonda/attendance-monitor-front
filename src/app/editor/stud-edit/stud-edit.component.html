@@ -10,7 +10,9 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-button (click)="create()">Создать</button>
+    <button color="primary" mat-raised-button (click)="create()">
+      Создать
+    </button>
   </div>
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 tab">
     <ng-container matColumnDef="edit">
@@ -28,13 +30,13 @@
         <mat-icon
           aria-hidden="false"
           (click)="remove(element.id, element.fullName)"
-          >remove</mat-icon
+          >delete</mat-icon
         >
       </td>
     </ng-container>
 
     <ng-container matColumnDef="position">
-      <th mat-header-cell *matHeaderCellDef>No.</th>
+      <th mat-header-cell *matHeaderCellDef>№</th>
       <td mat-cell *matCellDef="let element">{{ element.position }}</td>
     </ng-container>
 

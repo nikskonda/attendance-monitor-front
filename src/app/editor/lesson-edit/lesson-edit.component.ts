@@ -21,28 +21,28 @@ import {
   LessonTime,
 } from "../../service/lesson.service";
 import { SubjectService } from "../../service/subject.service";
-import { Person, PersonService } from "../../service/account.service";
+import { Person, AccountService } from "../../service/account.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
 import { ProfessorService } from "src/app/service/professor.service";
 
 @Component({
   selector: "app-lesson-edit",
   templateUrl: "./lesson-edit.component.html",
-  styleUrls: ["./lesson-edit.component.css"],
+  styleUrls: ["./lesson-edit.component.scss"],
 })
 export class LessonEditComponent implements OnInit {
   dateForListFormControl = new FormControl(new Date().toISOString());
 
   displayedColumns: string[] = [
+    "edit",
+    "remove",
     "position",
-    "date",
-    "time",
     "subject",
     "subjectType",
     "professor",
     "group",
-    "edit",
-    "remove",
+    // "date",
+    "time",
   ];
   dataSource;
   length = 0;
@@ -135,7 +135,6 @@ export class LessonEditComponent implements OnInit {
       .subscribe(
         (data) => {
           this.lessons = data.content || [];
-          console.log(data);
           this.length = data.totalElements;
         },
         (error) => console.log(error),
@@ -207,28 +206,29 @@ export class LessonEditComponent implements OnInit {
     });
   }
 
-  remove(id: number, name: string) {
-    const dialogRef = this.dialog.open(RemoveDialogComponent, {
-      data: {
-        name: name,
-      },
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.profService.delete(id).subscribe((data) => this.updateList());
-        this.clear();
-      }
-    });
-  }
+  // remove(id: number, name: string) {
+  //   const dialogRef = this.dialog.open(RemoveDialogComponent, {
+  //     data: {
+  //       name: name,
+  //     },
+  //   });
+  //   dialogRef.afterClosed().subscribe((result) => {
+  //     if (result) {
+  //       this.profService.delete(id).subscribe((data) => this.updateList());
+  //       this.clear();
+  //     }
+  //   });
+  // }
 }
 
 @Component({
   templateUrl: "./lesson-editor-dialog.html",
-  styleUrls: ["./lesson-edit.component.css"],
+  styleUrls: ["./lesson-edit.component.scss"],
 })
 export class LessonEditorDialog implements OnInit {
   active: Lesson;
   days: number[] = [];
+  repeatWeeks: number[] = [1, 2];
 
   fgc = new FormGroup({
     start: new FormControl(new Date().toISOString(), Validators.required),
@@ -239,6 +239,7 @@ export class LessonEditorDialog implements OnInit {
     prof: new FormControl("", [Validators.required]),
     group: new FormControl("", [Validators.required]),
     volume: new FormControl(Volume.FULL, [Validators.required]),
+    repeat: new FormControl(1, [Validators.required]),
   });
 
   constructor(
@@ -288,6 +289,7 @@ export class LessonEditorDialog implements OnInit {
       start: getDateFromStr(this.fgc.value.start),
       finish: getDateFromStr(this.fgc.value.finish),
       days: this.days,
+      repeatWeek: this.fgc.value.repeat,
     };
     this.lessonService
       .createSeries(toCreate)
@@ -307,6 +309,7 @@ export class LessonEditorDialog implements OnInit {
       start: getDateFromStr(this.fgc.value.start),
       finish: getDateFromStr(this.fgc.value.finish),
       days: this.days,
+      repeatWeek: this.fgc.value.repeat,
     };
     this.lessonService
       .update(this.active.id, toUpdate)
@@ -326,6 +329,7 @@ export class LessonEditorDialog implements OnInit {
       start: getDateFromStr(this.fgc.value.start),
       finish: getDateFromStr(this.fgc.value.finish),
       days: this.days,
+      repeatWeek: this.fgc.value.repeat,
     };
     this.lessonService
       .deleteSeries(toDelete)

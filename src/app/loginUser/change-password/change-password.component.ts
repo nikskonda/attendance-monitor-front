@@ -2,12 +2,12 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AuthenticationService } from "src/app/service/auth.service";
-import { PersonService, User } from "src/app/service/account.service";
+import { AccountService, User } from "src/app/service/account.service";
 
 @Component({
   selector: "app-change-password",
   templateUrl: "./change-password.component.html",
-  styleUrls: ["./change-password.component.css"],
+  styleUrls: ["./change-password.component.scss"],
 })
 export class ChangePasswordComponent implements OnInit {
   fgc = new FormGroup({
@@ -27,15 +27,11 @@ export class ChangePasswordComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private personService: PersonService,
+    private AccountService: AccountService,
     private authService: AuthenticationService
-  ) {
-    console.log("constructor Working");
-  }
+  ) {}
 
-  ngOnInit(): void {
-    console.log("kek");
-  }
+  ngOnInit(): void {}
 
   isMatchedNewPasswords() {
     const newPw = this.fgc.value.newPassword;
@@ -48,13 +44,12 @@ export class ChangePasswordComponent implements OnInit {
     const newPw = this.fgc.value.newPassword;
     const user: User = this.authService.getUserData();
     if (user) {
-      console.log(user);
-      this.personService
-        .updatePassword(user.username, old, newPw)
-        .subscribe((data) => {
+      this.AccountService.updatePassword(user.username, old, newPw).subscribe(
+        (data) => {
           this.authService.logOut();
           this.router.navigate(["login"]);
-        });
+        }
+      );
     }
   }
 }

@@ -3,14 +3,29 @@
     <mat-form-field class="example-full-width" sappearance="fill" required>
       <mat-label>Введите период</mat-label>
       <mat-date-range-input [rangePicker]="picker">
-        <input matStartDate formControlName="start" placeholder="Начало" />
-        <input matEndDate formControlName="end" placeholder="Конец" />
+        <input
+          matStartDate
+          formControlName="start"
+          placeholder="Начало"
+          (dateChange)="loadTableData()"
+        />
+        <input
+          matEndDate
+          formControlName="end"
+          placeholder="Конец"
+          (dateChange)="loadTableData()"
+        />
       </mat-date-range-input>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" class="example-full-width" required>
+    <mat-form-field
+      *ngIf="!isParentMode"
+      appearance="fill"
+      class="example-full-width"
+      required
+    >
       <mat-label>Выберите группу</mat-label>
       <mat-select formControlName="group" (selectionChange)="onGroupSelect()">
         <mat-option *ngFor="let group of groups" [value]="group.id">
@@ -20,10 +35,10 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="example-full-width" required>
-      <mat-label>Выберите предмет</mat-label>
+      <mat-label>Выберите студента</mat-label>
       <mat-select
         formControlName="student"
-        (selectionChange)="onStudentSelect()"
+        (selectionChange)="loadTableData()"
         [disabled]="studs.length === 0"
       >
         <mat-option *ngFor="let stud of studs" [value]="stud.id">
@@ -31,13 +46,10 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+    <app-base-report
+      [show]="isPdfReady && fgc.valid"
+      [docDefinition]="getDocDefinition()"
+      [refreshFunction]="refreshCallback"
+    ></app-base-report>
   </form>
-
-  <div *ngIf="isPdfReady && fgc.valid">
-    <button mat-button (click)="refresh()">Обновить</button>
-
-    <button mat-button (click)="open()">Открыть</button>
-    <button mat-button (click)="download()">Скачать</button>
-    <button mat-button (click)="print()">Печатать</button>
-  </div>
 </div>

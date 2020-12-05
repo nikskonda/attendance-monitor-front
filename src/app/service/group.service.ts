@@ -33,7 +33,8 @@ export class GroupService {
   getPage(number: number, size: number): Observable<Page<Group>> {
     const params = new HttpParams()
       .set("page", number.toString())
-      .set("size", size.toString());
+      .set("size", size.toString())
+      .set("sort", "key");
     return this.httpClient.get<Page<Group>>(ROOT_URL + "/group/page", {
       params,
     });

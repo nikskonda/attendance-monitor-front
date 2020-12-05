@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { ScheduleComponent } from "./schedule/schedule.component";
 import { LoginComponent } from "./loginUser/login/login.component";
-import { AttendancePageComponent } from "./attendance-page/attendance-page.component";
+import { AttendancePageComponent } from "./attendancePage/attendance-page/attendance-page.component";
 import { MenuPageComponent } from "./menu-page/menu-page.component";
 import { GroupEditComponent } from "./editor/group-edit/group-edit.component";
 import { LessonEditComponent } from "./editor/lesson-edit/lesson-edit.component";
@@ -18,6 +18,8 @@ import { ReportPageComponent } from "./report/report-page/report-page.component"
 import { StudEditComponent } from "./editor/stud-edit/stud-edit.component";
 import { AccountEditComponent } from "./editor/account-edit/account-edit.component";
 import { PositionEditComponent } from "./editor/position-edit/position-edit.component";
+import { ProfessorsReportComponent } from "./report/professors-report/professors-report.component";
+import { StudentsByGroupReportComponent } from "./report/students-by-group-report/students-by-group-report.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -49,6 +51,8 @@ const routes: Routes = [
       { path: "student", component: StudentReportComponent },
       { path: "group", component: GroupReportComponent },
       { path: "studentDetails", component: StudentDetailComponent },
+      { path: "professors", component: ProfessorsReportComponent },
+      { path: "students", component: StudentsByGroupReportComponent },
     ],
   },
 ];
@@ -76,6 +80,8 @@ export const routingComponents = [
   StudentReportComponent,
   StudentDetailComponent,
   GroupReportComponent,
+  ProfessorsReportComponent,
+  StudentsByGroupReportComponent,
   ReportPageComponent,
   AccountEditComponent,
 ];

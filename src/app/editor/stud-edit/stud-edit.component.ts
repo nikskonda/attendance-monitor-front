@@ -9,7 +9,7 @@ import { PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ObjectRef } from "src/app/service/common.service";
 import { GroupService, Volume } from "../../service/group.service";
-import { Person, Role } from "../../service/account.service";
+import { AccountService, Person, Role } from "../../service/account.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
 import {
   StudentService,
@@ -19,7 +19,7 @@ import {
 @Component({
   selector: "app-stud-edit",
   templateUrl: "./stud-edit.component.html",
-  styleUrls: ["./stud-edit.component.css"],
+  styleUrls: ["./stud-edit.component.scss"],
 })
 export class StudEditComponent implements OnInit {
   displayedColumns: string[] = [
@@ -79,7 +79,6 @@ export class StudEditComponent implements OnInit {
       .subscribe(
         (data) => {
           this.studs = data.content || [];
-          console.log(data);
           this.length = data.totalElements;
         },
         (error) => console.log(error),
@@ -165,10 +164,11 @@ export class StudEditComponent implements OnInit {
 
 @Component({
   templateUrl: "./stud-editor-dialog.html",
-  styleUrls: ["./stud-edit.component.css"],
+  styleUrls: ["./stud-edit.component.scss"],
 })
 export class StudEditorDialog implements OnInit {
   public isUpdate: boolean = false;
+  emailExists: boolean = false;
 
   active: Person;
 
@@ -184,6 +184,7 @@ export class StudEditorDialog implements OnInit {
 
   constructor(
     private studentService: StudentService,
+    private accountService: AccountService,
     public dialogRef: MatDialogRef<StudEditorDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -201,6 +202,14 @@ export class StudEditorDialog implements OnInit {
   }
   ngOnInit(): void {}
 
+  isUniqueEmail() {
+    if (!this.isUpdate && this.fgc.controls.email.valid) {
+      this.accountService
+        .isUniqueEmail(this.fgc.value.email)
+        .subscribe((data) => (this.emailExists = !data));
+    }
+  }
+
   create() {
     let stud: StudentWithParent = {
       id: null,
@@ -209,7 +218,8 @@ export class StudEditorDialog implements OnInit {
       lastName: this.fgc.value.lastName,
       patronymic: this.fgc.value.patronymic,
       fullName: null,
-      roles: [Role.Student],
+      phone: null,
+      roles: [{ id: null, qualifier: "" + Role.STUDENT }],
       group: {
         id: this.fgc.value.group,
         qualifier: null,
@@ -228,7 +238,8 @@ export class StudEditorDialog implements OnInit {
       lastName: this.fgc.value.lastName,
       patronymic: this.fgc.value.patronymic,
       fullName: null,
-      roles: [Role.Student],
+      phone: null,
+      roles: this.active.roles,
       group: {
         id: this.fgc.value.group,
         qualifier: null,

@@ -66,6 +66,15 @@
       </mat-select>
     </mat-form-field>
 
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Повторять каждые N недель</mat-label>
+      <mat-select formControlName="repeat" required>
+        <mat-option *ngFor="let repeat of repeatWeeks" [value]="repeat">
+          {{ repeat }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <section class="example-section">
       <mat-checkbox
         class="example-margin"
@@ -80,7 +89,8 @@
 <mat-dialog-actions align="end">
   <button mat-button (click)="close(false)">Отмена</button>
   <button
-    mat-button
+    mat-raised-button
+    color="accent"
     (click)="data.isDelete ? delete() : create()"
     [disabled]="!fgc.valid"
     cdkFocusInitial

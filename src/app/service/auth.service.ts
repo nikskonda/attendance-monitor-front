@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { PersonService, Role, User } from "./account.service";
+import { AccountService, Role, User } from "./account.service";
 import { Observable } from "rxjs";
 import { tokenName } from "@angular/compiler";
 
@@ -14,12 +14,12 @@ export interface UserWithToken extends User {
   providedIn: "root",
 })
 export class AuthenticationService {
-  constructor(private personService: PersonService) {}
+  constructor(private AccountService: AccountService) {}
 
   authenticate(username, password) {
     let token = "";
     return new Observable((obs) => {
-      this.personService.login(username, password).subscribe(
+      this.AccountService.login(username, password).subscribe(
         (userData) => {
           token = userData.access_token;
           let tokenStr = "Bearer " + userData.access_token;
@@ -27,7 +27,7 @@ export class AuthenticationService {
         },
         (error) => obs.error(error),
         () => {
-          this.personService.findByEmail(username).subscribe(
+          this.AccountService.findByEmail(username).subscribe(
             (data) => {
               const qwer: UserWithToken = {
                 fullName: data.fullName,
@@ -35,6 +35,7 @@ export class AuthenticationService {
                 qualifier: data.qualifier,
                 username: data.username,
                 mustUpdatePassword: data.mustUpdatePassword,
+                accountNonLocked: data.accountNonLocked,
                 roles: data.roles,
                 token: token,
               };
@@ -70,7 +71,6 @@ export class AuthenticationService {
   isMustUpdatePassword(): boolean {
     if (this.isUserLoggedIn()) {
       const user: User = JSON.parse(localStorage.getItem("userdata"));
-      console.log("user.mustUpdatePassword", user.mustUpdatePassword);
       return user.mustUpdatePassword;
     }
     return false;

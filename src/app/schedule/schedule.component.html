@@ -18,38 +18,54 @@
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
   </div>
-  <div>
-    <mat-slide-toggle
-      class="example-margin"
-      [color]=""
-      [checked]="topDateHeader"
-      (change)="lt()"
-    >
-      Slide me!
+  <div class="toggle">
+    <mat-slide-toggle [color]="" [checked]="topDateHeader" (change)="lt()">
+      Инверсия
     </mat-slide-toggle>
   </div>
-  <div>
-    <mat-grid-list [cols]="cols * 2 - 1" rowHeight="100px">
-      <mat-grid-tile
-        *ngFor="let cell of cells; index as i"
-        [colspan]="i % cols === 0 ? 1 : 2"
-        [rowspan]="1"
-        [style.background]="cell.color"
-      >
-        <app-grid-header
-          *ngIf="cell.header"
-          [text]="
-            (i > 0 && i < cols && topDateHeader) ||
-            (i > 0 && i % cols === 0 && !topDateHeader)
-              ? [cell.text | date: 'd MMMM', cell.text | date: 'EEEE']
-              : [cell.text]
-          "
-        ></app-grid-header>
-        <app-grid-cell
-          *ngIf="!cell.empty && !cell.header"
-          [lesson]="cell.lesson"
-        ></app-grid-cell>
-      </mat-grid-tile>
-    </mat-grid-list>
+  <h1 *ngIf="!showGrid" class="empty-grid">
+    У вас нет занятий, назначенных на выбранный временной отрезок.
+  </h1>
+  <div *ngIf="showGrid" [ngClass]="{ 'grid-wr': topDateHeader }">
+    <div class="grid" [ngStyle]="{ 'min-width.px': (cols * 2 - 1) * 70 }">
+      <mat-grid-list class="header" [cols]="cols * 2 - 1" rowHeight="100px">
+        <mat-grid-tile
+          *ngFor="let cell of headers; index as i"
+          [colspan]="i % cols === 0 ? 1 : 2"
+          [rowspan]="1"
+          [style.background]="true ? '#297938' : cell.color"
+        >
+          <app-grid-header
+            [text]="
+              i > 0 && topDateHeader
+                ? [cell.text | date: 'd MMMM', cell.text | date: 'EEEE']
+                : [cell.text]
+            "
+          ></app-grid-header>
+        </mat-grid-tile>
+      </mat-grid-list>
+
+      <mat-grid-list class="body" [cols]="cols * 2 - 1" rowHeight="100px">
+        <mat-grid-tile
+          *ngFor="let cell of cells; index as i"
+          [colspan]="i % cols === 0 ? 1 : 2"
+          [rowspan]="1"
+          [style.background]="cell.color"
+        >
+          <app-grid-header
+            *ngIf="cell.header"
+            [text]="
+              !topDateHeader
+                ? [cell.text | date: 'd MMMM', cell.text | date: 'EEEE']
+                : [cell.text]
+            "
+          ></app-grid-header>
+          <app-grid-cell
+            *ngIf="!cell.empty && !cell.header"
+            [lesson]="cell.lesson"
+          ></app-grid-cell>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
   </div>
 </div>

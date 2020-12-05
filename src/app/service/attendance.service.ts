@@ -18,6 +18,7 @@ export interface Attendance {
   cols: number;
   subject: ObjectRef;
   group: ObjectRef;
+  headers: AttCell[];
   cells: AttCell[];
 }
 

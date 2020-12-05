@@ -20,9 +20,12 @@ export class ProfessorService {
   }
 
   getPage(number: number, size: number): Observable<Page<Professor>> {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set("page", number.toString())
       .set("size", size.toString());
+    ["last_name", "first_name", "patronymic"].forEach((sort) => {
+      params = params.append("sort", sort);
+    });
     return this.httpClient.get<Page<Professor>>(ROOT_URL + "/professor/page", {
       params,
     });

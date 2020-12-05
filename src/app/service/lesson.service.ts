@@ -36,6 +36,7 @@ export interface LessonSeries extends Lesson {
   days: number[];
   start: string;
   finish: string;
+  repeatWeek: number;
 }
 
 export interface Cell {
@@ -52,6 +53,7 @@ export interface Schedule {
   rows: number;
   cols: number;
   professor: Person;
+  headers: Cell[];
   cells: Cell[];
 }
 
@@ -80,11 +82,7 @@ export class LessonService {
       .set("finalDate", finalDate)
       .set("topDateHeader", topDateHeader);
     if (personId) {
-      params = new HttpParams()
-        .set("startDate", startDate)
-        .set("finalDate", finalDate)
-        .set("personId", personId)
-        .set("topDateHeader", topDateHeader);
+      params = params.append("personId", personId);
     }
     return this.httpClient.get<Schedule>(
       ROOT_URL + "/lesson/findGridByDateRange",
@@ -101,7 +99,8 @@ export class LessonService {
       .set("startDate", date)
       .set("finalDate", date)
       .set("page", number.toString())
-      .set("size", size.toString());
+      .set("size", size.toString())
+      .set("sort", "time_id");
     return this.httpClient.get<Page<Lesson>>(
       ROOT_URL + "/lesson/findPageByDateRange",
       { params }
@@ -132,18 +131,10 @@ export class LessonService {
   }
 
   update(id: number, lesson: Lesson): Observable<Lesson> {
-    // const params = new HttpParams()
-    //   .set('startDate', startDate)
-    //   .set('finalDate', finalDate)
-    //   .set('personId', personId);
     return this.httpClient.put<Lesson>(ROOT_URL + "/lesson/" + id, lesson);
   }
 
   remove(id: number): Observable<{}> {
-    // const params = new HttpParams()
-    //   .set('startDate', startDate)
-    //   .set('finalDate', finalDate)
-    //   .set('personId', personId);
     return this.httpClient.delete(ROOT_URL + "/lesson/" + id);
   }
 }

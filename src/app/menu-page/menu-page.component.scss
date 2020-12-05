@@ -1,0 +1,66 @@
+@import "../../const.scss";
+
+.menuContainer {
+  margin: 50px 20px;
+  display: flex;
+  flex-direction: row;
+  // height: 100vh;
+
+  .leftMenu {
+    padding: 40px;
+    text-align: right;
+    width: 50%;
+
+    .header {
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+
+      .menu {
+        margin-right: 75px;
+        color: $primary;
+      }
+    }
+
+    .litem {
+      display: flex;
+      color: $info;
+      text-align: right;
+      .menu-text {
+        padding: 10px;
+        &:hover {
+          background-color: $main;
+          color: $white;
+        }
+      }
+    }
+  }
+
+  .rightSubMenu {
+    background-color: $dark;
+    padding: 40px;
+    width: 50%;
+    margin-right: 40px;
+    margin-top: 40px;
+
+    .submenu {
+      text-align: left;
+      margin-left: 75px;
+      color: $btn-primary;
+      font-weight: 500;
+    }
+
+    .ritem {
+      color: $white;
+    }
+  }
+}
+
+.mat-list-item-content {
+  justify-content: flex-end;
+}
+
+.pointer {
+  cursor: pointer;
+}

@@ -1,0 +1,11 @@
+@import "../../../const.scss";
+
+.user-menu-line {
+  display: flex;
+  justify-content: flex-end;
+
+  .user-menu-button {
+    background-color: $light-accent;
+    color: $light-shades;
+  }
+}

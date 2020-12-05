@@ -1,22 +1,25 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import { ObjectRef } from "src/app/service/common.service";
+import {
+  CommonService,
+  getDate,
+  ObjectRef,
+} from "src/app/service/common.service";
 import { GroupService } from "../../service/group.service";
 import { ReportService } from "../../service/report.service";
-import { Person, PersonService } from "../../service/account.service";
-import { StudentService } from "src/app/service/student.service";
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { Person, Role } from "../../service/account.service";
+import { Student, StudentService } from "src/app/service/student.service";
+import { SubjectService } from "src/app/service/subject.service";
+import { AuthenticationService } from "src/app/service/auth.service";
 
 @Component({
   selector: "app-student-detail",
   templateUrl: "./student-detail.component.html",
-  styleUrls: ["./student-detail.component.css"],
+  styleUrls: ["./student-detail.component.scss"],
 })
 export class StudentDetailComponent implements OnInit {
-  studs: Person[] = [];
+  studs: Student[] = [];
+  subjects: ObjectRef[] = [];
   groups: ObjectRef[] = [];
 
   fgc = new FormGroup({
@@ -25,44 +28,71 @@ export class StudentDetailComponent implements OnInit {
 
     group: new FormControl(Validators.required),
     student: new FormControl(Validators.required),
+    subject: new FormControl(),
   });
 
   table: string[][] = [];
-
   isPdfReady: boolean = false;
+  refreshCallback: Function;
+
+  isParentMode: boolean = false;
 
   constructor(
     private studentService: StudentService,
     private groupService: GroupService,
-    private reportService: ReportService
+    private subjectService: SubjectService,
+    private reportService: ReportService,
+    private commonService: CommonService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit() {
-    this.groupService.getAll().subscribe((data) => {
-      data.forEach((ref) => this.groups.push(ref));
-    });
+    this.refreshCallback = this.refresh.bind(this);
+
+    const roles = this.commonService.getCurrentUserRoles();
+    if (roles.length === 1 && roles[0] === Role.PARENT) {
+      this.isParentMode = true;
+      this.studentService
+        .findByParent(this.authService.getUserData().username)
+        .subscribe((data) => (this.studs = data));
+    } else {
+      this.groupService.getAll().subscribe((data) => {
+        data.forEach((ref) => this.groups.push(ref));
+      });
+    }
   }
 
   onGroupSelect() {
     this.studentService
       .getByGroup(this.fgc.value.group)
       .subscribe((data) => (this.studs = data));
+    this.subjectService
+      .getByGroup(this.fgc.value.group)
+      .subscribe((data) => (this.subjects = data));
   }
 
-  onStudentSelect() {
-    const start: Date = this.fgc.controls.start.value;
-    start.setMinutes(-start.getTimezoneOffset());
-    const end: Date = this.fgc.controls.end.value;
-    end.setMinutes(-end.getTimezoneOffset());
+  loadTableData() {
+    if (this.isParentMode) {
+      const stud = this.studs.find((st) => st.id === this.fgc.value.student);
+      if (stud) {
+        this.fgc.controls.group.setValue(stud?.group.id);
+        this.subjectService
+          .getByGroup(this.fgc.value.group)
+          .subscribe((data) => (this.subjects = data));
+      }
+    }
+    if (!this.fgc.valid) return;
+    if (!this.fgc.controls.start.value || !this.fgc.controls.end.value) return;
+
     this.reportService
-      .findDataByStudentDetailsForDateRange(
+      .findDataByStudentAndSubjectDetailsForDateRange(
         this.fgc.value.student,
-        start.toISOString().substring(0, 10),
-        end.toISOString().substring(0, 10)
+        this.fgc.value.subject,
+        getDate(this.fgc.controls.start.value),
+        getDate(this.fgc.controls.end.value)
       )
       .subscribe(
         (data) => {
-          console.log(data);
           this.table = data;
         },
         (error) => console.log(error),
@@ -70,29 +100,13 @@ export class StudentDetailComponent implements OnInit {
       );
   }
 
-  getDate(date: Date) {
-    date.setMinutes(-date.getTimezoneOffset());
-    return date.toISOString().substring(0, 10);
-  }
-
   refresh() {
     this.isPdfReady = false;
-    this.onStudentSelect();
-  }
-
-  open() {
-    pdfMake.createPdf(this.getDocDefinition()).open();
-  }
-
-  download() {
-    pdfMake.createPdf(this.getDocDefinition()).download();
-  }
-
-  print() {
-    pdfMake.createPdf(this.getDocDefinition()).print();
+    this.loadTableData();
   }
 
   getDocDefinition() {
+    if (!this.isPdfReady) return;
     const fullName = this.studs.find((s) => s.id === this.fgc.value.student)
       .fullName;
     return {
@@ -114,9 +128,9 @@ export class StudentDetailComponent implements OnInit {
             "Отчёт о посещаемости студента " +
             fullName +
             " за период занятий с " +
-            this.getDate(this.fgc.controls.start.value) +
+            getDate(this.fgc.controls.start.value) +
             " по " +
-            this.getDate(this.fgc.controls.end.value) +
+            getDate(this.fgc.controls.end.value) +
             ".",
           marginTop: 100,
           marginBottom: 50,

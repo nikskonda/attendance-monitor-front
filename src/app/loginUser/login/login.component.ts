@@ -10,7 +10,7 @@ import { GenService } from "src/app/service/generator.service";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.css"],
+  styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent implements OnInit {
   fgc = new FormGroup({
@@ -29,23 +29,15 @@ export class LoginComponent implements OnInit {
 
   generateData(b?: boolean) {
     this.status = "(Загрузка ...)";
-    if (b) {
-      this.genservice.generate().subscribe(
-        () => {},
-        () => (this.status = "(ошибка)"),
-        () => (this.status = "(готово)")
-      );
-    } else {
-      this.genservice.generateBase().subscribe(
-        () => {},
-        () => (this.status = "(ошибка)"),
-        () => (this.status = "(готово)")
-      );
-    }
+    this.genservice.generate().subscribe(
+      () => {},
+      () => (this.status = "(ошибка)"),
+      () => (this.status = "(готово)")
+    );
   }
 
   ngOnInit() {
-    this.navigateByRole();
+    this.navigate();
   }
 
   checkLogin() {
@@ -58,23 +50,20 @@ export class LoginComponent implements OnInit {
         },
         () => {
           this.invalidLogin = false;
-          this.navigateByRole();
+          this.navigate();
         }
       );
   }
 
-  navigateByRole() {
+  navigate() {
     if (this.loginservice.isUserLoggedIn()) {
       if (this.loginservice.isMustUpdatePassword()) {
-        console.log("changePassword");
         this.router.navigate(["changePassword"]);
-      } else if (this.loginservice.isHasRole(Role.Admin)) {
-        console.log("menu");
-        this.router.navigate(["menu"]);
       } else {
-        console.log("schedule");
-        this.router.navigate(["schedule"]);
+        this.router.navigate(["menu"]);
       }
+    } else {
+      this.router.navigate(["login"]);
     }
   }
 }

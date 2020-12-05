@@ -1,0 +1,17 @@
+<div class="reportContainer">
+  <form class="example-form" [formGroup]="fgc">
+    <mat-form-field appearance="fill" class="example-full-width" required>
+      <mat-label>Выберите группу</mat-label>
+      <mat-select formControlName="group" (selectionChange)="onGroupSelect()">
+        <mat-option *ngFor="let group of groups" [value]="group.id">
+          {{ group.qualifier }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <app-base-report
+      [show]="isPdfReady && fgc.valid"
+      [docDefinition]="getDocDefinition()"
+      [refreshFunction]="refreshCallback"
+    ></app-base-report>
+  </form>
+</div>

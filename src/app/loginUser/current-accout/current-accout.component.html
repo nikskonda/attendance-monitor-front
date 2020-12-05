@@ -1,45 +1,30 @@
-<div *ngIf="show" style="display: flex; justify-content: flex-end">
-  <mat-accordion>
-    <mat-expansion-panel #mep>
-      <mat-expansion-panel-header>
-        <mat-panel-title> Добрый день, {{ fullName }}! </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-list>
-        <mat-divider *ngIf="!isAdmin()"></mat-divider>
-        <mat-list-item
-          *ngIf="!isAdmin()"
-          class="nav-link"
-          routerLink="/schedule"
-          (click)="mep.expanded = false"
-        >
-          Расписание
-        </mat-list-item>
-        <mat-divider *ngIf="isAdmin()"></mat-divider>
-        <mat-list-item
-          class="nav-link"
-          *ngIf="isAdmin()"
-          routerLink="/menu"
-          (click)="mep.expanded = false"
-        >
-          Меню
-        </mat-list-item>
-        <mat-divider></mat-divider>
-        <mat-list-item
-          class="nav-link"
-          routerLink="/changePassword"
-          (click)="mep.expanded = false"
-        >
-          Поменять пароль
-        </mat-list-item>
-        <mat-divider></mat-divider>
-        <mat-list-item
-          class="nav-link"
-          (click)="logout()"
-          (click)="mep.expanded = false"
-        >
-          Выйти
-        </mat-list-item>
-      </mat-list>
-    </mat-expansion-panel>
-  </mat-accordion>
+<div class="user-menu-line" *ngIf="show">
+  <button class="user-menu-button" mat-button [matMenuTriggerFor]="userMenu">
+    <span>Добрый день{{ fullName ? ", " + fullName : "" }}!</span>
+    <mat-icon>keyboard_arrow_down</mat-icon>
+  </button>
+
+  <mat-menu #userMenu="matMenu" xPosition="before">
+    <button
+      mat-menu-item
+      *ngFor="let link of getLinksByRole(links)"
+      routerLink="{{ link.path }}"
+    >
+      <mat-icon>{{ link.icon }}</mat-icon>
+      <span>{{ link.text }}</span>
+    </button>
+    <button mat-menu-item routerLink="/menu">
+      <mat-icon>menu</mat-icon>
+      <span>Меню</span>
+    </button>
+    <button mat-menu-item routerLink="/changePassword">
+      <mat-icon>vpn_key</mat-icon>
+      <span>Поменять пароль</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>exit_to_app</mat-icon>
+      <span>Выйти</span>
+    </button>
+  </mat-menu>
 </div>

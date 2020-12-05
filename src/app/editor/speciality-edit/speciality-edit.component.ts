@@ -14,10 +14,10 @@ import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component"
 @Component({
   selector: "app-speciality-edit",
   templateUrl: "./speciality-edit.component.html",
-  styleUrls: ["./speciality-edit.component.css"],
+  styleUrls: ["./speciality-edit.component.scss"],
 })
 export class SpecialityEditComponent implements OnInit {
-  displayedColumns: string[] = ["position", "name", "edit", "remove"];
+  displayedColumns: string[] = ["edit", "remove", "position", "name"];
   dataSource;
   length = 0;
   pageSize = 10;
@@ -120,6 +120,7 @@ export class SpecialityEditComponent implements OnInit {
 @Component({
   selector: "spec-editor-dialog",
   templateUrl: "./spec-editor-dialog.html",
+  styleUrls: ["./speciality-edit.component.scss"],
 })
 export class SpecEditorDialog {
   public isUpdate: boolean = false;
@@ -139,7 +140,6 @@ export class SpecEditorDialog {
       this.nameFormControl.setValue(data.active.qualifier);
     }
     this.isUpdate = data.isUpdate;
-    console.log(data);
   }
 
   create() {

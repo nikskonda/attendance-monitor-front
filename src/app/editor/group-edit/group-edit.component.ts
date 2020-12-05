@@ -15,15 +15,15 @@ import { ObjectRef } from "src/app/service/common.service";
 @Component({
   selector: "app-group-edit",
   templateUrl: "./group-edit.component.html",
-  styleUrls: ["./group-edit.component.css"],
+  styleUrls: ["./group-edit.component.scss"],
 })
 export class GroupEditComponent implements OnInit {
   displayedColumns: string[] = [
+    "edit",
+    "remove",
     "position",
     "name",
     "speciality",
-    "edit",
-    "remove",
   ];
   dataSource;
   length = 0;
@@ -129,7 +129,7 @@ export class GroupEditComponent implements OnInit {
 
 @Component({
   templateUrl: "./group-editor-dialog.html",
-  styleUrls: ["./group-edit.component.css"],
+  styleUrls: ["./group-edit.component.scss"],
 })
 export class GroupEditorDialog implements OnInit {
   public isUpdate: boolean = false;
@@ -158,7 +158,6 @@ export class GroupEditorDialog implements OnInit {
       this.fgc.controls.spec.setValue(data.active.speciality.id);
     }
     this.isUpdate = data.isUpdate;
-    console.log(data);
   }
   ngOnInit(): void {
     this.specService.getAll().subscribe((data) => (this.specList = data));

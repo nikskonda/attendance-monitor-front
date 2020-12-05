@@ -31,9 +31,12 @@ export class StudentService {
     number: number,
     size: number
   ): Observable<Page<StudentWithParent>> {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set("page", number.toString())
       .set("size", size.toString());
+    ["last_name", "first_name", "patronymic"].forEach((sort) => {
+      params = params.append("sort", sort);
+    });
     return this.httpClient.get<Page<StudentWithParent>>(
       ROOT_URL + "/student/group/" + groupId + "/page",
       { params }
@@ -53,5 +56,13 @@ export class StudentService {
 
   delete(id): Observable<{}> {
     return this.httpClient.delete(ROOT_URL + "/student/" + id);
+  }
+
+  findByParent(parentEmail: string): Observable<StudentWithParent[]> {
+    let params = new HttpParams().set("parentEmail", parentEmail);
+    return this.httpClient.get<StudentWithParent[]>(
+      ROOT_URL + "/student/byParent/",
+      { params }
+    );
   }
 }

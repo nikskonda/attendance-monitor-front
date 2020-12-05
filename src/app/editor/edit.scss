@@ -1,0 +1,46 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 1000px;
+  margin: auto;
+  margin-bottom: 20px;
+
+  .mat-column-edit,
+  .mat-column-remove,
+  .mat-column-position {
+    text-align: center !important;
+    padding: 0px 10px !important;
+  }
+
+  .mat-header-cell {
+    text-align: center;
+    padding: 0px 20px;
+    width: 1%;
+  }
+
+  .mat-cell {
+    text-align: left;
+    padding: 0px 20px;
+    width: 1%;
+  }
+
+  mat-icon {
+    cursor: pointer;
+  }
+
+  .but {
+    align-self: flex-end;
+    > button {
+      margin: 15px 0px;
+    }
+  }
+
+  .tab {
+    width: 100%;
+    align-self: center;
+  }
+
+  .pag {
+    align-self: flex-end;
+  }
+}
