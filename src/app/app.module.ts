@@ -1,6 +1,6 @@
 import { BasicAuthHtppInterceptorService } from "./service/basic-auth-http-interceptor.service";
 import { AppRoutingModule, routingComponents } from "./app-routing.module";
-import { CommonModule, registerLocaleData } from "@angular/common";
+import { CommonModule, DatePipe, registerLocaleData } from "@angular/common";
 import { BrowserModule } from "@angular/platform-browser";
 import { APP_INITIALIZER, LOCALE_ID, NgModule } from "@angular/core";
 
@@ -184,6 +184,7 @@ registerLocaleData(localeRu);
       deps: [L10nLoader],
       multi: true,
     },
+    DatePipe,
   ],
   bootstrap: [AppComponent],
 })

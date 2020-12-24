@@ -2,13 +2,34 @@
 
 .container {
   .but {
-    mat-form-field {
-      padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 20px;
+
+    .groupSelect {
+      font-size: 14pt;
+      // color: $primary;
+      font-weight: 600;
+      margin-right: 10px;
+    }
+
+    .add1 {
+      margin: 0 0 20px 0 !important;
     }
   }
 
+  .mat-column-fullName {
+    width: 40% !important;
+  }
+
+  .mat-column-email,
   .mat-column-parentEmail {
-    width: 100% !important;
-    text-align: start !important;
+    width: 25% !important;
+    text-align: center !important;
+  }
+
+  .mat-column-groupVolume {
+    text-align: center !important;
   }
 }

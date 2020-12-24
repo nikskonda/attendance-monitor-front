@@ -50,16 +50,19 @@ const i18nAsset = {
     STUDENT: "Студент",
     PARENT: "Родитель",
     PROFESSOR: "Преподаватель",
-    REPORT_VIEW: "Просмотр отчётов",
+    REPORT_VIEW: "Проверяющий",
 
-    FULL: "Полная",
-    FIRST: "Подгруппа 1",
-    SECOND: "Подгруппа 2",
-    THIRD: "Подгруппа 3",
+    FULL: "Группа",
+    FIRST: "1",
+    SECOND: "2",
+    THIRD: "3",
 
     LECTURE: "Лекция",
-    PRACTICE: "Практика",
-    LAB: "Лабораторная",
+    PRACTICE: "Практическое",
+    LAB: "Лабораторное",
+    LECTURE_SH: "Лек.",
+    PRACTICE_SH: "Практ.",
+    LAB_SH: "Лаб.",
 
     button: {
       create: "Создать",

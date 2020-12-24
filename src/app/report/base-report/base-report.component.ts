@@ -24,14 +24,17 @@ export class BaseReportComponent implements OnInit {
   }
 
   open() {
+    this.refreshData();
     pdfMake.createPdf(this.docDefinition).open();
   }
 
   download() {
+    this.refreshData();
     pdfMake.createPdf(this.docDefinition).download();
   }
 
   print() {
+    this.refreshData();
     pdfMake.createPdf(this.docDefinition).print();
   }
 }

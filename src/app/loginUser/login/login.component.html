@@ -1,45 +1,46 @@
 <div class="container">
   <div class="greeting">
-    <h3>Добро пожаловать в</h3>
-    <h2>Web-приложение для мониторинга и анализа</h2>
-    <h2>посещаемости занятий!</h2>
+    <h2 class="row1">Добро пожаловать в</h2>
+    <h2 class="row2">Web-приложение для мониторинга</h2>
+    <h2 class="row2">и анализа посещаемости занятий!</h2>
   </div>
+  <div class="login">
+    <form class="example-form" [formGroup]="fgc">
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Email" formControlName="email" required />
+        <mat-error *ngIf="fgc.controls.email.hasError('email')">
+          Введите корректный email.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <input
+          matInput
+          placeholder="Пароль"
+          type="password"
+          formControlName="password"
+          required
+        />
+      </mat-form-field>
+      <p *ngIf="invalidLogin">Неверный логин или пароль.</p>
+      <div>
+        <button
+          color="accent"
+          mat-raised-button
+          (click)="checkLogin()"
+          [disabled]="!fgc.valid"
+        >
+          Войти
+        </button>
 
-  <form class="example-form" [formGroup]="fgc">
-    <mat-form-field class="example-full-width">
-      <input matInput placeholder="Email" formControlName="email" required />
-      <mat-error *ngIf="fgc.controls.email.hasError('email')">
-        Введите валидный e-mail.
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field class="example-full-width">
-      <input
-        matInput
-        placeholder="Пароль"
-        type="password"
-        formControlName="password"
-        required
-      />
-    </mat-form-field>
-    <p *ngIf="invalidLogin">Неверный логин или пароль.</p>
-    <div>
-      <button
-        color="primary"
-        mat-raised-button
-        (click)="checkLogin()"
-        [disabled]="!fgc.valid"
-      >
-        Войти
-      </button>
-
-      <button
-        mat-raised-button
-        color="accent"
-        (click)="generateData(true)"
-        style="margin-left: 150px"
-      >
-        TEST: Заполнить рандомными даными {{ status }}
-      </button>
-    </div>
-  </form>
+        <button
+          mat-raised-button
+          color="accent"
+          (click)="generateData(true)"
+          style="margin-left: 50px; display: none"
+        >
+          TEST: Заполнить рандомными даными {{ status }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

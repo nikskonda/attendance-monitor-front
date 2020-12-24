@@ -4,8 +4,7 @@
     [selectedIndex]="selectedIndex"
     (selectedTabChange)="goTo($event)"
   >
-    <mat-tab class="menu" *ngFor="let link of links" label="{{ link.text }}">
-    </mat-tab>
+    <mat-tab *ngFor="let link of links" label="{{ link.text }}"> </mat-tab>
   </mat-tab-group>
   <router-outlet></router-outlet>
 </div>

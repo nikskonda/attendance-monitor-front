@@ -52,7 +52,8 @@ export class GridCellComponent implements OnInit {
         subjectId: this.lesson.subject.id,
         subjectTypes: this.lesson.subjectType,
         groupVolume: this.lesson.groupVolume,
-        date: this.lesson.date,
+        dateStart: this.lesson.date,
+        dateEnd: this.lesson.date,
       },
     });
   }

@@ -1,12 +1,12 @@
 <div class="menuContainer">
   <div class="leftMenu">
     <div class="header">
-      <h1 class="menu">Главное Меню</h1>
+      <h1 class="menu">Навигация</h1>
     </div>
 
     <mat-list>
       <div *ngFor="let link of getLinksByRole(links)">
-        <mat-list-item class="pointer" routerLink="{{ link.path }}">
+        <mat-list-item class="pointer litem" routerLink="{{ link.path }}">
           <mat-icon mat-list-icon>{{ link.icon }}</mat-icon>
           <div>{{ link.text }}</div>
         </mat-list-item>
@@ -14,7 +14,8 @@
       </div>
 
       <mat-list-item
-        class="pointer"
+        class="pointer litem"
+        [ngClass]="{ active: showProfList }"
         *ngIf="isShowProfs()"
         (click)="displayProfs()"
       >
@@ -23,16 +24,18 @@
       </mat-list-item>
       <mat-divider *ngIf="isShowProfs()"></mat-divider>
       <mat-list-item
-        class="pointer"
+        class="pointer litem"
+        [ngClass]="{ active: showEditors }"
         *ngIf="isShowEditor()"
         (click)="displayEditors()"
       >
         <mat-icon mat-list-icon>edit</mat-icon>
-        <div>Создать</div>
+        <div>Редактирование</div>
       </mat-list-item>
       <mat-divider *ngIf="isShowEditor()"></mat-divider>
       <mat-list-item
-        class="pointer"
+        class="pointer litem"
+        [ngClass]="{ active: showReports }"
         *ngIf="isShowReports()"
         (click)="displayRepots()"
       >
@@ -44,16 +47,20 @@
   <div class="rightSubMenu">
     <div class="header">
       <h3 class="submenu" *ngIf="showProfList">Преподаватели</h3>
-      <h3 class="submenu" *ngIf="showEditors">Создать</h3>
+      <h3 class="submenu" *ngIf="showEditors">Редактирование</h3>
       <h3 class="submenu" *ngIf="showReports">Отчёты</h3>
     </div>
     <img
       *ngIf="showImage()"
-      src="assets/img/logo.png"
+      src="assets/img/logo2.png"
       alt="image"
       style="width: 400px; height: 400px"
     />
-    <mat-list *ngIf="showProfList">
+    <mat-list
+      *ngIf="showProfList"
+      style="overflow-y: auto"
+      [ngStyle]="{ 'height.px': rightMenuHeight }"
+    >
       <mat-list-item *ngIf="profList.length === 0" class="nav-link"
         ><div class="ritem">Список преподавателей пуст.</div>
       </mat-list-item>

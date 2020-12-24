@@ -5,11 +5,12 @@ import { Group, Volume } from "./group.service";
 import { ObjectRef, Page, ROOT_URL } from "./common.service";
 
 export enum Role {
-  STUDENT,
-  PARENT,
-  PROFESSOR,
   ADMIN,
   REPORT_VIEW,
+  PROFESSOR,
+  STUDENT,
+  PARENT,
+  EDITOR,
 }
 
 export function getRoles(): string[] {
@@ -31,6 +32,7 @@ export interface Person {
   id: number;
   email: string;
   fullName: string;
+  shortName?: string;
 
   firstName: string;
   lastName: string;

@@ -1,13 +1,18 @@
 <div class="container">
   <div class="but">
-    <button mat-raised-button color="primary" (click)="create()">
-      Создать
+    <button mat-raised-button color="accent" (click)="create()">
+      Добавить
     </button>
   </div>
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 tab">
-    <ng-container matColumnDef="pos">
+    <ng-container matColumnDef="position">
       <th mat-header-cell *matHeaderCellDef>No.</th>
       <td mat-cell *matCellDef="let element">{{ element.pos }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="fullName">
+      <th mat-header-cell *matHeaderCellDef>ФИО</th>
+      <td mat-cell *matCellDef="let element">{{ element.fullName }}</td>
     </ng-container>
 
     <ng-container matColumnDef="lastName">
@@ -25,13 +30,13 @@
       <td mat-cell *matCellDef="let element">{{ element.patronymic }}</td>
     </ng-container>
 
-    <ng-container matColumnDef="position">
+    <ng-container matColumnDef="jobPosition">
       <th mat-header-cell *matHeaderCellDef>Должность</th>
       <td mat-cell *matCellDef="let element">{{ element.position }}</td>
     </ng-container>
 
     <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef>E-mail</th>
+      <th mat-header-cell *matHeaderCellDef>Email</th>
       <td mat-cell *matCellDef="let element">{{ element.email }}</td>
     </ng-container>
 
@@ -54,7 +59,7 @@
       <td mat-cell *matCellDef="let element">
         <mat-icon
           aria-hidden="false"
-          (click)="remove(element.id, element.fullName)"
+          (click)="remove(element.id, element.fullName, element.email)"
           >delete</mat-icon
         >
       </td>

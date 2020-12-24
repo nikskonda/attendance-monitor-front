@@ -1,7 +1,8 @@
 <div class="schedContainer">
-  <div class="person" *ngIf="isAdmin()">
-    <p>{{ professor?.fullName }}</p>
-  </div>
+  <h2>Расписание занятий</h2>
+  <h3 class="person" *ngIf="professor">
+    {{ professor?.fullName }}
+  </h3>
   <div class="dateRange">
     <mat-form-field appearance="fill">
       <mat-label>Выберите период</mat-label>
@@ -23,17 +24,19 @@
       Инверсия
     </mat-slide-toggle>
   </div>
+
   <h1 *ngIf="!showGrid" class="empty-grid">
     У вас нет занятий, назначенных на выбранный временной отрезок.
   </h1>
   <div *ngIf="showGrid" [ngClass]="{ 'grid-wr': topDateHeader }">
-    <div class="grid" [ngStyle]="{ 'min-width.px': (cols * 2 - 1) * 70 }">
+    <div class="grid" [ngStyle]="{ 'min-width.px': (cols * 2 - 1) * 100 }">
       <mat-grid-list class="header" [cols]="cols * 2 - 1" rowHeight="100px">
         <mat-grid-tile
           *ngFor="let cell of headers; index as i"
           [colspan]="i % cols === 0 ? 1 : 2"
           [rowspan]="1"
-          [style.background]="true ? '#297938' : cell.color"
+          [style.background]="getColor('HEADER')"
+          style="color: white"
         >
           <app-grid-header
             [text]="
@@ -50,7 +53,10 @@
           *ngFor="let cell of cells; index as i"
           [colspan]="i % cols === 0 ? 1 : 2"
           [rowspan]="1"
-          [style.background]="cell.color"
+          [style.background]="
+            i % cols === 0 ? getColor('HEADER') : getColor(cell.color)
+          "
+          [ngStyle]="{ color: i % cols === 0 ? 'white' : 'black' }"
         >
           <app-grid-header
             *ngIf="cell.header"

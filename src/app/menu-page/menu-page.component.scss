@@ -25,20 +25,23 @@
 
     .litem {
       display: flex;
-      color: $info;
+      color: $primary;
       text-align: right;
-      .menu-text {
-        padding: 10px;
-        &:hover {
-          background-color: $main;
-          color: $white;
-        }
+      padding: 10px;
+      font-weight: 600;
+      font-size: 15pt;
+      mat-icon {
+        color: $accent;
+        margin-right: 10px;
       }
+    }
+    .active {
+      color: $warn;
     }
   }
 
   .rightSubMenu {
-    background-color: $dark;
+    background-color: $primary;
     padding: 40px;
     width: 50%;
     margin-right: 40px;
@@ -47,12 +50,15 @@
     .submenu {
       text-align: left;
       margin-left: 75px;
-      color: $btn-primary;
-      font-weight: 500;
+      color: $accent;
+      font-weight: bold;
+      font-size: 19pt;
     }
 
     .ritem {
       color: $white;
+      font-weight: 500;
+      font-size: 14pt;
     }
   }
 }

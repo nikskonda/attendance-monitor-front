@@ -23,11 +23,12 @@ export class ProfEditComponent implements OnInit {
   displayedColumns: string[] = [
     "edit",
     "remove",
-    "pos",
-    "lastName",
-    "firstName",
-    "patronymic",
     "position",
+    "fullName",
+    // "lastName",
+    // "firstName",
+    // "patronymic",
+    "jobPosition",
     "email",
     "phone",
   ];
@@ -132,10 +133,10 @@ export class ProfEditComponent implements OnInit {
     });
   }
 
-  remove(id: number, name: string) {
+  remove(id: number, name: string, email: string) {
     const dialogRef = this.dialog.open(RemoveDialogComponent, {
       data: {
-        name: name,
+        name: `Вы уверены, что хотите удалить преподавателя: ${name} (${email})?`,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -159,12 +160,17 @@ export class ProfEditorDialog implements OnInit {
   active: Professor;
 
   fgc = new FormGroup({
-    name: new FormControl(""),
+    name: new FormControl("", [Validators.required]),
     lastName: new FormControl("", [Validators.required]),
     patronymic: new FormControl(""),
     email: new FormControl("", [Validators.required, Validators.email]),
     position: new FormControl("", [Validators.required]),
-    phone: new FormControl("", [Validators.required]),
+    phone: new FormControl("", [
+      Validators.required,
+      Validators.pattern(
+        `[0-9]{9}|[(][0-9]{2}[)][\\s][0-9]{3}[-][0-9]{2}[-][0-9]{2}`
+      ),
+    ]),
   });
 
   constructor(
@@ -206,6 +212,7 @@ export class ProfEditorDialog implements OnInit {
       roles: [{ id: null, qualifier: "" + Role.PROFESSOR }],
       position: this.fgc.value.position,
       phone: this.fgc.value.phone,
+      shortName: null,
     };
     this.profService.create(prof).subscribe((_) => this.close(true));
   }
@@ -221,6 +228,7 @@ export class ProfEditorDialog implements OnInit {
       roles: this.active.roles,
       position: this.fgc.value.position,
       phone: this.fgc.value.phone,
+      shortName: null,
     };
     this.profService
       .update(this.active.id, prof)

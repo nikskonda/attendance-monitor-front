@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Person, Role } from "../service/account.service";
 import { FormControl, FormGroup } from "@angular/forms";
 import { AuthenticationService } from "../service/auth.service";
+import { CommonService, getDate } from "../service/common.service";
 
 @Component({
   selector: "app-schedule",
@@ -31,7 +32,7 @@ export class ScheduleComponent implements OnInit {
   constructor(
     @Inject(L10N_LOCALE) public locale: L10nLocale,
     private lessonService: LessonService,
-    private loginservice: AuthenticationService,
+    private commonService: CommonService,
     private route: ActivatedRoute
   ) {}
 
@@ -40,10 +41,6 @@ export class ScheduleComponent implements OnInit {
       this.personId = params["personId"];
       this.loadTable();
     });
-  }
-
-  isAdmin() {
-    return this.loginservice.isHasRole(Role.ADMIN);
   }
 
   lt() {
@@ -55,8 +52,8 @@ export class ScheduleComponent implements OnInit {
     // if (!this.range.value.start || !this.range.value.end) return;
     this.lessonService
       .getLessons(
-        this.getDate(this.range.value.start),
-        this.getDate(this.range.value.end),
+        getDate(this.range.value.start),
+        getDate(this.range.value.end),
         this.personId,
         this.topDateHeader
       )
@@ -71,18 +68,19 @@ export class ScheduleComponent implements OnInit {
 
   getFirstDateOfWeek() {
     var curr = new Date();
-    return new Date(curr.setDate(curr.getDate() - curr.getDay()));
-    // return new Date("2020-09-01");
+    return new Date(curr.setDate(curr.getDate() - curr.getDay() + 1));
   }
 
   getLastDateOfWeek() {
     var curr = new Date();
-    return new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
-    // return new Date("2020-09-30");
+    return new Date(curr.setDate(curr.getDate() - curr.getDay() + 7));
   }
 
-  getDate(date: Date) {
-    date.setMinutes(-date.getTimezoneOffset());
-    return date.toISOString().substring(0, 10);
+  getColor(color: string) {
+    if (color === "NOW") return "#d7565e"; //warn
+    if (color === "TODAY") return "#f19d45"; //accent
+    if (color === "HEADER") return "#384480";
+    // return "#A5B6D5";
+    return "#c7dafd";
   }
 }

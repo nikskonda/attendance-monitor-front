@@ -1,9 +1,10 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { ReportService } from "src/app/service/report.service";
-import { ObjectRef } from "src/app/service/common.service";
+import { getDate2, ObjectRef } from "src/app/service/common.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { GroupService } from "src/app/service/group.service";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "app-students-by-group-report",
@@ -14,10 +15,11 @@ export class StudentsByGroupReportComponent implements OnInit {
   constructor(
     @Inject(L10N_LOCALE) public locale: L10nLocale,
     private reportService: ReportService,
-    private groupService: GroupService
+    private groupService: GroupService,
+    private datePipe: DatePipe
   ) {}
 
-  table: string[][] = [];
+  table: object[][] = [];
   isPdfReady: boolean = false;
   refreshCallback: Function;
 
@@ -35,7 +37,21 @@ export class StudentsByGroupReportComponent implements OnInit {
   onGroupSelect() {
     this.reportService.findStudents(this.fgc.value.group).subscribe(
       (data) => {
-        this.table = data;
+        this.table = [];
+        for (let i = 0; i < data.length; i++) {
+          let row: object[] = [];
+          for (let j = 0; j < data[i].length; j++) {
+            if (i === 0) {
+              row.push({ text: data[i][j], bold: true, alignment: "center" });
+            } else {
+              row.push({
+                text: data[i][j],
+                alignment: j === 0 ? "left" : "center",
+              });
+            }
+          }
+          this.table.push(row);
+        }
       },
       (error) => console.log(error),
       () => (this.isPdfReady = true)
@@ -54,57 +70,59 @@ export class StudentsByGroupReportComponent implements OnInit {
     return {
       content: [
         {
-          text: "Белорусский национальный технический университет",
-          alignment: "right",
+          text: "Белорусский Национальный Технический Университет",
+          style: "header",
         },
         {
-          text: "Факультет информационных технологий и робототехники",
-          alignment: "right",
+          text: "Факультет Информационных Технологий и Робототехники",
+          style: "header",
         },
         {
-          text: "Кафедра программирования и программирования",
-          alignment: "right",
+          text:
+            "Кафедра «Программное обеспечение информационных систем и технологий»",
+          style: "header",
         },
         {
-          text: "Данные всех студентов группы " + group + ".",
-          marginTop: 100,
-          marginBottom: 50,
+          text: "Данные студентов группы " + group + ".",
+          marginTop: 30,
+          marginBottom: 15,
         },
         {
           table: {
+            headerRows: 1,
             body: this.table,
           },
         },
+        {
+          text:
+            "\nОтчёт создан с помощью Web-приложение для мониторинга и анализа посещаемости занятий.",
+          alignment: "left",
+          italics: true,
+        },
+        {
+          text: "Copyright © Сидорик В.В., Шконда Н.А. 2020 Все права защищены",
+          alignment: "left",
+          italics: true,
+        },
+        {
+          text:
+            "\n\n" +
+            this.datePipe.transform(getDate2(new Date()), "dd.MM.yyyy"),
+          alignment: "right",
+        },
       ],
       info: {
-        title: "Отчёт по студентам " + group,
-        author: "4eburek",
-        subject: "4eburek",
-        keywords: "4eburek, lol, kek",
+        title: "Список студенто группы " + group,
+        author: "Attendance Monitor",
+        subject: "Attendance Monitor Report",
+        keywords: "Attendance Monitor, Report, BNTU",
       },
       styles: {
         header: {
-          fontSize: 18,
-          bold: true,
-          margin: [0, 20, 0, 10],
-          decoration: "underline",
-        },
-        name: {
-          fontSize: 16,
-          bold: true,
-        },
-        jobTitle: {
           fontSize: 14,
           bold: true,
-          italics: true,
-        },
-        sign: {
-          margin: [0, 50, 0, 10],
-          alignment: "right",
-          italics: true,
-        },
-        tableHeader: {
-          bold: true,
+          margin: [0, 0, 0, 10],
+          alignment: "center",
         },
       },
     };

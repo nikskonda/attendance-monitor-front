@@ -1,15 +1,10 @@
-<h2 mat-dialog-title>Ты точно хочешь удалить?</h2>
+<h2 mat-dialog-title>{{ data.header || "Удаление" }}</h2>
 <mat-dialog-content class="mat-typography">
   <h3>{{ data.name }}</h3>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Отмена</button>
-  <button
-    mat-raised-button
-    color="warn"
-    [mat-dialog-close]="true"
-    cdkFocusInitial
-  >
+  <button mat-raised-button color="warn" [mat-dialog-close]="true">
     {{ data.button || "Удалить" }}
   </button>
+  <button mat-button mat-dialog-close cdkFocusInitial>Отмена</button>
 </mat-dialog-actions>

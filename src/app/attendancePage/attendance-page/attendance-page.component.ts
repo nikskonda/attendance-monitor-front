@@ -2,10 +2,11 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { L10nLocale, L10nTranslationService, L10N_LOCALE } from "angular-l10n";
 import { CommonModule, DatePipe } from "@angular/common";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { AttCell, AttendanceService } from "../../service/attendance.service";
 import {
   CommonService,
+  getDate,
   getDateFromStr,
   ObjectRef,
 } from "../../service/common.service";
@@ -34,6 +35,9 @@ import { RemoveDialogComponent } from "src/app/editor/remove-dialog/remove-dialo
   styleUrls: ["./attendance-page.component.scss"],
 })
 export class AttendancePageComponent implements OnInit {
+  IN_SAVE_LIST: number = 0;
+  DATE_RANGE: number = 15;
+
   headers: AttCell[] = [];
   att: AttCell[] = [];
 
@@ -52,8 +56,8 @@ export class AttendancePageComponent implements OnInit {
   listToSave: AttCell[] = [];
 
   range = new FormGroup({
-    start: new FormControl(this.get3DaysBefore()),
-    end: new FormControl(this.get3DaysAfter()),
+    start: new FormControl(this.getDayBefore(true)),
+    end: new FormControl(this.getDayAfter(true)),
   });
 
   times: LessonTime[] = [];
@@ -79,6 +83,7 @@ export class AttendancePageComponent implements OnInit {
     private loginService: AuthenticationService,
 
     private router: Router,
+
     private attService: AttendanceService,
     private route: ActivatedRoute,
 
@@ -104,10 +109,9 @@ export class AttendancePageComponent implements OnInit {
       this.groupVolume = params["groupVolume"] || "FULL";
       this.subjectId = params["subjectId"];
       this.subjectTypesSelected = params["subjectTypes"] || [];
-      const date = params["date"] || undefined;
-      if (date) {
-        this.setDate(date);
-      }
+      const dateS = params["dateStart"] || undefined;
+      const dateF = params["dateEnd"] || undefined;
+      this.setDate(dateS, dateF);
       this.subjectTypesSelected =
         this.subjectTypesSelected instanceof Array
           ? this.subjectTypesSelected
@@ -117,19 +121,26 @@ export class AttendancePageComponent implements OnInit {
     this.loadTable();
   }
 
-  setDate(date) {
-    this.range.controls.start.setValue(this.get3DaysBefore(date));
-    this.range.controls.end.setValue(this.get3DaysAfter(date));
+  setDate(dateS, dateF) {
+    const toCalc = dateS === dateF;
+    this.range.controls.start.setValue(this.getDayBefore(toCalc, dateS));
+    this.range.controls.end.setValue(this.getDayAfter(toCalc, dateF));
   }
 
-  get3DaysBefore(date?) {
-    var curr = new Date(date);
-    return new Date(curr.setDate(curr.getDate() - 5));
+  getDayBefore(toCalc: boolean, date?) {
+    if (!toCalc) {
+      return new Date(date);
+    }
+    var curr = date ? new Date(date) : new Date();
+    return new Date(curr.setDate(curr.getDate() - this.DATE_RANGE));
   }
 
-  get3DaysAfter(date?) {
-    var curr = new Date(date);
-    return new Date(curr.setDate(curr.getDate() + 5));
+  getDayAfter(toCalc: boolean, date?) {
+    if (!toCalc) {
+      return new Date(date);
+    }
+    var curr = date ? new Date(date) : new Date();
+    return new Date(curr.setDate(curr.getDate() + this.DATE_RANGE));
   }
 
   loadTable() {
@@ -151,6 +162,7 @@ export class AttendancePageComponent implements OnInit {
         this.cols = data.cols;
         this.group = data.group;
         this.subject = data.subject;
+        this.setParams();
       });
   }
 
@@ -191,7 +203,7 @@ export class AttendancePageComponent implements OnInit {
   }
 
   save(isSaveButton: boolean) {
-    if (isSaveButton || this.listToSave.length > 10) {
+    if (isSaveButton || this.listToSave.length > this.IN_SAVE_LIST) {
       this.attService
         .save(this.listToSave)
         .subscribe((data) => (this.listToSave = []));
@@ -206,7 +218,7 @@ export class AttendancePageComponent implements OnInit {
   }
 
   getCellBackground(cell: AttCell) {
-    return cell.goodReason && !cell.empty ? "lime" : "white";
+    return cell.goodReason && !cell.empty ? "#b4bf9b" : "white";
   }
 
   getHeaderText(text: string, i) {
@@ -311,8 +323,33 @@ export class AttendancePageComponent implements OnInit {
       this.groupVolume = result.groupVolume;
       this.subjectId = result.subjectId;
       this.subjectTypesSelected = result.subjectTypes;
+
       this.loadTable();
     });
+  }
+
+  setParams() {
+    const queryParams: Params = {
+      groupId: this.groupId,
+      groupVolume: this.groupVolume,
+      subjectId: this.subjectId,
+      subjectTypes: this.subjectTypesSelected,
+      startDate: getDate(this.range.value.start),
+      endDate: getDate(this.range.value.end),
+    };
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      queryParamsHandling: "merge",
+    });
+  }
+
+  getColor(color: string) {
+    if (color === "GOOD") return "#f19d45"; //accent
+    if (color === "HEADER") return "#384480";
+    // return "#A5B6D5";
+    return "#c7dafd";
   }
 }
 
@@ -361,12 +398,12 @@ export class AttLessonEditorDialog implements OnInit {
       );
     }
     if (data.profEmail) {
-      this.fgc.controls.prof.setValue(
-        data.profs.find((p) => p.email === data.profEmail).id
-      );
-      if (!commonService.isInclude([Role.ADMIN])) {
-        data.profs = data.profs.filter((pr) => pr.email === data.profEmail);
-      }
+      // this.fgc.controls.prof.setValue(
+      //   data.profs.find((p) => p.email === data.profEmail).id
+      // );
+      // if (!commonService.isInclude([Role.ADMIN])) {
+      //   data.profs = data.profs.filter((pr) => pr.email === data.profEmail);
+      // }
     }
 
     this.isUpdate = data.isUpdate;

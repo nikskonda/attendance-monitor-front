@@ -1,6 +1,24 @@
 @import "../edit.scss";
 
+.infoMsg {
+  color: $accent;
+}
+
+.mat-column-fullName {
+  width: 35% !important;
+  text-align: left;
+}
+
+.mat-column-jobPosition {
+  width: 25% !important;
+  text-align: left;
+}
+
+.mat-column-email {
+  width: 5% !important;
+  text-align: center !important;
+}
 .mat-column-phone {
-  width: 100% !important;
-  text-align: start !important;
+  width: 25% !important;
+  text-align: center !important;
 }

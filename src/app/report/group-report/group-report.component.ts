@@ -3,10 +3,11 @@ import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { getDate, ObjectRef } from "src/app/service/common.service";
+import { getDate, getDate2, ObjectRef } from "src/app/service/common.service";
 import { GroupService } from "../../service/group.service";
 import { ReportService } from "../../service/report.service";
 import { SubjectService } from "../../service/subject.service";
+import { DatePipe } from "@angular/common";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -27,7 +28,7 @@ export class GroupReportComponent implements OnInit {
     subject: new FormControl(Validators.required),
   });
 
-  table: string[][] = [];
+  table: object[][] = [];
   refreshCallback: Function;
 
   isPdfReady: boolean = false;
@@ -36,7 +37,8 @@ export class GroupReportComponent implements OnInit {
     @Inject(L10N_LOCALE) public locale: L10nLocale,
     private subjectService: SubjectService,
     private groupService: GroupService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private datePipe: DatePipe
   ) {}
 
   ngOnInit() {
@@ -62,7 +64,20 @@ export class GroupReportComponent implements OnInit {
       )
       .subscribe(
         (data) => {
-          this.table = data;
+          this.table = [];
+          for (let i = 0; i < data.length; i++) {
+            let row: object[] = [];
+            for (let j = 0; j < data[i].length; j++) {
+              if (i === 0) {
+                row.push({ text: data[i][j], bold: true, alignment: "center" });
+              } else if (j === 0) {
+                row.push({ text: data[i][j], alignment: "left" });
+              } else {
+                row.push({ text: data[i][j], alignment: "center" });
+              }
+            }
+            this.table.push(row);
+          }
         },
         (error) => console.log(error),
         () => (this.isPdfReady = true)
@@ -83,71 +98,80 @@ export class GroupReportComponent implements OnInit {
     return {
       content: [
         {
-          text: "Белорусский национальный технический университет",
-          alignment: "right",
+          text: "Белорусский Национальный Технический Университет",
+          style: "header",
         },
         {
-          text: "Факультет информационных технологий и робототехники",
-          alignment: "right",
-        },
-        {
-          text: "Кафедра программирования и программирования",
-          alignment: "right",
+          text: "Факультет Информационных Технологий и Робототехники",
+          style: "header",
         },
         {
           text:
-            "Отчёт о посещаемости группы " +
-            group +
-            " по предмету '" +
-            subject +
-            "' за период занятий с " +
-            getDate(this.fgc.controls.start.value) +
-            " по " +
-            getDate(this.fgc.controls.end.value) +
-            ".",
-          marginTop: 100,
-          marginBottom: 50,
+            "Кафедра «Программное обеспечение информационных систем и технологий»",
+          style: "header",
+        },
+        { text: "Отчёт о посещаемости:", marginTop: 30 },
+        {
+          type: "none",
+          ol: [
+            "группы - " + group,
+            "по предмету - " + subject,
+            "за период - с " +
+              this.datePipe.transform(
+                getDate2(this.fgc.controls.start.value),
+                "dd MMMM yyyy"
+              ) +
+              " по " +
+              this.datePipe.transform(
+                getDate2(this.fgc.controls.end.value),
+                "dd MMMM yyyy"
+              ),
+          ],
+          marginBottom: 15,
         },
         {
           table: {
+            headerRows: 1,
             body: this.table,
           },
         },
         {
           text:
-            "* X/Y, где X - пропущено всего, Y - пропущено по уважительной причине (пропущено X из них Y по уважительной)",
+            "* X/Y, где X - пропущено всего, Y - пропущено по уважительной причине из Y",
           alignment: "left",
+          italics: true,
+          fontSize: 10,
+        },
+        {
+          text:
+            "\nОтчёт создан с помощью Web-приложение для мониторинга и анализа посещаемости занятий.",
+          alignment: "left",
+          italics: true,
+        },
+        {
+          text: "Copyright © Сидорик В.В., Шконда Н.А. 2020 Все права защищены",
+          alignment: "left",
+          italics: true,
+        },
+        {
+          text:
+            "\n\n" +
+            this.datePipe.transform(getDate2(new Date()), "dd.MM.yyyy"),
+          alignment: "right",
         },
       ],
       info: {
         title: "Отчёт по группе " + group,
-        author: "4eburek",
-        subject: "4eburek",
-        keywords: "4eburek, lol, kek",
+        author: "Attendance Monitor",
+        subject: "Attendance Monitor Report",
+        keywords: "Attendance Monitor, Report, BNTU",
       },
       styles: {
         header: {
-          fontSize: 18,
-          bold: true,
-          margin: [0, 20, 0, 10],
-          decoration: "underline",
-        },
-        name: {
-          fontSize: 16,
-          bold: true,
-        },
-        jobTitle: {
           fontSize: 14,
           bold: true,
-          italics: true,
-        },
-        sign: {
-          margin: [0, 50, 0, 10],
-          alignment: "right",
-          italics: true,
-        },
-        tableHeader: {
-          bold: true,
+          margin: [0, 0, 0, 10],
+          alignment: "center",
         },
       },
     };

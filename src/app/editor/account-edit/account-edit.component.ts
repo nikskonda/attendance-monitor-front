@@ -6,7 +6,6 @@ import { MatTableDataSource } from "@angular/material/table";
 import {
   getRoles,
   AccountService,
-  Role,
   User,
 } from "src/app/service/account.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
@@ -77,7 +76,8 @@ export class AccountEditComponent implements OnInit {
   resetPassword(email: string, name: string) {
     const dialogRef = this.dialog.open(RemoveDialogComponent, {
       data: {
-        name: `Сбросить пароль аккаунта ${email} ${
+        header: "Сброс пароля",
+        name: `Вы уверены, что хотитe сбросить пароль аккаунта ${email} ${
           name ? "(" + name + ")" : ""
         }?`,
         button: "Сбросить",
@@ -93,8 +93,9 @@ export class AccountEditComponent implements OnInit {
   changeLock(email: string, name: string, isLock: boolean) {
     const dialogRef = this.dialog.open(RemoveDialogComponent, {
       data: {
-        name: `${
-          isLock ? "Разблокировать" : "Заблокировать"
+        header: isLock ? "Разблокировать" : "Заблокировать",
+        name: `Вы уверены, что хотите ${
+          isLock ? "разблокировать" : "заблокировать"
         } аккаунт ${email} ${name ? "(" + name + ")" : ""}?`,
         button: isLock ? "Разблокировать" : "Заблокировать",
       },

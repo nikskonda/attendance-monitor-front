@@ -14,15 +14,15 @@ export class ChangePasswordComponent implements OnInit {
   fgc = new FormGroup({
     oldPassword: new FormControl("", [
       Validators.required,
-      Validators.minLength(8),
+      Validators.minLength(3),
     ]),
     newPassword: new FormControl("", [
       Validators.required,
-      Validators.minLength(8),
+      Validators.minLength(3),
     ]),
     repeatPassword: new FormControl("", [
       Validators.required,
-      Validators.minLength(8),
+      Validators.minLength(3),
     ]),
   });
 

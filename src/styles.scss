@@ -10,9 +10,9 @@ $wa: #f44336;
 $white: #fff;
 
 $primary: (
-  Main: $btn-primary,
-  Light: $btn-primary,
-  Dark: $btn-primary,
+  Main: $primary,
+  Light: $primary,
+  Dark: $primary,
   contrast: (
     Main: $white,
     Light: $white,
@@ -20,9 +20,9 @@ $primary: (
   ),
 );
 $accent: (
-  Main: $btn-success,
-  Light: $btn-success,
-  Dark: $btn-success,
+  Main: $accent,
+  Light: $accent,
+  Dark: $accent,
   contrast: (
     Main: $white,
     Light: $white,
@@ -30,9 +30,9 @@ $accent: (
   ),
 );
 $warn: (
-  Main: $btn-danger,
-  Light: $btn-danger,
-  Dark: $btn-danger,
+  Main: $warn,
+  Light: $warn,
+  Dark: $warn,
   contrast: (
     Main: $white,
     Light: $white,
@@ -95,6 +95,12 @@ body {
 ul[class],
 ol[class] {
   list-style: none;
+  list-style-type: none;
+}
+
+ul,
+ol {
+  list-style: none;
 }
 
 /* Элементы a, у которых нет класса, сбрасываем до дефолтных стилей */
@@ -132,7 +138,7 @@ select {
 }
 
 .example-form {
-  min-width: 150px;
+  min-width: 350px;
   max-width: 500px;
   width: 100%;
 }
@@ -141,44 +147,52 @@ select {
   width: 100%;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  width: 1000px;
-  margin: auto;
-
-  .mat-column-edit,
-  .mat-column-remove,
-  .mat-column-position {
-    text-align: center;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .mat-column-name {
-    padding-left: 10px;
-  }
-
-  mat-icon {
-    cursor: pointer;
-  }
-
-  .but {
-    align-self: flex-end;
-    > button {
-      margin: 15px 0px;
-    }
-  }
-
-  .tab {
-    width: 100%;
-    align-self: center;
-  }
-
-  .pag {
-    align-self: flex-end;
-  }
+.example-margin {
+  margin-right: 1em;
 }
+
+.mat-tab-label {
+  font-size: 12pt !important;
+}
+
+// .container {
+//   display: flex;
+//   flex-direction: column;
+//   width: 1000px;
+//   margin: auto;
+
+//   .mat-column-edit,
+//   .mat-column-remove,
+//   .mat-column-position {
+//     text-align: center;
+//     padding-left: 10px;
+//     padding-right: 10px;
+//   }
+
+//   .mat-column-name {
+//     padding-left: 10px;
+//   }
+
+//   mat-icon {
+//     cursor: pointer;
+//   }
+
+//   .but {
+//     align-self: flex-end;
+//     > button {
+//       margin: 15px 0px;
+//     }
+//   }
+
+//   .tab {
+//     width: 100%;
+//     align-self: center;
+//   }
+
+//   .pag {
+//     align-self: flex-end;
+//   }
+// }
 
 .editor-form {
   margin: 15px 0px;

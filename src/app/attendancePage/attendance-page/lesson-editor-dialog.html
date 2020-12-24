@@ -1,4 +1,6 @@
-<h2 mat-dialog-title>Создать</h2>
+<h2 mat-dialog-title>
+  {{ isUpdate ? "Редактирование" : "Добавление" }} занятия
+</h2>
 <mat-dialog-content>
   <form class="example-form" [formGroup]="fgc">
     <mat-form-field appearance="fill" class="example-full-width">
@@ -11,10 +13,10 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="example-full-width">
-      <mat-label>Формат занятия</mat-label>
+      <mat-label>Вид занятия</mat-label>
       <mat-select formControlName="subjectType">
         <mat-option *ngFor="let type of data.subjectTypes" [value]="type">
-          {{ type }}
+          {{ type | translate: locale.language }}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -45,7 +47,7 @@
       <mat-label>Подгруппа</mat-label>
       <mat-select formControlName="volume">
         <mat-option *ngFor="let v of data.volumes" [value]="v">
-          {{ v }}
+          {{ v | translate: locale.language }}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -61,21 +63,20 @@
       <mat-label>Время</mat-label>
       <mat-select formControlName="time" required>
         <mat-option *ngFor="let time of data.times" [value]="time.id">
-          {{ time.startTime + " - " + time.finishTime + " (" + time.shift +
-          ")"}}
+          {{ time.text }}
         </mat-option>
       </mat-select>
     </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="close(false)">Отмена</button>
   <button
-    mat-button
+    mat-raised-button
+    color="primary"
     (click)="isUpdate ? update() : create()"
     [disabled]="!fgc.valid"
-    cdkFocusInitial
   >
     Сохранить
   </button>
+  <button mat-button (click)="close(false)" cdkFocusInitial>Отмена</button>
 </mat-dialog-actions>

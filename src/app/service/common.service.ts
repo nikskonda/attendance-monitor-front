@@ -34,6 +34,12 @@ export function getDate(date: Date): string {
   return result.toISOString().substring(0, 10);
 }
 
+export function getDate2(date: Date): Date {
+  const result: Date = new Date(date);
+  result.setMinutes(-result.getTimezoneOffset());
+  return result;
+}
+
 export function getDateFromStr(str: string): string {
   const date: Date = new Date(str);
   date.setMinutes(-date.getTimezoneOffset());

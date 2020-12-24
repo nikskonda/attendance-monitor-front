@@ -1,9 +1,15 @@
+@import "../../const.scss";
+
 .schedContainer {
   margin: 5px;
   display: flex;
   flex-direction: column;
-  .person {
-    align-self: center;
+
+  h2,
+  h3 {
+    align-items: center;
+    text-align: center;
+    color: $primary;
   }
   .dateRange {
     align-self: center;

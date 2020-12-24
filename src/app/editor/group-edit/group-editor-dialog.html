@@ -10,7 +10,7 @@
         maxlength="8"
         minlength="8"
         pattern="[0-9]{8}"
-        placeholder="Name"
+        placeholder="Номер группы"
         formControlName="name"
       />
       <mat-hint align="end">{{ input.value?.length || 0 }}/8</mat-hint>
@@ -26,14 +26,13 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="close(false)">Отмена</button>
   <button
-    color="accent"
+    color="primary"
     mat-raised-button
     (click)="isUpdate ? update() : create()"
-    cdkFocusInitial
     [disabled]="!fgc.valid"
   >
     Сохранить
   </button>
+  <button mat-button (click)="close(false)" cdkFocusInitial>Отмена</button>
 </mat-dialog-actions>

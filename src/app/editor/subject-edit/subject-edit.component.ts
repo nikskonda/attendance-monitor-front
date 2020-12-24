@@ -104,7 +104,7 @@ export class SubjectEditComponent implements OnInit {
   remove(id: number, name: string) {
     const dialogRef = this.dialog.open(RemoveDialogComponent, {
       data: {
-        name: name,
+        name: `Вы уверены, что хотите удалить дисциплину: ${name}?`,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {

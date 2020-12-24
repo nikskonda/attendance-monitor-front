@@ -107,7 +107,7 @@ export class SpecialityEditComponent implements OnInit {
   remove(id: number, name: string) {
     const dialogRef = this.dialog.open(RemoveDialogComponent, {
       data: {
-        name: name,
+        name: `Вы уверены, что хотите удалить специальность: ${name}?`,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {

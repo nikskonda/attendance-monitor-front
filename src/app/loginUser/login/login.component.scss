@@ -1,19 +1,29 @@
 @import "../../../const.scss";
 
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@300&family=Ubuntu:wght@700&display=swap");
+
 .container {
-  margin: auto;
   align-items: center;
+  padding-top: 10em;
+
+  display: flex;
+  flex-direction: column;
 
   .greeting {
     text-align: center;
     font-weight: bolder;
 
-    h3 {
-      color: $primary;
+    .row1 {
+      color: $accent;
+      font-family: "Oswald", sans-serif;
+      padding-bottom: 1em;
     }
 
-    h2 {
-      color: $info;
+    .row2 {
+      color: $primary;
+      font-family: "Ubuntu", sans-serif;
     }
+  }
+  .login {
   }
 }

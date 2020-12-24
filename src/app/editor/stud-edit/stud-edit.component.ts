@@ -27,9 +27,10 @@ export class StudEditComponent implements OnInit {
     "edit",
     "remove",
     "position",
-    "lastName",
-    "firstName",
-    "patronymic",
+    "fullName",
+    // "lastName",
+    // "firstName",
+    // "patronymic",
     "groupVolume",
     "email",
     "parentEmail",
@@ -149,10 +150,10 @@ export class StudEditComponent implements OnInit {
     });
   }
 
-  remove(id: number, name: string) {
+  remove(id: number, name: string, email: string) {
     const dialogRef = this.dialog.open(RemoveDialogComponent, {
       data: {
-        name: name,
+        name: `Вы уверены, что хотите удалить студента: ${name} (${email})?`,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -175,7 +176,7 @@ export class StudEditorDialog implements OnInit {
   active: Person;
 
   fgc = new FormGroup({
-    name: new FormControl(""),
+    name: new FormControl("", [Validators.required]),
     lastName: new FormControl("", [Validators.required]),
     patronymic: new FormControl(""),
     email: new FormControl("", [Validators.required, Validators.email]),
@@ -229,6 +230,7 @@ export class StudEditorDialog implements OnInit {
       },
       groupVolume: this.fgc.value.volume,
       parentEmail: this.fgc.value.parent,
+      shortName: null,
     };
     this.studentService.create(stud).subscribe((_) => this.close(true));
   }
@@ -249,6 +251,7 @@ export class StudEditorDialog implements OnInit {
       },
       groupVolume: this.fgc.value.volume,
       parentEmail: this.fgc.value.parent,
+      shortName: null,
     };
     this.studentService
       .update(this.active.id, stud)

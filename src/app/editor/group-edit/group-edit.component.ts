@@ -116,7 +116,7 @@ export class GroupEditComponent implements OnInit {
   remove(id: number, name: string) {
     const dialogRef = this.dialog.open(RemoveDialogComponent, {
       data: {
-        name: name,
+        name: `Вы уверены, что хотите удалить группу: ${name}?`,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {

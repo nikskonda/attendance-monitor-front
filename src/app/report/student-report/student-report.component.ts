@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import {
   CommonService,
   getDate,
+  getDate2,
   ObjectRef,
 } from "src/app/service/common.service";
 import { GroupService } from "../../service/group.service";
@@ -11,6 +12,7 @@ import { ReportService } from "../../service/report.service";
 import { Person, AccountService, Role } from "../../service/account.service";
 import { Student, StudentService } from "src/app/service/student.service";
 import { AuthenticationService } from "src/app/service/auth.service";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "app-student-report",
@@ -29,7 +31,7 @@ export class StudentReportComponent implements OnInit {
     student: new FormControl(Validators.required),
   });
 
-  table: string[][] = [];
+  table: object[][] = [];
   isPdfReady: boolean = false;
   refreshCallback: Function;
 
@@ -41,7 +43,8 @@ export class StudentReportComponent implements OnInit {
     private groupService: GroupService,
     private reportService: ReportService,
     private commonService: CommonService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private datePipe: DatePipe
   ) {}
 
   ngOnInit() {
@@ -84,7 +87,20 @@ export class StudentReportComponent implements OnInit {
       )
       .subscribe(
         (data) => {
-          this.table = data;
+          this.table = [];
+          for (let i = 0; i < data.length; i++) {
+            let row: object[] = [];
+            for (let j = 0; j < data[i].length; j++) {
+              if (i === 0) {
+                row.push({ text: data[i][j], bold: true, alignment: "center" });
+              } else if (j === 0) {
+                row.push({ text: data[i][j], alignment: "left" });
+              } else {
+                row.push({ text: data[i][j], alignment: "center" });
+              }
+            }
+            this.table.push(row);
+          }
         },
         (error) => console.log(error),
         () => (this.isPdfReady = true)
@@ -104,68 +120,79 @@ export class StudentReportComponent implements OnInit {
       content: [
         {
           text: "Белорусский национальный технический университет",
-          alignment: "right",
+          style: "header",
         },
         {
           text: "Факультет информационных технологий и робототехники",
-          alignment: "right",
-        },
-        {
-          text: "Кафедра программирования и программирования",
-          alignment: "right",
+          style: "header",
         },
         {
           text:
-            "Отчёт о посещаемости студента " +
-            fullName +
-            " за период занятий с " +
-            getDate(this.fgc.controls.start.value) +
-            " по " +
-            getDate(this.fgc.controls.end.value) +
-            ".",
-          marginTop: 100,
-          marginBottom: 50,
+            "Кафедра «Программное обеспечение информационных систем и технологий»",
+          style: "header",
+        },
+        { text: "Отчёт о посещаемости:", marginTop: 30 },
+        {
+          type: "none",
+          ol: [
+            "студента - " + fullName,
+            "за период - с " +
+              this.datePipe.transform(
+                getDate2(this.fgc.controls.start.value),
+                "dd MMMM yyyy"
+              ) +
+              " по " +
+              this.datePipe.transform(
+                getDate2(this.fgc.controls.end.value),
+                "dd MMMM yyyy"
+              ),
+          ],
+          marginBottom: 15,
         },
         {
           table: {
+            headerRows: 1,
             body: this.table,
+            style: "table",
           },
         },
         {
           text:
-            "* X/Y/Z, где X - пропущено всего, Y - пропущено по уважительной причине (из X), Z - всего занятий",
+            "* X/Y/Z, где X - часов занятий, Y - часов пропущено, Z - часов пропущено по уважительной из Y",
           alignment: "left",
+          italics: true,
+          fontSize: 10,
+        },
+        {
+          text:
+            "\nОтчёт создан с помощью Web-приложение для мониторинга и анализа посещаемости занятий.",
+          alignment: "left",
+          italics: true,
+        },
+        {
+          text: "Copyright © Сидорик В.В., Шконда Н.А. 2020 Все права защищены",
+          alignment: "left",
+          italics: true,
+        },
+        {
+          text:
+            "\n\n" +
+            this.datePipe.transform(getDate2(new Date()), "dd.MM.yyyy"),
+          alignment: "right",
         },
       ],
       info: {
         title: "Отчёт по студенту " + fullName,
-        author: "4eburek",
-        subject: "4eburek",
-        keywords: "4eburek, lol, kek",
+        author: "Attendance Monitor",
+        subject: "Attendance Monitor Report",
+        keywords: "Attendance Monitor, Report, BNTU",
       },
       styles: {
         header: {
-          fontSize: 18,
-          bold: true,
-          margin: [0, 20, 0, 10],
-          decoration: "underline",
-        },
-        name: {
-          fontSize: 16,
-          bold: true,
-        },
-        jobTitle: {
           fontSize: 14,
           bold: true,
-          italics: true,
-        },
-        sign: {
-          margin: [0, 50, 0, 10],
-          alignment: "right",
-          italics: true,
-        },
-        tableHeader: {
-          bold: true,
+          margin: [0, 0, 0, 10],
+          alignment: "center",
         },
       },
     };

@@ -63,6 +63,7 @@ export interface LessonTime {
   startTime: string;
   finishTime: string;
   shift: string;
+  text: string;
 }
 
 @Injectable({

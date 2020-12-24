@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, HostListener, Inject, OnInit } from "@angular/core";
 import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { fromEvent } from "rxjs";
 import { EDIT_MENU } from "../editor/edit-menu";
@@ -28,13 +28,17 @@ export class MenuPageComponent implements OnInit {
 
   links: LinkWithIconByRole[] = MENU;
 
+  rightMenuHeight: number;
+
   constructor(
     @Inject(L10N_LOCALE) public locale: L10nLocale,
     private profService: ProfessorService,
     private commonService: CommonService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.setRightMenuHeight(window.innerHeight);
+  }
 
   displayProfs() {
     this.showProfList = !this.showProfList;
@@ -70,7 +74,11 @@ export class MenuPageComponent implements OnInit {
   }
 
   isShowEditor() {
-    return this.commonService.isInclude([Role.ADMIN, Role.PROFESSOR]);
+    return this.commonService.isInclude([
+      Role.ADMIN,
+      Role.PROFESSOR,
+      Role.EDITOR,
+    ]);
   }
 
   isShowReports() {
@@ -84,5 +92,16 @@ export class MenuPageComponent implements OnInit {
 
   getLinksByRole(links: LinkByRole[]) {
     return this.commonService.getLinksByRole(links);
+  }
+
+  @HostListener("window:resize", ["$event"])
+  onResize(event) {
+    this.setRightMenuHeight(window.innerHeight);
+  }
+
+  setRightMenuHeight(height) {
+    console.log(height);
+    this.rightMenuHeight = height - 36 - 40 - 50 - 40 - 40 - 40 - 50 - 30;
+    console.log(this.rightMenuHeight);
   }
 }

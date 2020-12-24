@@ -27,7 +27,12 @@ export class AccountEditorDialogComponent implements OnInit {
     lastName: new FormControl(""),
     patronymic: new FormControl(""),
     email: new FormControl("", [Validators.required]),
-    phone: new FormControl(""),
+    phone: new FormControl("", [
+      Validators.required,
+      Validators.pattern(
+        `[0-9]{9}|[(][0-9]{2}[)][\\s][0-9]{3}[-][0-9]{2}[-][0-9]{2}`
+      ),
+    ]),
   });
 
   constructor(

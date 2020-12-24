@@ -1,13 +1,13 @@
-<h2 mat-dialog-title>{{isUpdate ? "Редактировать" : "Добавить"}} предмет</h2>
+<h2 mat-dialog-title>{{isUpdate ? "Редактировать" : "Добавить"}} дисциплину</h2>
 <mat-dialog-content>
   <form class="example-form">
-    <mat-form-field class="example-full-width">
+    <mat-form-field style="min-width: 450px" class="example-full-width">
       <input
         matInput
         #input
         required
-        maxlength="30"
-        placeholder="Название"
+        maxlength="100"
+        placeholder="Дисциплина"
         [formControl]="nameFormControl"
       />
       <mat-hint align="end">{{ input.value?.length || 0 }}/100</mat-hint>
@@ -15,14 +15,13 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="close(false)">Отмена</button>
   <button
     mat-raised-button
-    color="accent"
+    color="primary"
     (click)="isUpdate ? update() : create()"
-    cdkFocusInitial
     [disabled]="!nameFormControl.valid"
   >
     Сохранить
   </button>
+  <button mat-button (click)="close(false)" cdkFocusInitial>Отмена</button>
 </mat-dialog-actions>

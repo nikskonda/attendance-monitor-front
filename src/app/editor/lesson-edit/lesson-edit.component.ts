@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { L10nLocale, L10N_LOCALE } from "angular-l10n";
+import { L10nLocale, L10nTranslationService, L10N_LOCALE } from "angular-l10n";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import {
   MatDialog,
@@ -22,8 +22,7 @@ import {
   LessonTime,
 } from "../../service/lesson.service";
 import { SubjectService } from "../../service/subject.service";
-import { Person, AccountService } from "../../service/account.service";
-import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
+import { Person } from "../../service/account.service";
 import { ProfessorService } from "src/app/service/professor.service";
 
 @Component({
@@ -35,15 +34,14 @@ export class LessonEditComponent implements OnInit {
   dateForListFormControl = new FormControl(new Date().toISOString());
 
   displayedColumns: string[] = [
-    "edit",
+    // "edit",
     "remove",
     "position",
+    "time",
     "subject",
     "subjectType",
     "professor",
     "group",
-    // "date",
-    "time",
   ];
   dataSource;
   length = 0;
@@ -60,9 +58,11 @@ export class LessonEditComponent implements OnInit {
   lessons: Lesson[] = [];
   selected: Lesson;
   isUpdate: boolean = false;
+  dayOfWeek: string = "";
 
   constructor(
     @Inject(L10N_LOCALE) public locale: L10nLocale,
+    private translation: L10nTranslationService,
     private profService: ProfessorService,
     private lessonService: LessonService,
     private subjectService: SubjectService,
@@ -150,40 +150,29 @@ export class LessonEditComponent implements OnInit {
               date: s.date,
               subject: s.subject.qualifier,
               subjectType: s.subjectType,
-              time: `${s.time.startTime} - ${s.time.finishTime} (${s.time.shift})`,
-              professor: s.professor.qualifier,
-              group: s.group.qualifier,
+              time: s.time.text,
+              professor: this.profs.find(
+                (p) => s.professor.qualifier === p.email
+              ).shortName,
+              group:
+                s.group.qualifier +
+                (s.groupVolume === "FULL"
+                  ? ""
+                  : "(" + this.translation.translate(s.groupVolume) + ")"),
               volume: s.groupVolume,
             });
           });
           this.dataSource = new MatTableDataSource(newList);
+
+          this.dayOfWeek = this.getDayOfWeek();
         }
       );
   }
 
-  // update(id: number) {
-  //   this.selected = this.lessons.find((s) => s.id === id);
-  //   this.isUpdate = true;
-  //   const dialogRef = this.dialog.open(LessonEditorDialog, {
-  //     data: {
-  //       isUpdate: true,
-  //       active: this.selected,
-  //       times: this.times,
-  //       subjects: this.subjects,
-  //       subjectTypes: this.subjectTypes,
-  //       profs: this.profs,
-  //       groups: this.groups,
-  //       volumes: this.volumes,
-  //       days: DAYS_OF_WEEK,
-  //     },
-  //   });
-  //   dialogRef.afterClosed().subscribe((result) => {
-  //     if (result) {
-  //       this.updateList();
-  //       this.clear();
-  //     }
-  //   });
-  // }
+  getDayOfWeek() {
+    const day = new Date(this.dateForListFormControl.value).getDay();
+    return DAYS_OF_WEEK.find((dw) => dw.day === day)?.fullName;
+  }
 
   delete(id: number) {
     this.selected = this.lessons.find((s) => s.id === id);
@@ -207,20 +196,6 @@ export class LessonEditComponent implements OnInit {
       }
     });
   }
-
-  // remove(id: number, name: string) {
-  //   const dialogRef = this.dialog.open(RemoveDialogComponent, {
-  //     data: {
-  //       name: name,
-  //     },
-  //   });
-  //   dialogRef.afterClosed().subscribe((result) => {
-  //     if (result) {
-  //       this.profService.delete(id).subscribe((data) => this.updateList());
-  //       this.clear();
-  //     }
-  //   });
-  // }
 }
 
 @Component({
@@ -230,7 +205,10 @@ export class LessonEditComponent implements OnInit {
 export class LessonEditorDialog implements OnInit {
   active: Lesson;
   days: number[] = [];
-  repeatWeeks: number[] = [1, 2];
+  repeatWeeks: ObjectRef[] = [
+    { id: 1, qualifier: "Еженедельно" },
+    { id: 2, qualifier: "Через неделю" },
+  ];
 
   fgc = new FormGroup({
     start: new FormControl(new Date().toISOString(), Validators.required),

@@ -1,4 +1,6 @@
-<h2 mat-dialog-title>{{data.isDelete ? "Удалить" : "Добавить"}} серию</h2>
+<h2 mat-dialog-title>
+  {{data.isDelete ? "Удалить" : "Добавить"}} серию занятий
+</h2>
 <mat-dialog-content>
   <form class="example-form" [formGroup]="fgc">
     <mat-form-field appearance="fill" class="example-full-width">
@@ -11,7 +13,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="example-full-width">
-      <mat-label>Формат занятия</mat-label>
+      <mat-label>Вид занятия</mat-label>
       <mat-select formControlName="subjectType">
         <mat-option *ngFor="let type of data.subjectTypes" [value]="type">
           {{ type | translate: locale.language }}
@@ -60,17 +62,16 @@
       <mat-label>Время</mat-label>
       <mat-select formControlName="time" required>
         <mat-option *ngFor="let time of data.times" [value]="time.id">
-          {{ time.startTime + " - " + time.finishTime + " (" + time.shift +
-          ")"}}
+          {{ time.text}}
         </mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="example-full-width">
-      <mat-label>Повторять каждые N недель</mat-label>
+      <mat-label>Повторяемость</mat-label>
       <mat-select formControlName="repeat" required>
-        <mat-option *ngFor="let repeat of repeatWeeks" [value]="repeat">
-          {{ repeat }}
+        <mat-option *ngFor="let repeat of repeatWeeks" [value]="repeat.id">
+          {{ repeat.qualifier }}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -87,14 +88,13 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="close(false)">Отмена</button>
   <button
     mat-raised-button
-    color="accent"
+    color="primary"
     (click)="data.isDelete ? delete() : create()"
     [disabled]="!fgc.valid"
-    cdkFocusInitial
   >
     {{(data.isDelete ? "Удалить" : "Сохранить")}}
   </button>
+  <button mat-button (click)="close(false)" cdkFocusInitial>Отмена</button>
 </mat-dialog-actions>

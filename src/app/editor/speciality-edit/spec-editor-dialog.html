@@ -16,14 +16,13 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="close(false)">Отмена</button>
   <button
-    color="accent"
+    color="primary"
     mat-raised-button
     (click)="isUpdate ? update() : create()"
-    cdkFocusInitial
     [disabled]="!nameFormControl.valid"
   >
     Сохранить
   </button>
+  <button mat-button cdkFocusInitial (click)="close(false)">Отмена</button>
 </mat-dialog-actions>

@@ -8,7 +8,26 @@
   }
 
   .mat-column-time {
-    width: 100% !important;
-    text-align: start !important;
+    width: 10% !important;
+    text-align: center;
+  }
+
+  .mat-column-subject {
+    width: 25% !important;
+    text-align: left;
+  }
+
+  .mat-column-subjectType {
+    width: 1% !important;
+    text-align: center;
+  }
+
+  .mat-column-professor {
+    width: 10% !important;
+    text-align: left !important;
+  }
+  .mat-column-group {
+    width: 1% !important;
+    text-align: center !important;
   }
 }

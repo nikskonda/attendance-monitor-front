@@ -6,13 +6,13 @@
     <mat-form-field class="example-full-width">
       <input
         matInput
-        placeholder="E-mail"
+        placeholder="Email"
         formControlName="email"
         required
         [readonly]="isUpdate"
       />
       <mat-error *ngIf="fgc.controls.email.hasError('email')">
-        Введите валидный e-mail.
+        Введите корректный email.
       </mat-error>
     </mat-form-field>
 
@@ -53,7 +53,7 @@
   <button mat-button (click)="close(false)">Отмена</button>
   <button
     mat-raised-button
-    color="accent"
+    color="primary"
     (click)="isUpdate ? update() : create()"
     cdkFocusInitial
     [disabled]="!fgc.valid || isEmptySelectedRole()"
