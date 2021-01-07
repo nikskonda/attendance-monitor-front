@@ -91,6 +91,7 @@ import {
   L10nLoader,
   L10nTranslationModule,
 } from "angular-l10n";
+import { AlertComponent } from './editor/alert/alert.component';
 
 registerLocaleData(localeRu);
 
@@ -122,6 +123,7 @@ registerLocaleData(localeRu);
     BaseReportComponent,
     FilterComponent,
     AccountEditorDialogComponent,
+    AlertComponent,
   ],
   imports: [
     CommonModule,

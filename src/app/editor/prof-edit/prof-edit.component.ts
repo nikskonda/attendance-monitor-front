@@ -13,6 +13,8 @@ import { ObjectRef } from "src/app/service/common.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
 import { Professor, ProfessorService } from "src/app/service/professor.service";
 import { AccountService, Role } from "src/app/service/account.service";
+import {AlertComponent} from '../alert/alert.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: "app-prof-edit",
@@ -47,7 +49,8 @@ export class ProfEditComponent implements OnInit {
     @Inject(L10N_LOCALE) public locale: L10nLocale,
     private profService: ProfessorService,
     private positionService: PositionService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
@@ -141,7 +144,15 @@ export class ProfEditComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.profService.delete(id).subscribe((data) => this.updateList());
+        this.profService.delete(id).subscribe((data) => this.updateList(),
+          (error) => {
+            this.snackBar.openFromComponent(AlertComponent, {
+              data: {
+                text: error.error?.message
+              },
+              duration: 5000,
+            });
+          });
         this.clear();
       }
     });

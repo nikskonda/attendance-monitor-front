@@ -11,6 +11,8 @@ import { MatTableDataSource } from "@angular/material/table";
 import { ObjectRef } from "src/app/service/common.service";
 import { SpecialityService } from "../../service/speciality.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {AlertComponent} from '../alert/alert.component';
 
 @Component({
   selector: "app-speciality-edit",
@@ -31,7 +33,8 @@ export class SpecialityEditComponent implements OnInit {
   constructor(
     @Inject(L10N_LOCALE) public locale: L10nLocale,
     private specService: SpecialityService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
@@ -112,11 +115,21 @@ export class SpecialityEditComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.specService.delete(id).subscribe((data) => this.updateList());
+        this.specService.delete(id).subscribe((data) => this.updateList(),
+          (error) => {
+            this.snackBar.openFromComponent(AlertComponent, {
+              data: {
+                text: error.error?.message
+              },
+              duration: 5000,
+            });
+          });
         this.clear();
       }
     });
   }
+
+
 }
 
 @Component({

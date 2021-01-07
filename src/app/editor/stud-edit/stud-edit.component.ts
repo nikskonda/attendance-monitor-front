@@ -16,6 +16,8 @@ import {
   StudentService,
   StudentWithParent,
 } from "src/app/service/student.service";
+import {AlertComponent} from '../alert/alert.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: "app-stud-edit",
@@ -51,7 +53,8 @@ export class StudEditComponent implements OnInit {
     @Inject(L10N_LOCALE) public locale: L10nLocale,
     private studentService: StudentService,
     private groupService: GroupService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
@@ -158,7 +161,15 @@ export class StudEditComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.studentService.delete(id).subscribe((data) => this.updateList());
+        this.studentService.delete(id).subscribe((data) => this.updateList(),
+          (error) => {
+            this.snackBar.openFromComponent(AlertComponent, {
+              data: {
+                text: error.error?.message
+              },
+              duration: 5000,
+            });
+          });
         this.clear();
       }
     });

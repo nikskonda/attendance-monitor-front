@@ -12,6 +12,8 @@ import { L10nLocale, L10N_LOCALE } from "angular-l10n";
 import { ObjectRef } from "../../service/common.service";
 import { SubjectService } from "../../service/subject.service";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
+import {AlertComponent} from '../alert/alert.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: "app-subject-edit",
@@ -32,7 +34,8 @@ export class SubjectEditComponent implements OnInit {
   constructor(
     @Inject(L10N_LOCALE) public locale: L10nLocale,
     private subjectService: SubjectService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
@@ -109,7 +112,15 @@ export class SubjectEditComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.subjectService.delete(id).subscribe((data) => this.updateList());
+        this.subjectService.delete(id).subscribe((data) => this.updateList(),
+          (error) => {
+            this.snackBar.openFromComponent(AlertComponent, {
+              data: {
+                text: error.error?.message
+              },
+              duration: 5000,
+            });
+          });
         this.clear();
       }
     });
