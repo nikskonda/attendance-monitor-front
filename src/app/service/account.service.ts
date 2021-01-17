@@ -5,7 +5,6 @@ import { Group, Volume } from "./group.service";
 import { ObjectRef, Page, ROOT_URL } from "./common.service";
 
 export enum Role {
-  ADMIN,
   REPORT_VIEW,
   PROFESSOR,
   STUDENT,

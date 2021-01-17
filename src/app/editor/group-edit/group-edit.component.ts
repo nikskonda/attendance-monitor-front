@@ -12,8 +12,8 @@ import { MatTableDataSource } from "@angular/material/table";
 import { PageEvent } from "@angular/material/paginator";
 import { RemoveDialogComponent } from "../remove-dialog/remove-dialog.component";
 import { ObjectRef } from "src/app/service/common.service";
-import {AlertComponent} from '../alert/alert.component';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import { AlertComponent } from "../alert/alert.component";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: "app-group-edit",
@@ -38,8 +38,11 @@ export class GroupEditComponent implements OnInit {
   public groupList: Group[] = [];
   public specList: ObjectRef[] = [];
 
-  constructor(private groupService: GroupService, public dialog: MatDialog,
-              private snackBar: MatSnackBar,) {}
+  constructor(
+    private groupService: GroupService,
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit() {
     this.updateList();
@@ -124,15 +127,17 @@ export class GroupEditComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.groupService.delete(id).subscribe((data) => this.updateList(),
+        this.groupService.delete(id).subscribe(
+          (data) => this.updateList(),
           (error) => {
             this.snackBar.openFromComponent(AlertComponent, {
               data: {
-                text: error.error?.message
+                text: error.error?.message,
               },
               duration: 5000,
             });
-          });
+          }
+        );
         this.clear();
       }
     });

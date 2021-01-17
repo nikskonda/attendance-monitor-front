@@ -46,7 +46,8 @@ const i18nAsset = {
 
   // },
   "ru-RU": {
-    ADMIN: "Администратор",
+    // ADMIN: "Администратор",
+    EDITOR: "Модератор",
     STUDENT: "Студент",
     PARENT: "Родитель",
     PROFESSOR: "Преподаватель",

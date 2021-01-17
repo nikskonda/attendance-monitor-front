@@ -9,7 +9,7 @@
   h3 {
     align-items: center;
     text-align: center;
-    color: $primary;
+    color: $text;
   }
   .dateRange {
     align-self: center;
@@ -21,6 +21,7 @@
 
   .empty-grid {
     text-align: center;
+    color: $text;
   }
 
   .grid-wr {

@@ -36,7 +36,11 @@
 
     <mat-form-field appearance="fill" class="example-full-width">
       <mat-label>Выберите Предмет (необязательно)</mat-label>
-      <mat-select formControlName="subject" [disabled]="subjects.length === 0">
+      <mat-select
+        formControlName="subject"
+        [disabled]="subjects.length === 0"
+        (selectionChange)="refresh()"
+      >
         <mat-option value="">Пусто</mat-option>
         <mat-option *ngFor="let subject of subjects" [value]="subject.id">
           {{ subject.qualifier }}

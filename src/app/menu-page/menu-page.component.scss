@@ -19,29 +19,29 @@
 
       .menu {
         margin-right: 75px;
-        color: $primary;
+        color: $text;
       }
     }
 
     .litem {
       display: flex;
-      color: $primary;
+      color: $text;
       text-align: right;
       padding: 10px;
       font-weight: 600;
       font-size: 15pt;
       mat-icon {
-        color: $accent;
+        color: $text;
         margin-right: 10px;
       }
     }
     .active {
-      color: $warn;
+      color: $accent;
     }
   }
 
   .rightSubMenu {
-    background-color: $primary;
+    // background-color: $light;
     padding: 40px;
     width: 50%;
     margin-right: 40px;
@@ -50,13 +50,13 @@
     .submenu {
       text-align: left;
       margin-left: 75px;
-      color: $accent;
+      color: $text;
       font-weight: bold;
       font-size: 19pt;
     }
 
     .ritem {
-      color: $white;
+      color: $text;
       font-weight: 500;
       font-size: 14pt;
     }

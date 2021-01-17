@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{isUpdate ? "Редактировать" : "Добавить"}} предмет</h2>
+<h2 mat-dialog-title>{{isUpdate ? "Редактировать" : "Добавить"}} должность</h2>
 <mat-dialog-content>
   <form class="example-form">
     <mat-form-field class="example-full-width">
@@ -15,7 +15,6 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="close(false)">Отмена</button>
   <button
     color="primary"
     mat-raised-button
@@ -25,4 +24,5 @@
   >
     Сохранить
   </button>
+  <button mat-button cdkFocusInitial (click)="close(false)">Отмена</button>
 </mat-dialog-actions>

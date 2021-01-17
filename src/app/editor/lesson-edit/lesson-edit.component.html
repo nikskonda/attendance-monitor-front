@@ -11,9 +11,11 @@
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-    <button mat-raised-button color="accent" (click)="create()">
-      Добавить
-    </button>
+    <div>
+      <button mat-raised-button color="primary" (click)="create()">
+        Добавить
+      </button>
+    </div>
   </div>
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 tab">
     <ng-container matColumnDef="position">

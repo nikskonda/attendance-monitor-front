@@ -77,10 +77,9 @@ export class ScheduleComponent implements OnInit {
   }
 
   getColor(color: string) {
-    if (color === "NOW") return "#d7565e"; //warn
-    if (color === "TODAY") return "#f19d45"; //accent
-    if (color === "HEADER") return "#384480";
-    // return "#A5B6D5";
-    return "#c7dafd";
+    if (color === "NOW") return "#A8D08D"; //warn
+    if (color === "TODAY") return "#B4C6E7"; //accent
+    if (color === "HEADER") return "#4472C4";
+    return "#D9E2F3";
   }
 }

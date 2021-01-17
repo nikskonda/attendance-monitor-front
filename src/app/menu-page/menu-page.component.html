@@ -44,18 +44,23 @@
       </mat-list-item>
     </mat-list>
   </div>
-  <div class="rightSubMenu">
+  <div
+    class="rightSubMenu"
+    [ngStyle]="{
+      'background-color': showImage() ? '#ffffff' : '#D9E2F3'
+    }"
+  >
     <div class="header">
       <h3 class="submenu" *ngIf="showProfList">Преподаватели</h3>
       <h3 class="submenu" *ngIf="showEditors">Редактирование</h3>
       <h3 class="submenu" *ngIf="showReports">Отчёты</h3>
     </div>
-    <img
+    <!-- <img
       *ngIf="showImage()"
       src="assets/img/logo2.png"
       alt="image"
       style="width: 400px; height: 400px"
-    />
+    /> -->
     <mat-list
       *ngIf="showProfList"
       style="overflow-y: auto"

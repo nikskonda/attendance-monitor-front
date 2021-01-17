@@ -7,6 +7,8 @@ import { OnInit } from "@angular/core";
 import { Role } from "src/app/service/account.service";
 import { GenService } from "src/app/service/generator.service";
 import { L10nLocale, L10N_LOCALE } from "angular-l10n";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { AlertComponent } from "src/app/editor/alert/alert.component";
 
 @Component({
   selector: "app-login",
@@ -26,7 +28,8 @@ export class LoginComponent implements OnInit {
     @Inject(L10N_LOCALE) public locale: L10nLocale,
     private router: Router,
     private loginservice: AuthenticationService,
-    private genservice: GenService
+    private genservice: GenService,
+    private snackBar: MatSnackBar
   ) {}
 
   generateData(b?: boolean) {
@@ -49,6 +52,12 @@ export class LoginComponent implements OnInit {
         (_) => {},
         (error) => {
           this.invalidLogin = true;
+          this.snackBar.openFromComponent(AlertComponent, {
+            data: {
+              text: "Неверный логин или пароль.",
+            },
+            duration: 5000,
+          });
         },
         () => {
           this.invalidLogin = false;

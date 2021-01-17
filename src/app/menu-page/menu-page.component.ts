@@ -70,20 +70,15 @@ export class MenuPageComponent implements OnInit {
   }
 
   isShowProfs() {
-    return this.commonService.isInclude([Role.ADMIN]);
+    return this.commonService.isInclude([Role.REPORT_VIEW]);
   }
 
   isShowEditor() {
-    return this.commonService.isInclude([
-      Role.ADMIN,
-      Role.PROFESSOR,
-      Role.EDITOR,
-    ]);
+    return this.commonService.isInclude([Role.PROFESSOR, Role.EDITOR]);
   }
 
   isShowReports() {
     return this.commonService.isInclude([
-      Role.ADMIN,
       Role.PROFESSOR,
       Role.PARENT,
       Role.REPORT_VIEW,

@@ -24,7 +24,7 @@
     <mat-form-field appearance="fill" class="example-full-width">
       <mat-label>Преподаватель</mat-label>
       <mat-select formControlName="prof">
-        <mat-option *ngFor="let prof of data.profs" [value]="prof.id">
+        <mat-option *ngFor="let prof of profs" [value]="prof.id">
           {{ prof.fullName }}
         </mat-option>
       </mat-select>
@@ -51,8 +51,18 @@
     <mat-form-field appearance="fill" class="example-full-width">
       <mat-label>Временной период</mat-label>
       <mat-date-range-input [rangePicker]="picker">
-        <input matStartDate formControlName="start" placeholder="Начало" />
-        <input matEndDate formControlName="finish" placeholder="Конец" />
+        <input
+          matStartDate
+          formControlName="start"
+          placeholder="Начало"
+          (dateChange)="rangeChange()"
+        />
+        <input
+          matEndDate
+          formControlName="finish"
+          placeholder="Конец"
+          (dateChange)="rangeChange()"
+        />
       </mat-date-range-input>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>

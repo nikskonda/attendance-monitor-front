@@ -3,12 +3,6 @@
 
 @include mat-core();
 
-$pr: #e8b01c;
-$ac: #7bb042;
-$wa: #f44336;
-
-$white: #fff;
-
 $primary: (
   Main: $primary,
   Light: $primary,
@@ -196,4 +190,10 @@ select {
 
 .editor-form {
   margin: 15px 0px;
+}
+
+.mat-snack-bar-container {
+  background: #d7565e !important;
+  margin: 35px !important;
+  font-size: 13pt;
 }

@@ -36,7 +36,7 @@ import { RemoveDialogComponent } from "src/app/editor/remove-dialog/remove-dialo
 })
 export class AttendancePageComponent implements OnInit {
   IN_SAVE_LIST: number = 0;
-  DATE_RANGE: number = 15;
+  DATE_RANGE: number = 20;
 
   headers: AttCell[] = [];
   att: AttCell[] = [];
@@ -81,6 +81,7 @@ export class AttendancePageComponent implements OnInit {
     private subjectService: SubjectService,
     private groupService: GroupService,
     private loginService: AuthenticationService,
+    private commonService: CommonService,
 
     private router: Router,
 
@@ -95,7 +96,14 @@ export class AttendancePageComponent implements OnInit {
       .getLessonTimes()
       .subscribe((data) => (this.times = data));
     this.groupService.getAll().subscribe((data) => (this.groups = data));
-    this.profService.getProfs().subscribe((data) => (this.profs = data));
+    this.profService.getProfs().subscribe((data) => {
+      if (this.commonService.isInclude([Role.EDITOR])) {
+        this.profs = data;
+      } else {
+        const email = this.loginService.getUserData().username;
+        this.profs = data.filter((p) => p.email === email);
+      }
+    });
     this.subjectService.getAll().subscribe((data) => (this.subjects = data));
     this.subjectService
       .getTypes()
@@ -116,7 +124,6 @@ export class AttendancePageComponent implements OnInit {
         this.subjectTypesSelected instanceof Array
           ? this.subjectTypesSelected
           : new Array(this.subjectTypesSelected);
-      console.log(this.subjectTypesSelected);
     });
     this.loadTable();
   }
@@ -334,8 +341,8 @@ export class AttendancePageComponent implements OnInit {
       groupVolume: this.groupVolume,
       subjectId: this.subjectId,
       subjectTypes: this.subjectTypesSelected,
-      startDate: getDate(this.range.value.start),
-      endDate: getDate(this.range.value.end),
+      dateStart: getDate(this.range.value.start),
+      dateEnd: getDate(this.range.value.end),
     };
 
     this.router.navigate([], {
@@ -346,10 +353,10 @@ export class AttendancePageComponent implements OnInit {
   }
 
   getColor(color: string) {
-    if (color === "GOOD") return "#f19d45"; //accent
-    if (color === "HEADER") return "#384480";
+    if (color === "GOOD") return "#B4C6E7"; //accent
+    if (color === "HEADER") return "#4472C4";
     // return "#A5B6D5";
-    return "#c7dafd";
+    return "#D9E2F3";
   }
 }
 

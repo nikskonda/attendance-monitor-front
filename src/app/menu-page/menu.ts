@@ -10,12 +10,12 @@ export const MENU: LinkWithIconByRole[] = [
     icon: "schedule",
     path: "/schedule",
     text: "Расписание",
-    role: [Role.ADMIN, Role.PROFESSOR, Role.STUDENT],
+    role: [Role.PROFESSOR, Role.STUDENT],
   },
   {
     icon: "transfer_within_a_station",
     path: "/attendance",
     text: "Посещаемость",
-    role: [Role.ADMIN, Role.PROFESSOR],
+    role: [Role.PROFESSOR],
   },
 ];

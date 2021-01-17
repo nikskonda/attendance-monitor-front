@@ -1,8 +1,10 @@
 <div class="container">
   <div class="but">
-    <button mat-raised-button color="accent" (click)="create()">
-      Добавить
-    </button>
+    <div>
+      <button mat-raised-button color="primary" (click)="create()">
+        Добавить
+      </button>
+    </div>
 
     <mat-form-field appearance="fill">
       <mat-label>Выберите роль</mat-label>
@@ -30,10 +32,12 @@
       </button>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" (click)="searchList()">
-      Найти
-      <mat-icon>search</mat-icon>
-    </button>
+    <div>
+      <button mat-raised-button color="primary" (click)="searchList()">
+        Найти
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
   </div>
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 tab">

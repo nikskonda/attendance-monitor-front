@@ -9,7 +9,9 @@ import {
 import { PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import {
+  CommonService,
   getDate,
+  getDate2,
   getDateFromStr,
   ObjectRef,
 } from "src/app/service/common.service";
@@ -22,8 +24,9 @@ import {
   LessonTime,
 } from "../../service/lesson.service";
 import { SubjectService } from "../../service/subject.service";
-import { Person } from "../../service/account.service";
+import { Person, Role } from "../../service/account.service";
 import { ProfessorService } from "src/app/service/professor.service";
+import { AuthenticationService } from "src/app/service/auth.service";
 
 @Component({
   selector: "app-lesson-edit",
@@ -205,6 +208,7 @@ export class LessonEditComponent implements OnInit {
 export class LessonEditorDialog implements OnInit {
   active: Lesson;
   days: number[] = [];
+  profs: Person[] = [];
   repeatWeeks: ObjectRef[] = [
     { id: 1, qualifier: "Еженедельно" },
     { id: 2, qualifier: "Через неделю" },
@@ -225,6 +229,8 @@ export class LessonEditorDialog implements OnInit {
   constructor(
     @Inject(L10N_LOCALE) public locale: L10nLocale,
     private lessonService: LessonService,
+    private loginService: AuthenticationService,
+    private commonService: CommonService,
     public dialogRef: MatDialogRef<LessonEditorDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -242,12 +248,20 @@ export class LessonEditorDialog implements OnInit {
       this.fgc.controls.finish.setValue(
         new Date(data.active.date).toISOString()
       );
-      this.changeDays(new Date(data.active.date).getDay());
+    } else {
+      if (this.commonService.isInclude([Role.EDITOR])) {
+        this.profs = data.profs;
+      } else {
+        const email = this.loginService.getUserData().username;
+        this.profs = data.profs.filter((p) => p.email === email);
+      }
     }
+    this.rangeChange();
   }
   ngOnInit(): void {}
 
   changeDays(day: number) {
+    if (day < 1 || day > 6) return;
     const size = this.days.length;
     this.days = this.days.filter((d) => d !== day);
     if (size === this.days.length) this.days.push(day);
@@ -319,5 +333,15 @@ export class LessonEditorDialog implements OnInit {
 
   close(result: boolean): void {
     this.dialogRef.close(result);
+  }
+
+  rangeChange() {
+    const start = getDateFromStr(this.fgc.value.start);
+    const finish = getDateFromStr(this.fgc.value.finish);
+    if (start === finish) {
+      this.changeDays(getDate2(new Date(start)).getDay());
+    } else {
+      this.days = [];
+    }
   }
 }

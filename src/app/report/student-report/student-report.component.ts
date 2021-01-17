@@ -119,7 +119,7 @@ export class StudentReportComponent implements OnInit {
     return {
       content: [
         {
-          text: "Белорусский национальный технический университет",
+          text: "БЕЛОРУССКИЙ НАЦИОНАЛЬНЫЙ ТЕХНИЧЕСКИЙ УНИВЕРСИТЕТ",
           style: "header",
         },
         {

@@ -2,7 +2,14 @@
   <div class="subject" *ngIf="subject && group">
     <h2>Посещаемость</h2>
     <h2>
-      {{ subject?.qualifier + " (" + group?.qualifier + ")" }}
+      {{
+        subject?.qualifier +
+          " " +
+          group?.qualifier +
+          (groupVolume === "FULL"
+            ? ""
+            : " (" + (groupVolume | translate: locale.language) + ")")
+      }}
     </h2>
   </div>
   <div class="props">
@@ -40,7 +47,7 @@
     </div>
     <div>
       <button mat-raised-button color="accent" (click)="filter()">
-        Фильтр
+        Фильтр занятий
       </button>
     </div>
   </div>
@@ -53,7 +60,7 @@
     >
       <mat-grid-list class="header" [cols]="cols + 1" rowHeight="75px">
         <mat-grid-tile
-          style="border: 1px solid black"
+          style="border: 1px solid white"
           *ngFor="let cell of headers; index as i"
           [colspan]="i % cols === 0 ? 2 : 1"
           [rowspan]="1"
@@ -82,7 +89,10 @@
           [style.background]="i % cols === 0 ? getColor('HEADER') : 'white'"
           [ngStyle]="{ color: i % cols === 0 ? 'white' : 'black' }"
         >
-          <p style="text-align: left" *ngIf="isStudents(cell, i)">
+          <p
+            style="text-align: left; width: 100%; margin-left: 20px"
+            *ngIf="isStudents(cell, i)"
+          >
             {{ cell.text }}
           </p>
           <button

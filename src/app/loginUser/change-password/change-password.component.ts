@@ -14,15 +14,15 @@ export class ChangePasswordComponent implements OnInit {
   fgc = new FormGroup({
     oldPassword: new FormControl("", [
       Validators.required,
-      Validators.minLength(3),
+      Validators.minLength(8),
     ]),
     newPassword: new FormControl("", [
       Validators.required,
-      Validators.minLength(3),
+      Validators.minLength(8),
     ]),
     repeatPassword: new FormControl("", [
       Validators.required,
-      Validators.minLength(3),
+      Validators.minLength(8),
     ]),
   });
 
@@ -39,6 +39,12 @@ export class ChangePasswordComponent implements OnInit {
     const newPw = this.fgc.value.newPassword;
     const repeat = this.fgc.value.repeatPassword;
     return newPw === repeat;
+  }
+
+  isMatchedOldPasswords() {
+    const newPw = this.fgc.value.newPassword;
+    const old = this.fgc.value.oldPassword;
+    return newPw === old;
   }
 
   updatePassword() {

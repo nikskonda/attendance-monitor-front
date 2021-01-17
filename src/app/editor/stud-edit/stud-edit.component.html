@@ -13,10 +13,16 @@
         </mat-select>
       </mat-form-field>
     </div>
-
-    <button class="add1" color="primary" mat-raised-button (click)="create()">
-      Добавить
-    </button>
+    <div class="add1">
+      <button
+        style="margin-top: 12px"
+        color="primary"
+        mat-raised-button
+        (click)="create()"
+      >
+        Добавить
+      </button>
+    </div>
   </div>
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 tab">
     <ng-container matColumnDef="edit">

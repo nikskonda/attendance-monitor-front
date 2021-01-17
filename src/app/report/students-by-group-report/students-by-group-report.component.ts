@@ -70,11 +70,11 @@ export class StudentsByGroupReportComponent implements OnInit {
     return {
       content: [
         {
-          text: "Белорусский Национальный Технический Университет",
+          text: "БЕЛОРУССКИЙ НАЦИОНАЛЬНЫЙ ТЕХНИЧЕСКИЙ УНИВЕРСИТЕТ",
           style: "header",
         },
         {
-          text: "Факультет Информационных Технологий и Робототехники",
+          text: "Факультет информационных технологий и робототехники",
           style: "header",
         },
         {
